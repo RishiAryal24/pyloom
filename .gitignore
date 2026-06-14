@@ -131,6 +131,8 @@ Thumbs.db
 
 # Static and media files
 static/
+!core/static/
+!core/static/**
 media/
 
 # Logs
