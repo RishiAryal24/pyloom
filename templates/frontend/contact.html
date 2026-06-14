@@ -194,27 +194,17 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-  // Initialize the map
-  var map = L.map('map').setView([51.505, -0.09], 13); // Set map center and zoom level
+  const pyloomLocation = [27.688556, 83.402586];
+  const map = L.map('map').setView(pyloomLocation, 15);
 
-  // Add tile layer (OpenStreetMap in this case)
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(map);
 
-  // Create a marker at a specific location
-  var marker = L.marker([51.5, -0.09]).addTo(map);
-
-  // Bind a popup to the marker with an image inside the popup
-  marker.bindPopup("<img src='https://via.placeholder.com/150' alt='Map Image' style='width: 100%;' />").openPopup();
-
-  // Optional: Add a circle to highlight an area
-  var circle = L.circle([51.508, -0.11], {
-    color: 'red',
-    fillColor: '#f03',
-    fillOpacity: 0.5,
-    radius: 500
-  }).addTo(map);
+  L.marker(pyloomLocation)
+    .addTo(map)
+    .bindPopup("<strong>PyLoom Technology</strong><br>{{ settings.address|striptags|escapejs }}")
+    .openPopup();
 </script>
 
     </div>
