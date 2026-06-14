@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160" role="img" aria-label="PyLoom logo">
+  <rect width="160" height="160" rx="32" fill="#0d6efd"/>
+  <path d="M42 112V40h42c18 0 30 11 30 27 0 17-12 28-30 28H62v17H42Zm20-34h20c8 0 13-4 13-11s-5-11-13-11H62v22Z" fill="#fff"/>
+  <path d="M92 112 118 40h21l-27 72H92Z" fill="#d4af37"/>
+</svg>
