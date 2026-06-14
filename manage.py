@@ -3,10 +3,9 @@
 import os
 import sys
 
-os.environ["DJANGO_SETTINGS_MODULE"] = "ai_solution.settings" 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ai_solutions.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ai_solution.settings')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

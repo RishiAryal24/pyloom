@@ -3,10 +3,28 @@ from decouple import config
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+LOG_DIR = BASE_DIR / 'logs'
+LOG_DIR.mkdir(exist_ok=True)
+
+
+def config_list(name, default=''):
+    return [item.strip() for item in config(name, default=default).split(',') if item.strip()]
+
+
+def config_bool(name, default=False):
+    value = str(config(name, default=default)).strip().lower()
+    return value in {'1', 'true', 'yes', 'on', 'debug', 'development'}
 
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-this-in-production')
-DEBUG = config('DEBUG', default=True, cast=bool)
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
+DEBUG = config_bool('DEBUG', default=True)
+ALLOWED_HOSTS = config_list(
+    'ALLOWED_HOSTS',
+    default='localhost,127.0.0.1,pyloomtech.com,www.pyloomtech.com'
+)
+CSRF_TRUSTED_ORIGINS = config_list(
+    'CSRF_TRUSTED_ORIGINS',
+    default='https://pyloomtech.com,https://www.pyloomtech.com'
+)
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -80,21 +98,31 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ai_solution.wsgi.application'
 # Database
-DATABASES = {
-  'default': {
+DB_NAME = config('DB_NAME', default='')
+
+if DB_NAME:
+    DATABASES = {
+        'default': {
     'ENGINE': 'django.db.backends.mysql',
-    'NAME': config('DB_NAME'),
-    'USER': config('DB_USER'),
-    'PASSWORD': config('DB_PASSWORD'),
-    'HOST': config('DB_HOST'),
-    'PORT': config('DB_PORT'),
+    'NAME': DB_NAME,
+    'USER': config('DB_USER', default=''),
+    'PASSWORD': config('DB_PASSWORD', default=''),
+    'HOST': config('DB_HOST', default='localhost'),
+    'PORT': config('DB_PORT', default='3306'),
     'OPTIONS': {'charset': 'utf8mb4'},
-  },
-  'sqlite_old': {  # SOURCE (SQLite)
+        },
+        'sqlite_old': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        },
     },
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        },
+    }
 
 
 # Password validation
@@ -122,9 +150,8 @@ USE_TZ = True
 # Static files
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_DIRS = [
-    BASE_DIR / 'static',
-]
+STATICFILES_DIRS = [BASE_DIR / 'static'] if (BASE_DIR / 'static').exists() else []
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files
 MEDIA_URL = '/media/'
@@ -176,7 +203,7 @@ LOGGING = {
         'file': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': BASE_DIR / 'logs' / 'django.log',
+            'filename': LOG_DIR / 'django.log',
         },
     },
     'loggers': {
