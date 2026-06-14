@@ -5,11 +5,15 @@
         <!-- Brand -->
         <a class="navbar-brand d-flex align-items-center" href="{% url 'core:home' %}">
             {% if settings.logo %}
-                <img src="{{ settings.logo.url }}" alt="PyLoom Logo" width="30" height="30" class="d-inline-block align-text-top me-2" loading="lazy">
+                <img src="{{ settings.logo.url }}" alt="PyLoom Logo" width="60" height="60" class="d-inline-block align-text-top me-3" loading="lazy">
             {% else %}
-                <img src="{% static 'img/logo.png' %}" alt="PyLoom Logo" width="30" height="30" class="d-inline-block align-text-top me-2" loading="lazy">
+                <img src="{% static 'img/logo.png' %}" alt="PyLoom Logo" width="60" height="60" class="d-inline-block align-text-top me-3" loading="lazy">
             {% endif %}
-            <span class="fw-bold">PyLoom</span>
+            <span class="fw-bold">
+                <span class="pyloom-p">P</span><span class="pyloom-y">y</span><span class="pyloom-loom">Loom</span>
+                <br>
+                <span class="pyloom-technology" style="font-size: 0.7em; letter-spacing: 0.1em;">TECHNOLOGY</span>
+            </span>
         </a>
         
         <!-- Mobile Toggle -->
