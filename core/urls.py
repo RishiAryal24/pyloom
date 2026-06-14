@@ -38,6 +38,7 @@ urlpatterns = [
     path('add_gallery_item/', views.add_gallery_item, name='add_gallery_item'),
     path('chatbot/', views.chatbot, name='chatbot'),
     path('api/chat/', views.chatbot_proxy, name='chatbot_proxy'),  # New chatbot URL
+    path('api/chat/reset/', views.chatbot_reset, name='chatbot_reset'),
 
 
     # AJAX endpoints
