@@ -16,16 +16,14 @@ elif [ -d "$HOME/virtualenv" ]; then
 fi
 
 if [ -z "$PYTHON_BIN" ]; then
-  PYTHON_BIN="$(command -v python3 || command -v python)"
-fi
-
-if [ -z "$PYTHON_BIN" ]; then
-  echo "Python was not found. Create the cPanel Python App first, then redeploy."
+  echo "No cPanel Python virtualenv was found."
+  echo "Create the cPanel Python App first, then redeploy."
+  echo "Use startup file: passenger_wsgi.py"
+  echo "Use entry point: application"
   exit 1
 fi
 
-"$PYTHON_BIN" -m pip install --upgrade pip
-"$PYTHON_BIN" -m pip install -r requirements.txt
+"$PYTHON_BIN" -m pip install --user -r requirements.txt
 "$PYTHON_BIN" manage.py migrate --noinput
 "$PYTHON_BIN" manage.py collectstatic --noinput
 
