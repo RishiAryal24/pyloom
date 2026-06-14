@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Login - AI-Solution</title>
+    <title>Admin Login - PyLoom</title>
 
     <!-- Bootstrap CSS -->
     <link
@@ -15,8 +15,15 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
     />
+    {% load static %}
 
     <style>
+      /* PyLoom TECHNOLOGY custom colors */
+      .pyloom-p { color: #D4AF37; } /* Gold for P */
+      .pyloom-y { color: #000000; } /* Black for y */
+      .pyloom-loom { color: #003366; } /* Dark blue for Loom */
+      .pyloom-technology { color: #2E8B57; } /* Green/Teal for TECHNOLOGY */
+
       body {
         background: #f6f7fb;
       }
@@ -29,6 +36,14 @@
       .brand {
         font-weight: 700;
       }
+      .btn-primary {
+        background-color: #003366 !important;
+        border-color: #003366 !important;
+      }
+      .btn-primary:hover {
+        background-color: #001f3d !important;
+        border-color: #001f3d !important;
+      }
     </style>
   </head>
   <body class="d-flex align-items-center min-vh-100">
@@ -37,10 +52,18 @@
         <!-- Header -->
         <div class="text-center mb-4">
           <div class="d-inline-flex align-items-center gap-2">
-           
-            <span class="brand fs-4">AI-Solution</span>
+            {% if settings.logo %}
+              <img src="{{ settings.logo.url }}" alt="PyLoom Logo" width="60" height="60" loading="lazy" />
+            {% else %}
+              <img src="{% static 'img/logo.png' %}" alt="PyLoom Logo" width="60" height="60" loading="lazy" />
+            {% endif %}
+            <div class="text-start">
+              <span class="brand fs-4">
+                <span class="pyloom-p">P</span><span class="pyloom-y">y</span><span class="pyloom-loom">Loom</span>
+              </span>
+              <div class="text-muted small"><span class="pyloom-technology">TECHNOLOGY</span> Admin Dashboard</div>
+            </div>
           </div>
-          <div class="text-muted small">Admin Dashboard</div>
         </div>
 
         <!-- Messages -->
