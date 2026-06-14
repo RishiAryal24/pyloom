@@ -14,7 +14,11 @@ urlpatterns = [
     path('api/', include('core.api.urls')),
 ]
 
-# Static and media file handling in development mode
+# Static and media file handling.
+#
+# cPanel/Passenger may route /media/ through Django before LiteSpeed can serve
+# the public_html/media symlink, so keep media URLs available in production too.
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
