@@ -6,13 +6,17 @@
       <!-- Company Info -->
       <div class="col-lg-4 mb-4">
         <div class="d-flex align-items-center mb-3">
-          {% if settings.logo %}
-            <img src="{{ settings.logo.url }}" alt="PyLoom Logo" width="40" height="40" class="me-2" loading="lazy">
-          {% else %}
-            <img src="{% static 'img/logo.png' %}" alt="PyLoom Logo" width="40" height="40" class="me-2" loading="lazy">
-          {% endif %}
-          <h5 class="mb-0 fw-bold">PyLoom</h5>
-        </div>
+                {% if settings.logo %}
+                    <img src="{{ settings.logo.url }}" alt="PyLoom Logo" width="70" height="70" class="me-3" loading="lazy">
+                {% else %}
+                    <img src="{% static 'img/logo.png' %}" alt="PyLoom Logo" width="70" height="70" class="me-3" loading="lazy">
+                {% endif %}
+                <h5 class="mb-0 fw-bold">
+                    <span class="pyloom-p">P</span><span class="pyloom-y">y</span><span class="pyloom-loom">Loom</span>
+                    <br>
+                    <span class="pyloom-technology" style="font-size: 0.7em; letter-spacing: 0.1em;">TECHNOLOGY</span>
+                </h5>
+            </div>
         <p class="text-secondary small">
           At PyLoom, we believe that every business challenge presents an opportunity for growth and innovation. We are committed to providing advanced technology solutions powered by Artificial Intelligence, automation, and modern digital tools that help businesses streamline operations, increase productivity, and achieve their goals efficiently.
         </p>
