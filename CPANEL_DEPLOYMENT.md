@@ -10,6 +10,7 @@ After the first Python App setup, Git deployment can run automatically through `
 - Application startup file: `passenger_wsgi.py`
 - Application entry point: `application`
 - Application URL: `pyloomtech.com`
+- Python version: use Python 3.10 or newer. Do not use system Python 3.6; Django 5 will not run there.
 
 ## Environment Variables
 
