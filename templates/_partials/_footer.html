@@ -1,0 +1,84 @@
+{% load static %}
+<!-- templates/_partials/_footer.html -->
+<footer class="bg-dark text-light pt-5 mt-5">
+  <div class="container">
+    <div class="row">
+      <!-- Company Info -->
+      <div class="col-lg-4 mb-4">
+        <div class="d-flex align-items-center mb-3">
+          {% if settings.logo %}
+            <img src="{{ settings.logo.url }}" alt="PyLoom Logo" width="40" height="40" class="me-2" loading="lazy">
+          {% else %}
+            <img src="{% static 'img/logo.png' %}" alt="PyLoom Logo" width="40" height="40" class="me-2" loading="lazy">
+          {% endif %}
+          <h5 class="mb-0 fw-bold">PyLoom</h5>
+        </div>
+        <p class="text-secondary small">
+          At PyLoom, we believe that every business challenge presents an opportunity for growth and innovation. We are committed to providing advanced technology solutions powered by Artificial Intelligence, automation, and modern digital tools that help businesses streamline operations, increase productivity, and achieve their goals efficiently.
+        </p>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="col-lg-4 mb-4">
+        <h6 class="mb-3 text-uppercase fw-bold">Quick Links</h6>
+        <ul class="list-unstyled">
+          <li class="mb-2">
+            <a href="{% url 'core:solutions' %}" class="text-secondary text-decoration-none footer-link">Solutions</a>
+          </li>
+          <li class="mb-2">
+            <a href="{% url 'core:projects' %}" class="text-secondary text-decoration-none footer-link">Projects</a>
+          </li>
+          <li class="mb-2">
+            <a href="{% url 'core:articles' %}" class="text-secondary text-decoration-none footer-link">Articles</a>
+          </li>
+          <li class="mb-2">
+            <a href="{% url 'core:events' %}" class="text-secondary text-decoration-none footer-link">Events</a>
+          </li>
+          <li class="mb-2">
+            <a href="{% url 'core:about' %}" class="text-secondary text-decoration-none footer-link">About Us</a>
+          </li>
+          <li>
+            <a href="{% url 'core:contact' %}" class="text-secondary text-decoration-none footer-link">Contact</a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Social Links -->
+      <div class="col-lg-4 mb-4">
+        <h6 class="mb-3 text-uppercase fw-bold">Connect With Us</h6>
+        <div class="d-flex gap-3">
+          <a href="{{ settings.linkedin_url }}" class="text-secondary footer-social" aria-label="LinkedIn">
+            <i class="bi bi-linkedin fs-4"></i>
+          </a>
+          <a href="#" class="text-secondary footer-social" aria-label="Twitter">
+            <i class="bi bi-twitter fs-4"></i>
+          </a>
+          <a href="https://github.com/pratistha16" class="text-secondary footer-social" aria-label="GitHub">
+            <i class="bi bi-github fs-4"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <hr class="border-secondary my-4" />
+
+    <!-- Copyright -->
+    <div class="row align-items-center">
+      <div class="col-md-6 small text-secondary">
+        &copy; {% now "Y" %} <span class="fw-semibold">PyLoom</span>. All rights reserved.
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Extra Styling -->
+<style>
+  .footer-link:hover {
+    color: #ffffff !important;
+    text-decoration: underline;
+  }
+  .footer-social:hover {
+    color: #0d6efd !important; /* Bootstrap primary blue */
+  }
+</style>

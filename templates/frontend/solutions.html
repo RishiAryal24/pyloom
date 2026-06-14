@@ -1,0 +1,226 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AI Solutions - {{ settings.site_name }}{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="bg-light text-dark py-5" style="margin-top: 80px;">
+    <div class="container py-4">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-4 fw-bold mb-3">AI Solutions</h1>
+                <p class="lead">Discover how our cutting-edge AI solutions can transform your industry</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Filter Section -->
+<section class="py-4 bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="d-flex gap-2 flex-wrap">
+                    <a href="{% url 'core:solutions' %}" class="btn {% if not selected_category %}btn-dark{% else %}btn-outline-dark{% endif %}">
+                        All Solutions
+                    </a>
+                    {% for value, label in categories %}
+                    <a href="{% url 'core:solutions' %}?category={{ value }}" class="btn {% if selected_category == value %}btn-dark{% else %}btn-outline-dark{% endif %}">
+                        {{ label }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Solutions Grid -->
+<section class="py-5">
+    <div class="container">
+        {% if solutions %}
+        <div class="row g-4">
+            {% for solution in solutions %}
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100 shadow-sm border-0 solution-card">
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            
+                            <div class="text-end">
+                                <span class="badge bg-secondary">{{ solution.get_category_display }}</span>
+                                {% if solution.is_featured %}
+                                <br><span class="badge bg-warning text-dark mt-1">Featured</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <h4 class="card-title fw-bold">{{ solution.title }}</h4>
+                        <p class="card-text text-muted flex-grow-1">{{ solution.description }}</p>
+                       {% if solution.image %}
+                        <div class="card-footer bg-transparent border-0 p-0">
+                            <img src="{{ solution.image.url }}" class="img-fluid rounded-bottom"
+                                alt="{{ solution.title }}" style="height: 200px; width: 100%; object-fit: cover;">
+                        </div>
+                        {% endif %}
+                        <!-- Features List -->
+                        {% if solution.features %}
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary mb-2">Key Features:</h6>
+                            <ul class="list-unstyled">
+                                {% for feature in solution.features %}
+                                <li class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-check text-success me-2"></i>
+                                    <small>{{ feature }}</small>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+
+                        <div class="d-flex gap-2 mt-auto align-items-center">
+                            <a href="{% url 'core:solution_detail' solution.slug %}" class="btn btn-sm btn-primary">
+                                Learn More
+                            </a>
+                            <button class="btn btn-sm btn-outline-primary demo-btn" data-demo-url="{{ solution.demo_url }}">
+                                <i class="bi bi-play-circle me-1"></i> Demo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-robot text-muted" style="font-size: 4rem;"></i>
+            <h3 class="mt-3">No Solutions Found</h3>
+            <p class="text-muted">There are no solutions available for the selected category.</p>
+            <a href="{% url 'core:solutions' %}" class="btn btn-primary">View All Solutions</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 bg-light text-dark">
+    <div class="container text-center">
+        <h2 class="display-5 fw-bold mb-3">Ready to Get Started?</h2>
+        <p class="lead mb-4">Let us help you choose the right AI solution for your business needs</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{% url 'core:contact' %}" class="btn btn-outline-dark btn-lg">Contact Us</a>
+            <button class="btn btn-outline-dark btn-lg" onclick="requestConsultation()">
+                Free Consultation
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Solution Detail Modal -->
+<div class="modal fade" id="solutionDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="solutionModalTitle">Solution Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="solutionModalBody">
+                <div class="text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" id="solutionModalFooter">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .solution-card {
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .solution-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-info) 100%);
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Demo button click
+    document.querySelectorAll('.demo-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const demoUrl = this.dataset.demoUrl;
+            if (demoUrl) {
+                window.open(demoUrl, '_blank');
+            }
+        });
+    });
+
+    // Solution Detail modal
+    window.showSolutionDetail = function(solutionId) {
+        const solutions = {
+            {% for solution in solutions %}
+            {{ solution.id }}: {
+                title: "{{ solution.title|escapejs }}",
+                description: "{{ solution.description|escapejs }}",
+                category: "{{ solution.get_category_display|escapejs }}",
+                features: [
+                    {% for feature in solution.features %}
+                        "{{ feature|escapejs }}"{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                ],
+                image: "{% if solution.image %}{{ solution.image.url }}{% endif %}",
+                demo_url: "{% if solution.demo_url %}{{ solution.demo_url }}{% endif %}"
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        };
+
+        const solution = solutions[solutionId];
+        if (solution) {
+            document.getElementById('solutionModalTitle').textContent = solution.title;
+            document.getElementById('solutionModalBody').innerHTML = `
+                <div class="row">
+                    <div class="col-md-8">
+                        <span class="badge bg-primary">${solution.category}</span>
+                        <p class="lead">${solution.description}</p>
+                        ${solution.features.length > 0 ? `
+                            <h6 class="fw-bold mb-3">Key Features:</h6>
+                            <ul>
+                                ${solution.features.map(f => `<li>${f}</li>`).join('')}
+                            </ul>
+                        ` : ''}
+                    </div>
+                    <div class="col-md-4">
+                        ${solution.image ? `<img src="${solution.image}" class="img-fluid mb-3">` : ''}
+                        ${solution.demo_url ? `
+                            <a href="${solution.demo_url}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-play-circle me-1"></i> Demo
+                            </a>
+                        ` : ''}
+                        <button class="btn btn-primary btn-sm mt-2" onclick="requestDemo(${solutionId})">
+                            Request Demo
+                        </button>
+                    </div>
+                </div>
+            `;
+            const modal = new bootstrap.Modal(document.getElementById('solutionDetailModal'));
+            modal.show();
+        }
+    };
+});
+</script>
+{% endblock %}

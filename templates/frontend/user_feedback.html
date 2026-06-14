@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}User Feedback - AI-Solutions{% endblock %}
+{% block description %}Read feedback from our users and share your own experience with our AI-powered solutions.{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1>User Feedback</h1>
+                <p class="lead text-muted">We value your feedback. Read what our users say and share your own experience.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Feedback Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Feedback Form -->
+            <div class="col-lg-6 mb-5">
+                <div class="card">
+                    <div class="card-body">
+                        <h4><i class="bi bi-chat-quote text-brand me-2"></i>Share Your Experience</h4>
+                        <p class="text-muted mb-4">Help us improve by sharing your feedback about our services.</p>
+
+                        {% if user.is_authenticated %}
+                        <form action="{% url 'core:user_feedback' %}" method="post">
+                            {% csrf_token %}
+                            {{ form.non_field_errors }}
+
+                            <div class="mb-3">
+                                {{ form.company.label_tag }}
+                                {{ form.company }}
+                                {{ form.company.errors }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form.rating.label_tag }}
+                                <div class="star-rating mb-2">
+                                    {% for i in "12345" %}
+                                        <i class="bi bi-star-fill star" data-value="{{ forloop.counter }}"></i>
+                                    {% endfor %}
+                                </div>
+                                <input type="hidden" id="rating" name="rating" value="{{ form.rating.value|default:'' }}">
+                                {{ form.rating.errors }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form.comment.label_tag }}
+                                {{ form.comment }}
+                                {{ form.comment.errors }}
+                            </div>
+
+                            <button type="submit" class="btn btn-brand">
+                                <i class="bi bi-send me-2"></i>Submit Feedback
+                            </button>
+                        </form>
+                        {% else %}
+                        <p class="text-muted">
+                            You must 
+                            <a href="{% url 'core:client_login' %}?next={% url 'core:user_feedback' %}">log in</a> or 
+                            <a href="{% url 'core:client_signup' %}?next={% url 'core:user_feedback' %}">register</a> 
+                            to submit feedback.
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Existing Feedback -->
+            <div class="col-lg-6">
+                <h4 class="mb-4"><i class="bi bi-chat-left-text text-brand me-2"></i>What Our Users Say</h4>
+                {% if page_obj %}
+                    {% for feedback in page_obj %}
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <strong>{{ feedback.user.get_full_name|default:feedback.user.username }}</strong>
+                                    <small class="text-muted">{{ feedback.created_at|date:"M j, Y" }}</small>
+                                </div>
+                                <p class="mb-1">{{ feedback.comment|linebreaks }}</p>
+                                <small class="text-muted">Rating: {{ feedback.rating }} / 5</small>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    <!-- Pagination -->
+                    {% include '_partials/_pagination.html' %}
+                {% else %}
+                    <p class="text-muted">No feedback available yet. Be the first to share your experience!</p>
+                {% endif %}
+       
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-5 bg-light">
+    <div class="container text-center">
+        <h2 class="fw-bold mb-3">Enjoying Our Solutions?</h2>
+        <p class="lead mb-4">Explore our range of AI-powered solutions designed to transform your business</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{% url 'core:solutions' %}" class="btn btn-brand">
+                <i class="bi bi-lightbulb me-2"></i>Explore Solutions
+            </a>
+            <a href="{% url 'core:contact' %}" class="btn btn-outline-brand">
+                <i class="bi bi-envelope me-2"></i>Contact Us
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Star rating functionality
+    document.querySelectorAll('.star-rating .star').forEach(star => {
+        star.addEventListener('click', function () {
+            const value = this.dataset.value;
+            document.getElementById('rating').value = value;
+
+            this.parentElement.querySelectorAll('.star').forEach(s => {
+                s.classList.toggle('text-warning', s.dataset.value <= value);
+                s.classList.toggle('text-muted', s.dataset.value > value);
+            });
+        });
+    });
+</script>
+{% endblock %}

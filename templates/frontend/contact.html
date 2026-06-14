@@ -1,0 +1,349 @@
+{% extends 'base.html' %} {% load static %} {% block title %} Contact Us -
+{{settings.site_name }}{% endblock %} {% block content %}
+<!-- Page Header -->
+<section class="bg-light text-dark py-5" style="margin-top: 80px">
+  <div class="container py-4">
+    <div class="row">
+      <div class="col-lg-8 mx-auto text-center">
+        <h1 class="display-4 fw-bold mb-3">Contact Us</h1>
+        <p class="lead">
+          Get in touch with our team to discuss your AI solution needs
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact Form Section -->
+<section class="py-5">
+  <div class="container">
+    <div class="row">
+      <!-- Contact Form -->
+      <div class="col-lg-8">
+        <div class="card shadow-sm border-0">
+          <div class="card-body p-4">
+            <h3 class="fw-bold mb-4">Send us a Message</h3>
+
+            <form method="POST" enctype="multipart/form-data" id="contactForm">
+              {% csrf_token %}
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="{{ form.name.id_for_label }}" class="form-label">Full Name *</label>
+                  {{ form.name }} {% if form.name.errors %}
+                  <div class="text-danger small">{{ form.name.errors.0 }}</div>
+                  {% endif %}
+                </div>
+                <div class="col-md-6">
+                  <label for="{{ form.email.id_for_label }}" class="form-label">Email Address *</label>
+                  {{ form.email }} {% if form.email.errors %}
+                  <div class="text-danger small">{{ form.email.errors.0 }}</div>
+                  {% endif %}
+                </div>
+                <div class="col-md-6">
+                  <label for="{{ form.phone.id_for_label }}" class="form-label">Phone Number</label>
+                  {{ form.phone }} {% if form.phone.errors %}
+                  <div class="text-danger small">{{ form.phone.errors.0 }}</div>
+                  {% endif %}
+                </div>
+                <div class="col-md-6">
+                  <label for="{{ form.company.id_for_label }}" class="form-label">Company/Organization</label>
+                  {{ form.company }} {% if form.company.errors %}
+                  <div class="text-danger small">
+                    {{ form.company.errors.0 }}
+                  </div>
+                  {% endif %}
+                </div>
+                <div class="col-md-6">
+                  <label for="{{ form.country.id_for_label }}" class="form-label">Country</label>
+                  {{ form.country }} {% if form.country.errors %}
+                  <div class="text-danger small">
+                    {{ form.country.errors.0 }}
+                  </div>
+                  {% endif %}
+                </div>
+                <div class="col-md-6">
+                  <label for="{{ form.job_title.id_for_label }}" class="form-label">Job Title</label>
+                  {{ form.job_title }} {% if form.job_title.errors %}
+                  <div class="text-danger small">
+                    {{ form.job_title.errors.0 }}
+                  </div>
+                  {% endif %}
+                </div>
+                <div class="col-12">
+                  <label for="{{ form.message.id_for_label }}" class="form-label">Message *</label>
+                  {{ form.message }} {% if form.message.errors %}
+                  <div class="text-danger small">
+                    {{ form.message.errors.0 }}
+                  </div>
+                  {% endif %}
+                </div>
+                <div class="col-12">
+                  <label for="{{ form.attachment.id_for_label }}" class="form-label">Attachment (Optional)</label>
+                  {{ form.attachment }} {% if form.attachment.errors %}
+                  <div class="text-danger small">
+                    {{ form.attachment.errors.0 }}
+                  </div>
+                  {% endif %}
+                  <div class="form-text">
+                    Supported formats: PDF, DOC, DOCX, TXT (Max: 10MB)
+                  </div>
+                </div>
+              </div>
+
+              <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                <button type="reset" class="btn btn-outline-secondary">
+                  Clear Form
+                </button>
+                <button type="submit" class="btn btn-primary">
+                  <i class="bi bi-send me-1"></i>Send Message
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Information -->
+      <div class="col-lg-4">
+        <!-- Contact Details -->
+       
+  <div class="card-body">
+    <h5><i class="bi bi-info-circle text-brand me-2"></i>Get in Touch</h5>
+    <hr>
+
+    <div class="mb-3">
+      <div class="d-flex align-items-start">
+        <i class="bi bi-envelope text-brand me-3 mt-1"></i>
+        <div>
+          <strong>Email</strong><br>
+          <a href="mailto:{{ settings.contact_email }}" class="text-decoration-none">{{ settings.contact_email }}</a><br>
+          <small class="text-muted">For general inquiries</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <div class="d-flex align-items-start">
+        <i class="bi bi-telephone text-brand me-3 mt-1"></i>
+        <div>
+          <strong>Phone</strong><br>
+          <a href="tel:{{ settings.contact_phone }}" class="text-decoration-none">{{ settings.contact_phone }}</a><br>
+          <small class="text-muted">Mon-Fri, 9am-6pm EST</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <div class="d-flex align-items-start">
+        <i class="bi bi-geo-alt text-brand me-3 mt-1"></i>
+        <div>
+          <strong>Address</strong><br>
+          <!-- If address has a URL, make it clickable; otherwise, just display text -->
+          {% if settings.address_url %}
+            <a href="{{ settings.address_url }}" class="text-decoration-none" target="_blank">{{ settings.address|safe }}</a>
+          {% else %}
+            {{ settings.address|safe }}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <div class="d-flex align-items-start">
+        <i class="bi bi-chat-dots text-brand me-3 mt-1"></i>
+        <div>
+          <strong>Sales</strong><br>
+          <a href="{{ settings.linkedin_url }}" class="text-decoration-none" target="_blank">{{ settings.linkedin_url }}</a><br>
+          <small class="text-muted">For partnership inquiries</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+        <!-- Office Hours -->
+        <div class="card mb-4">
+          <div class="card-body">
+            <h6><i class="bi bi-clock text-brand me-2"></i>Office Hours</h6>
+            <hr>
+            <div class="row">
+              <div class="col-6">
+                <strong>Monday - Friday</strong><br>
+                <span class="text-muted">9:00 AM - 6:00 PM</span>
+              </div>
+              <div class="col-6">
+                <strong>Weekend</strong><br>
+                <span class="text-muted">Emergency only</span>
+              </div>
+            </div>
+            <small class="text-muted mt-2 d-block">
+              All times in Eastern Standard Time (EST)
+            </small>
+          </div>
+        </div>
+
+        <!-- Map -->
+<div class="card">
+  <div class="card-body p-0">
+    <div id="map" style="height: 400px; width: 100%;" class="rounded"></div>
+  </div>
+</div>
+
+<!-- Include Leaflet CSS and JS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+  // Initialize the map
+  var map = L.map('map').setView([51.505, -0.09], 13); // Set map center and zoom level
+
+  // Add tile layer (OpenStreetMap in this case)
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
+
+  // Create a marker at a specific location
+  var marker = L.marker([51.5, -0.09]).addTo(map);
+
+  // Bind a popup to the marker with an image inside the popup
+  marker.bindPopup("<img src='https://via.placeholder.com/150' alt='Map Image' style='width: 100%;' />").openPopup();
+
+  // Optional: Add a circle to highlight an area
+  var circle = L.circle([51.508, -0.11], {
+    color: 'red',
+    fillColor: '#f03',
+    fillOpacity: 0.5,
+    radius: 500
+  }).addTo(map);
+</script>
+
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- Additional Contact Options -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center mb-4">
+        <h3>Other Ways to Connect</h3>
+        <p class="text-muted">Choose the communication method that works best for you</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 text-center border-0">
+          <div class="card-body">
+            <i class="bi bi-calendar-event display-4 text-primary mb-3"></i>
+            <h5>Schedule a Meeting</h5>
+            <p class="text-muted">Book a free 30-minute consultation to discuss your project needs.</p>
+            <a href="#" class="btn btn-outline-primary">Schedule Now</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 text-center border-0">
+          <div class="card-body">
+            <i class="bi bi-chat-square-dots display-4 text-success mb-3"></i>
+            <h5>Live Chat</h5>
+            <p class="text-muted">Get instant answers to your questions during business hours.</p>
+            <button class="btn btn-outline-success">Start Chat</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 text-center border-0">
+          <div class="card-body">
+            <i class="bi bi-people display-4 text-warning mb-3"></i>
+            <h5>Join Our Community</h5>
+            <p class="text-muted">Connect with other developers and AI enthusiasts in our community.</p>
+            <a href="#" class="btn btn-outline-warning">Join Now</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center mb-5">
+        <h3>Frequently Asked Questions</h3>
+        <p class="text-muted">Quick answers to common questions</p>
+      </div>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="accordion" id="faqAccordion">
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="faq1">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1"
+                aria-expanded="true" aria-controls="collapse1">
+                How long does a typical AI project take?
+              </button>
+            </h2>
+            <div id="collapse1" class="accordion-collapse collapse show" aria-labelledby="faq1"
+              data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                Project timelines vary depending on complexity, but most AI implementations take 3-6 months from initial
+                consultation to deployment. We provide detailed project timelines during our discovery phase.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="faq2">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
+                What industries do you serve?
+              </button>
+            </h2>
+            <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="faq2"
+              data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                We work with clients across various industries including healthcare, finance, manufacturing, retail, and
+                technology. Our solutions are tailored to meet specific industry requirements and compliance standards.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="faq3">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
+                Do you provide ongoing support?
+              </button>
+            </h2>
+            <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="faq3"
+              data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                Yes, we offer comprehensive support packages including maintenance, updates, monitoring, and training.
+                Our support team is available 24/7 for critical issues.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="faq4">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#collapse4" aria-expanded="false" aria-controls="collapse4">
+                How do you ensure data security?
+              </button>
+            </h2>
+            <div id="collapse4" class="accordion-collapse collapse" aria-labelledby="faq4"
+              data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                We implement industry-leading security measures including end-to-end encryption, secure cloud
+                infrastructure, regular security audits, and compliance with standards like GDPR and SOC 2.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

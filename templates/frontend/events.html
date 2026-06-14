@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Events Gallery - AI-Solutions{% endblock %}
+{% block description %}Explore our participation in conferences, workshops, and industry events showcasing our AI solutions and expertise.{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1>Events Gallery</h1>
+                <p class="lead text-dark">Discover our participation in industry events, conferences, and workshops</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Event Filters -->
+<section class="py-4 border-bottom">
+    <div class="container">
+        <div class="d-flex flex-wrap justify-content-center gap-2">
+            <a href="{% url 'core:events' %}" class="btn btn-sm {% if not request.GET.type %}btn-brand{% else %}btn-outline-secondary{% endif %}">All Events</a>
+            <a href="?type=CONFERENCE" class="btn btn-sm {% if request.GET.type == 'CONFERENCE' %}btn-brand{% else %}btn-outline-secondary{% endif %}">
+                <i class="bi bi-people me-1"></i>Conferences
+            </a>
+            <a href="?type=WORKSHOP" class="btn btn-sm {% if request.GET.type == 'WORKSHOP' %}btn-brand{% else %}btn-outline-secondary{% endif %}">
+                <i class="bi bi-tools me-1"></i>Workshops
+            </a>
+            <a href="?type=CLIENT_DEMO" class="btn btn-sm {% if request.GET.type == 'CLIENT_DEMO' %}btn-brand{% else %}btn-outline-secondary{% endif %}">
+                <i class="bi bi-presentation me-1"></i>Client Demos
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Events Grid -->
+<section class="py-5">
+    <div class="container">
+        {% if page_obj %}
+        <div class="row g-4">
+            {% for event in page_obj %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 card-hover">
+                    {% if event.featured_image %}
+                    <img src="{{ event.featured_image.url }}" class="card-img-top gallery-image" alt="{{ event.title }} cover" loading="lazy" />
+                    {% else %}
+                    <img src="{% static 'core/img/placeholder-16x9.jpg' %}" class="card-img-top gallery-image" alt="{{ event.title }} cover" loading="lazy" />
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title">{{ event.title }}</h5>
+                            {% if event.is_promoted %}
+                            <span class="badge-soft bg-warning text-dark">Promoted</span>
+                            {% endif %}
+                            {% if event.status == 'upcoming' %}
+                            <span class="badge-soft bg-success text-white">Upcoming</span>
+                            {% endif %}
+                            <span class="badge-soft bg-primary text-white">{{ event.get_event_type_display }}</span>
+                        </div>
+                        <h6 class="text-muted">{{ event.event_name }}</h6>
+                        <small class="text-muted"><i class="bi bi-geo-alt me-1"></i>{{ event.location }}</small>
+                        <small class="text-muted d-block"><i class="bi bi-calendar me-1"></i>{{ event.date|date:"F j, Y" }}</small>
+                        <p class="card-text text-muted flex-grow-1">{{ event.summary|truncatewords:20 }}</p>
+                        <div class="mt-auto">
+                            <button type="button" class="btn btn-outline-primary btn-sm me-2 gallery-btn" data-bs-toggle="modal" data-bs-target="#modal-event-{{ event.id }}">
+                                <i class="bi bi-images me-1"></i>Gallery
+                            </button>
+                            <a href="{% url 'core:event_detail' event.slug %}" class="btn btn-outline-secondary btn-sm">
+                                <i class="bi bi-eye me-1"></i>View details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Event Modal for Gallery -->
+                <div class="modal fade" id="modal-event-{{ event.id }}" tabindex="-1" aria-labelledby="modalLabel{{ event.id }}" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalLabel{{ event.id }}">{{ event.title }} Gallery</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row g-2">
+                                    {% for gallery_item in event.gallery_items.all %}
+                                    {% for image in gallery_item.images.all %}
+                                    <div class="col-md-4">
+                                        <img src="{{ image.image.url }}" class="img-fluid rounded" alt="Event image">
+                                    </div>
+                                    {% endfor %}
+                                    {% empty %}
+                                    <p class="text-muted">No gallery images for this event.</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <a href="{% url 'core:event_detail' event.slug %}" class="btn btn-brand"><i class="bi bi-images me-2"></i>View Full Gallery</a>
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <!-- Pagination -->
+            {% include '_partials/_pagination.html' %}
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-calendar-event display-1 text-muted mb-3"></i>
+            <h3 class="text-muted">No Events Found</h3>
+            <p class="text-muted">
+                {% if request.GET.type %}No {{ request.GET.type|lower }} events available. Try viewing all events.
+                {% else %}We're planning exciting events. Check back soon!{% endif %}
+            </p>
+            {% if request.GET.type %}
+            <a href="{% url 'core:events' %}" class="btn btn-outline-primary">View All Events</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Upcoming Events CTA -->
+<section class="py-5 bg-light">
+    <div class="container text-center">
+        <h3><i class="bi bi-calendar-plus text-brand me-2"></i>Stay Updated on Our Events</h3>
+        <p class="text-muted mb-4">Don't miss our upcoming conferences, workshops, and demos</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{% url 'core:contact' %}" class="btn btn-outline-dark"><i class="bi bi-bell me-2"></i>Get Notified</a>
+            <a href="{% url 'core:about' %}" class="btn btn-outline-dark"><i class="bi bi-info-circle me-2"></i>Learn More About Us</a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

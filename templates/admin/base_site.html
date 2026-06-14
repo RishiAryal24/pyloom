@@ -1,0 +1,370 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | PyLoom Admin{% endblock %}
+
+{% block extrastyle %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+<style>
+    * {
+        box-sizing: border-box;
+    }
+    
+    body {
+        background-color: #f8f9fa;
+        color: #212529;
+        margin-left: 280px;
+        padding-top: 0;
+        font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    /* Sidebar */
+    .django-admin-sidebar {
+        background: linear-gradient(180deg, #001f3d 0%, #002d5a 100%);
+        color: white;
+        height: 100vh;
+        width: 280px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        z-index: 1000;
+        overflow-y: auto;
+    }
+
+    /* Sidebar Header */
+    .django-admin-sidebar-header {
+        padding: 24px 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .django-admin-sidebar-header .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 8px;
+    }
+
+    .django-admin-sidebar-header .logo {
+        width: 40px;
+        height: 40px;
+        background: white;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+    }
+
+    .django-admin-sidebar-header .logo img {
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    .django-admin-sidebar-header h4 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: -0.3px;
+        color: white;
+    }
+
+    .django-admin-sidebar-header p {
+        margin: 0;
+        font-size: 12px;
+        color: rgba(255,255,255,0.6);
+    }
+
+    /* Sidebar Nav */
+    .django-admin-sidebar .module {
+        background: transparent;
+        border: none;
+        margin-bottom: 0;
+        padding: 16px;
+        width: 100%;
+    }
+
+    .django-admin-sidebar .module table {
+        width: 100%;
+    }
+
+    .django-admin-sidebar .module caption {
+        background: transparent;
+        color: rgba(255,255,255,0.8);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 8px 0;
+    }
+
+    .django-admin-sidebar .module th {
+        background: transparent;
+        padding: 0;
+    }
+
+    .django-admin-sidebar .module a {
+        color: rgba(255,255,255,0.8);
+        padding: 10px 16px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 4px;
+    }
+
+    .django-admin-sidebar .module a:hover {
+        background-color: rgba(255,255,255,0.08);
+        color: white;
+    }
+
+    .django-admin-sidebar .module a.selected {
+        background-color: rgba(255,255,255,0.15);
+        color: white;
+        font-weight: 600;
+    }
+
+    /* Sidebar Scrollbar */
+    .django-admin-sidebar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .django-admin-sidebar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .django-admin-sidebar::-webkit-scrollbar-thumb {
+        background: rgba(255,255,255,0.2);
+        border-radius: 3px;
+    }
+
+    .django-admin-sidebar::-webkit-scrollbar-thumb:hover {
+        background: rgba(255,255,255,0.3);
+    }
+
+    /* Override Django Admin styles */
+    #header {
+        background: white;
+        border-bottom: 1px solid #e9ecef;
+        padding: 16px 32px;
+        position: sticky;
+        top: 0;
+        z-index: 999;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        color: #1a202c;
+    }
+
+    #header a:link, #header a:visited {
+        color: #1a202c;
+    }
+
+    #header a:hover {
+        color: #001f3d;
+    }
+
+    #branding h1 {
+        color: #1a202c;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    #user-tools {
+        color: #1a202c;
+    }
+
+    #user-tools a {
+        color: #001f3d;
+    }
+
+    .breadcrumbs {
+        background: white;
+        border-bottom: 1px solid #e9ecef;
+        padding: 12px 32px;
+    }
+
+    .breadcrumbs a {
+        color: #001f3d;
+    }
+
+    #content {
+        padding: 32px;
+    }
+
+    .module {
+        background: white;
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        margin-bottom: 24px;
+    }
+
+    .module h2, .module caption {
+        background: white;
+        border-bottom: 1px solid #e9ecef;
+        padding: 20px 24px;
+        border-radius: 12px 12px 0 0;
+        color: #1a202c;
+        font-weight: 700;
+    }
+
+    .button, input[type=submit], input[type=button], .submit-row input, a.button {
+        background-color: #001f3d !important;
+        border-color: #001f3d !important;
+        color: white !important;
+        padding: 8px 20px;
+        border-radius: 8px;
+        font-weight: 500;
+    }
+
+    .button:hover, input[type=submit]:hover, input[type=button]:hover, .submit-row input:hover, a.button:hover {
+        background-color: #003366 !important;
+        border-color: #003366 !important;
+    }
+
+    /* Table styling */
+    table {
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    thead th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #e9ecef;
+        color: #495057;
+        font-weight: 600;
+        padding: 14px 16px;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    tbody td {
+        padding: 14px 16px;
+        vertical-align: middle;
+        border-bottom: 1px solid #f1f3f5;
+    }
+
+    tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    /* Form styling */
+    .aligned label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 8px;
+    }
+
+    input, select, textarea {
+        border: 1px solid #dee2e6 !important;
+        border-radius: 8px !important;
+        padding: 10px 14px !important;
+        transition: all 0.2s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+        border-color: #001f3d !important;
+        box-shadow: 0 0 0 0.2rem rgba(0, 31, 61, 0.1) !important;
+    }
+
+    /* Hide Django's default app list on top */
+    .app-list {
+        display: none;
+    }
+</style>
+{% endblock %}
+
+{% block branding %}
+{% endblock %}
+
+{% block nav-global %}
+{% endblock %}
+
+{% block content %}
+<div class="d-flex">
+    <!-- Custom Sidebar -->
+    <nav class="django-admin-sidebar">
+        <!-- Sidebar Header -->
+        <div class="django-admin-sidebar-header">
+            <div class="logo-container">
+                <div class="logo">
+                    {% if settings.logo %}
+                        <img src="{{ settings.logo.url }}" alt="PyLoom Logo" loading="lazy">
+                    {% else %}
+                        <img src="{% static 'img/logo.png' %}" alt="PyLoom Logo" loading="lazy">
+                    {% endif %}
+                </div>
+                <div>
+                    <h4>PyLoom</h4>
+                    <p>Django Admin</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Django's App List in Sidebar -->
+        {% if app_list %}
+        <div class="flex-grow-1">
+            {% for app in app_list %}
+                <div class="module">
+                    <table>
+                        <caption>
+                            <a href="{{ app.app_url }}" class="section" title="{% blocktranslate with name=app.name %}Models in the {{ name }} application{% endblocktranslate %}">{{ app.name }}</a>
+                        </caption>
+                        {% for model in app.models %}
+                            <tr>
+                                <th scope="row">
+                                    {% if model.admin_url %}
+                                        <a href="{{ model.admin_url }}">{{ model.name }}</a>
+                                    {% else %}
+                                        {{ model.name }}
+                                    {% endif %}
+                                </th>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="p-4">
+            <p class="text-white-50">{% translate "You don't have permission to view or edit anything." %}</p>
+        </div>
+        {% endif %}
+
+        <!-- Sidebar Footer -->
+        <div class="p-4 border-top border-white-10">
+            <div class="module">
+                <table>
+                    <caption>Quick Links</caption>
+                    <tr>
+                        <th scope="row">
+                            <a href="/admin/">
+                                <i class="bi bi-speedometer2"></i>Custom Admin
+                            </a>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <a href="/">
+                                <i class="bi bi-house"></i>Back to Site
+                            </a>
+                        </th>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex-grow-1">
+        {{ block.super }}
+    </div>
+</div>
+{% endblock %}

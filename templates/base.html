@@ -1,0 +1,469 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PyLoom - Weaving Innovation Beyond Expectations{% endblock %}</title>
+    <meta name="description" content="{% block description %}At PyLoom, we provide advanced technology solutions powered by Artificial Intelligence, automation, and modern digital tools that help businesses streamline operations, increase productivity, and achieve their goals efficiently.{% endblock %}">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'core/css/main.css' %}">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<style>
+  /* Floating chat bubble */
+  .chat-widget-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #0d6efd;
+    /* Primary blue */
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 9999;
+    /* Ensure it stays above other content */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    /* Softer shadow */
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    /* Added transform for hover effect */
+    font-size: 24px;
+    /* Ensure icon scales well */
+  }
+
+  .chat-widget-toggle:hover {
+    background-color: #0b5ed7;
+    /* Darker blue on hover */
+    transform: scale(1.1);
+    /* Slight scale-up for interactivity */
+  }
+
+  /* Chatbot panel */
+  .chatbot-section {
+    background-color: #ffffff;
+    /* Clean white background */
+    position: fixed;
+    bottom: 90px;
+    /* Space above the toggle button */
+    right: 20px;
+    width: 350px;
+    /* Standard width */
+    height: 500px;
+    /* Standard height */
+    border-radius: 15px;
+    /* Softer corners */
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    /* Subtle shadow for elevation */
+    z-index: 9998;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+    /* Smoother transition with scale */
+    transform: scale(0.98);
+    /* Slightly scaled down when hidden */
+    border: 1px solid #e9ecef;
+    /* Light border for definition */
+    scrollbar-width: thin;
+    /* Slim scrollbar for better UX */
+    scrollbar-color: #dee2e6 #f8f9fa;
+    /* Custom scrollbar colors */
+  }
+
+  .chatbot-section.show {
+    opacity: 1;
+    display: block;
+    transform: scale(1);
+  }
+
+  #chat-box {
+    padding: 15px;
+    background-color: #f8f9fa;
+    /* Light background for messages */
+    min-height: 100%;
+    /* Ensure it takes full height of chatbot-body */
+  }
+
+  /* Webkit scrollbar styling */
+  .chatbot-body::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .chatbot-body::-webkit-scrollbar-track {
+    background: #f8f9fa;
+  }
+
+  .chatbot-body::-webkit-scrollbar-thumb {
+    background-color: #dee2e6;
+    border-radius: 4px;
+  }
+
+  /* Chatbot header */
+  .chatbot-header {
+    background-color: #0d6efd;
+    /* Match toggle button color */
+    color: white;
+    padding: 10px 15px;
+    font-size: 18px;
+  }
+
+  /* Chatbot footer */
+  .chatbot-footer {
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+    display: flex;
+    gap: 10px;
+  }
+
+  .chatbot-footer input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+  }
+
+  .chatbot-footer button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #0d6efd;
+    color: white;
+    cursor: pointer;
+  }
+
+  .chatbot-footer button:hover {
+    background-color: #0b5ed7;
+  }
+
+  /* Message styling */
+  .message-wrapper {
+    margin-bottom: 15px;
+  }
+
+  .label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #495057;
+  }
+
+  .message {
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 80%;
+    word-wrap: break-word;
+  }
+
+  .message.user {
+    background-color: #0d6efd;
+    color: white;
+    margin-left: auto;
+  }
+
+  .message.bot {
+    background-color: #e9ecef;
+    color: #212529;
+    margin-right: auto;
+  }
+
+  /* Close button */
+  .chatbot-close {
+    position: absolute;
+    top: 12px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    /* White to match header */
+    cursor: pointer;
+    font-size: 22px;
+    transition: color 0.3s ease;
+  }
+
+  .chatbot-close:hover {
+    color: #dc3545;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 576px) {
+    .chatbot-section {
+      width: 90%;
+      height: 70vh;
+      bottom: 70px;
+      right: 5%;
+      border-radius: 10px;
+    }
+
+    .chatbot-close {
+      top: 10px;
+      right: 10px;
+    }
+
+    .chat-widget-toggle {
+      bottom: 15px;
+      right: 15px;
+      width: 50px;
+      height: 50px;
+    }
+  }
+
+
+  /* Close button in the chatbot */
+  .chatbot-close {
+    position: absolute;
+    top: 12px;
+    /* Adjusted for better alignment */
+    right: 15px;
+    /* Adjusted for better alignment */
+    background: transparent;
+    border: none;
+    color: #6c757d;
+    /* Neutral gray for default state */
+    cursor: pointer;
+    font-size: 22px;
+    /* Slightly larger for better touch target */
+    transition: color 0.3s ease;
+    /* Smooth color transition */
+    padding: 5px;
+    /* Padding for better click area */
+  }
+
+  .chatbot-close:hover {
+    color: #dc3545;
+    /* Red on hover for clear action */
+  }
+
+  .chatbot-body {
+    height: calc(100% - 100px);
+    /* Adjust height to fit header and footer */
+    overflow-y: auto;
+    /* Enable vertical scrolling */
+    scrollbar-width: thin;
+    /* Slim scrollbar for Firefox */
+    scrollbar-color: #dee2e6 #f8f9fa;
+    /* Custom scrollbar colors */
+  }
+
+  /* Iframe to display the chatbot */
+  .chatbot-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background-color: #f8f9fa;
+    /* Light background for iframe content */
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 576px) {
+    .chat-widget-toggle {
+      bottom: 15px;
+      right: 15px;
+      width: 50px;
+      height: 50px;
+    }
+
+    .chatbot-section {
+      background-color: #ffffff;
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      width: 350px;
+      height: 500px;
+      border-radius: 15px;
+      overflow: hidden;
+      /* Prevent scrollbar on the entire section */
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      z-index: 9998;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+      transform: scale(0.98);
+      border: 1px solid #e9ecef;
+    }
+
+    .chatbot-close {
+      top: 10px;
+      right: 10px;
+    }
+  }
+
+  /* Ensure compatibility with custom scrollbars in Webkit browsers */
+  .chatbot-section::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .chatbot-section::-webkit-scrollbar-track {
+    background: #f8f9fa;
+  }
+
+  .chatbot-section::-webkit-scrollbar-thumb {
+    background-color: #dee2e6;
+    border-radius: 4px;
+  }
+</style>
+<body>
+    <!-- Navigation -->
+    {% include '_partials/_navbar.html' %}
+    
+    <!-- Main Content -->
+    <main role="main">
+        <!-- Alerts -->
+        {% include '_partials/_alerts.html' %}
+       
+        <!-- Page Content -->
+        {% block content %}{% endblock %}
+        <!-- Chatbot Widget -->
+<button id="chat-widget-toggle" class="chat-widget-toggle">
+  <i class="bi bi-chat-dots"></i>
+</button>
+
+<!-- Chatbot Section HTML -->
+<div id="chatbot-section" class="chatbot-section">
+  <div class="chatbot-header">
+    <h3>AI Assistant</h3>
+    <button class="chatbot-close" id="chatbot-close">×</button>
+  </div>
+  <div class="chatbot-body">
+    <div id="chat-box"></div>
+  </div>
+  <div class="chatbot-footer">
+    <input type="text" id="chat-input" placeholder="Type your message..." />
+    <button id="send-btn">Send</button>
+    <button id="reset-btn">Reset</button>
+  </div>
+</div>
+
+<script>
+  const chatBox = document.getElementById("chat-box");
+  const input = document.getElementById("chat-input");
+  const sendBtn = document.getElementById("send-btn");
+  const resetBtn = document.getElementById("reset-btn");
+  const toggleBtn = document.getElementById("chat-widget-toggle");
+  const chatbotSection = document.getElementById("chatbot-section");
+  const closeBtn = document.getElementById("chatbot-close");
+
+  // Toggle chatbot visibility
+  toggleBtn.addEventListener("click", () => {
+    chatbotSection.classList.toggle("show");
+    if (chatbotSection.classList.contains("show")) {
+      input.focus();
+    }
+  });
+
+  closeBtn.addEventListener("click", () => {
+    chatbotSection.classList.remove("show");
+  });
+
+  function scrollToBottom() {
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  function addMessage(message, sender) {
+    const wrapper = document.createElement("div");
+    wrapper.className = "message-wrapper";
+
+    const label = document.createElement("div");
+    label.className = "label";
+
+    const msg = document.createElement("div");
+    msg.className = "message " + sender;
+
+    if (sender === "user") {
+      label.innerText = "You";
+      msg.innerText = message;
+      wrapper.appendChild(label);
+      wrapper.appendChild(msg);
+      chatBox.appendChild(wrapper);
+      scrollToBottom();
+    } else {
+      label.innerText = "AI Assistant";
+      wrapper.appendChild(label);
+      wrapper.appendChild(msg);
+      chatBox.appendChild(wrapper);
+      typeMessage(msg, message);
+    }
+  }
+
+  function typeMessage(element, text, i = 0) {
+    if (i < text.length) {
+      element.innerHTML += text.charAt(i);
+      setTimeout(() => typeMessage(element, text, i + 1), 20);
+      scrollToBottom();
+    }
+  }
+
+  async function sendMessage() {
+    const query = input.value.trim();
+    if (!query) return;
+
+    addMessage(query, "user");
+    input.value = "";
+
+    try {
+      const response = await fetch("http://127.0.0.1:8001/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query }),
+      });
+
+      const data = await response.json();
+      addMessage(data.response, "bot");
+    } catch (err) {
+      addMessage("Error: Could not reach server.", "bot");
+    }
+  }
+
+  sendBtn.addEventListener("click", sendMessage);
+  input.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") sendMessage();
+  });
+
+  resetBtn.addEventListener("click", async () => {
+    chatBox.innerHTML = "";
+    try {
+      await fetch("http://127.0.0.1:8001/reset", { method: "POST" });
+    } catch (err) {
+      console.error("Reset failed:", err);
+    }
+  });
+
+  // Starting greeting from AI (only when chatbot is opened for the first time)
+  let greetingShown = false;
+  toggleBtn.addEventListener("click", () => {
+    if (!greetingShown && chatbotSection.classList.contains("show")) {
+      const greeting = "👋 Hello! I'm your PyLoom assistant. How may I assist you today?";
+      addMessage(greeting, "bot");
+      greetingShown = true;
+    }
+  });
+</script>
+        
+    </main>
+    
+    <!-- Footer -->
+    {% include '_partials/_footer.html' %}
+    
+
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="{% static 'core/js/main.js' %}"></script>
+    
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

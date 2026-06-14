@@ -1,0 +1,364 @@
+
+{% extends 'admin/base.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard - PyLoom{% endblock %}
+
+{% block content %}
+<style>
+.stat-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+.stat-card .icon-box {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.quick-action-btn {
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 20px 12px;
+    text-align: center;
+    transition: all 0.2s ease;
+    background: white;
+    color: #495057;
+    text-decoration: none;
+}
+
+.quick-action-btn:hover {
+    border-color: #001f3d;
+    background: #f8f9fa;
+    color: #001f3d;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,31,61,0.1);
+}
+</style>
+
+<!-- Welcome Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card stat-card">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h4 mb-1 fw-bold">Welcome back, {{ user.first_name|default:user.username }}!</h1>
+                    <p class="text-muted mb-0">Manage your PyLoom platform with ease.</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'home' %}" class="btn btn-primary" target="_blank">
+                        <i class="bi bi-globe me-1"></i> View Website
+                    </a>
+                    <a href="{% url 'admin_change_password' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-key me-1"></i> Change Password
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-xl-6 col-md-6 mb-4">
+        <div class="card stat-card h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-uppercase fw-semibold text-muted mb-1" style="font-size: 12px; letter-spacing: 0.5px;">Contact Inquiries</div>
+                        <div class="h2 mb-0 fw-bold" style="color: #001f3d;">
+                            {{ stats.total_inquiries }}
+                            {% if stats.unread_inquiries %}
+                                <span class="badge bg-danger ms-2" style="font-size: 12px;">{{ stats.unread_inquiries }} new</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="icon-box" style="background: rgba(0, 31, 61, 0.1); color: #001f3d;">
+                        <i class="bi bi-envelope-fill"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6 col-md-6 mb-4">
+        <div class="card stat-card h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-uppercase fw-semibold text-muted mb-1" style="font-size: 12px; letter-spacing: 0.5px;">Customer Feedback</div>
+                        <div class="h2 mb-0 fw-bold" style="color: #28a745;">
+                            {{ stats.total_feedback }}
+                            {% if stats.pending_feedback %}
+                                <span class="badge bg-warning ms-2" style="font-size: 12px;">{{ stats.pending_feedback }} pending</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="icon-box" style="background: rgba(40, 167, 69, 0.1); color: #28a745;">
+                        <i class="bi bi-star-fill"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Interaction Graphs -->
+<div class="row mb-4">
+    <div class="col-lg-6 mb-4">
+        <div class="card stat-card">
+            <div class="card-header d-flex justify-content-between align-items-center" style="background: white; border-bottom: 1px solid #e9ecef; padding: 20px 24px;">
+                <h6 class="m-0 fw-bold" style="color: #1a202c;">Inquiries Over Time</h6>
+            </div>
+            <div class="card-body" style="padding: 24px;">
+                <canvas id="inquiriesChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 mb-4">
+        <div class="card stat-card">
+            <div class="card-header d-flex justify-content-between align-items-center" style="background: white; border-bottom: 1px solid #e9ecef; padding: 20px 24px;">
+                <h6 class="m-0 fw-bold" style="color: #1a202c;">Feedback Ratings Distribution</h6>
+            </div>
+            <div class="card-body" style="padding: 24px;">
+                <canvas id="feedbackChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card stat-card">
+            <div class="card-header" style="background: white; border-bottom: 1px solid #e9ecef; padding: 20px 24px;">
+                <h6 class="m-0 fw-bold" style="color: #1a202c;">Quick Actions</h6>
+            </div>
+            <div class="card-body" style="padding: 24px;">
+                <div class="row">
+                    <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                        <a href="{% url 'content_list' 'inquiries' %}" class="quick-action-btn w-100 position-relative d-block">
+                            <i class="bi bi-envelope d-block mb-2" style="font-size: 28px;"></i>
+                            <small class="fw-semibold">Inquiries</small>
+                            {% if stats.unread_inquiries %}
+                                <span class="badge bg-danger position-absolute top-0 end-0" style="font-size: 10px; transform: translate(25%, -25%);">{{ stats.unread_inquiries }}</span>
+                            {% endif %}
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                        <a href="{% url 'content_list' 'feedback' %}" class="quick-action-btn w-100 d-block">
+                            <i class="bi bi-star d-block mb-2" style="font-size: 28px;"></i>
+                            <small class="fw-semibold">Feedback</small>
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                        <a href="{% url 'content_list' 'articles' %}" class="quick-action-btn w-100 d-block">
+                            <i class="bi bi-file-text d-block mb-2" style="font-size: 28px;"></i>
+                            <small class="fw-semibold">Articles</small>
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                        <a href="{% url 'content_list' 'events' %}" class="quick-action-btn w-100 d-block">
+                            <i class="bi bi-calendar-event d-block mb-2" style="font-size: 28px;"></i>
+                            <small class="fw-semibold">Events</small>
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                        <a href="{% url 'content_list' 'solutions' %}" class="quick-action-btn w-100 d-block">
+                            <i class="bi bi-gear d-block mb-2" style="font-size: 28px;"></i>
+                            <small class="fw-semibold">Solutions</small>
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                        <a href="{% url 'content_list' 'users' %}" class="quick-action-btn w-100 d-block">
+                            <i class="bi bi-people d-block mb-2" style="font-size: 28px;"></i>
+                            <small class="fw-semibold">Users</small>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity and Events -->
+<div class="row">
+    <!-- Recent Inquiries -->
+    <div class="col-lg-6 mb-4">
+        <div class="card stat-card">
+            <div class="card-header d-flex justify-content-between align-items-center" style="background: white; border-bottom: 1px solid #e9ecef; padding: 20px 24px;">
+                <h6 class="m-0 fw-bold" style="color: #1a202c;">Recent Inquiries</h6>
+                <a href="{% url 'content_list' 'inquiries' %}" class="btn btn-primary btn-sm">View All</a>
+            </div>
+            <div class="card-body" style="padding: 24px;">
+                {% if recent_inquiries %}
+                    {% for inquiry in recent_inquiries %}
+                        <div class="d-flex align-items-center py-3 {% if not forloop.last %}border-bottom{% endif %}" style="border-color: #f1f3f5;">
+                            <div class="flex-shrink-0">
+                                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                    <i class="bi bi-person-circle text-muted" style="font-size: 24px;"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <div class="fw-semibold">{{ inquiry.name }}</div>
+                                <div class="text-muted" style="font-size: 13px;">{{ inquiry.company|default:"No company" }}</div>
+                                <div class="text-muted" style="font-size: 13px;">{{ inquiry.message|truncatewords:10 }}</div>
+                            </div>
+                            <div class="flex-shrink-0 text-end">
+                                {% if not inquiry.is_read %}
+                                    <span class="badge bg-danger" style="font-size: 11px;">New</span>
+                                {% endif %}
+                                <div class="text-muted" style="font-size: 12px;">{{ inquiry.created_at|timesince }} ago</div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted text-center py-4">No recent inquiries</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Upcoming Events -->
+    <div class="col-lg-6 mb-4">
+        <div class="card stat-card">
+            <div class="card-header d-flex justify-content-between align-items-center" style="background: white; border-bottom: 1px solid #e9ecef; padding: 20px 24px;">
+                <h6 class="m-0 fw-bold" style="color: #1a202c;">Upcoming Events</h6>
+                <a href="{% url 'content_list' 'events' %}" class="btn btn-primary btn-sm">View All</a>
+            </div>
+            <div class="card-body" style="padding: 24px;">
+                {% if upcoming_events %}
+                    {% for event in upcoming_events %}
+                        <div class="d-flex align-items-center py-3 {% if not forloop.last %}border-bottom{% endif %}" style="border-color: #f1f3f5;">
+                            <div class="flex-shrink-0">
+                                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                    <i class="bi bi-calendar-event" style="font-size: 24px; color: #ffc107;"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <div class="fw-semibold">{{ event.title }}</div>
+                                <div class="text-muted" style="font-size: 13px;">{{ event.location }}</div>
+                                <div class="text-muted" style="font-size: 13px;">{{ event.date|date:"M d, Y" }} at {{ event.time|time:"g:i A" }}</div>
+                            </div>
+                            <div class="flex-shrink-0">
+                                <span class="badge bg-info" style="font-size: 11px;">{{ event.get_event_type_display }}</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted text-center py-4">No upcoming events</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity Log -->
+<div class="row">
+    <div class="col-12">
+        <div class="card stat-card">
+            <div class="card-header" style="background: white; border-bottom: 1px solid #e9ecef; padding: 20px 24px;">
+                <h6 class="m-0 fw-bold" style="color: #1a202c;">Recent Activity</h6>
+            </div>
+            <div class="card-body" style="padding: 24px;">
+                {% if recent_activities %}
+                    <div class="table-responsive">
+                        <table class="table mb-0">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Action</th>
+                                    <th>Content</th>
+                                    <th>Time</th>
+                                    <th>IP Address</th>
+                                    <th>User Agent</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for activity in recent_activities %}
+                                    <tr>
+                                        <td class="fw-semibold">{{ activity.user.username }}</td>
+                                        <td>
+                                            <span class="badge bg-primary" style="font-size: 11px;">{{ activity.get_action_display }}</span>
+                                        </td>
+                                        <td>{{ activity.content_type }} - {{ activity.object_repr|truncatewords:5 }}</td>
+                                        <td class="text-muted" style="font-size: 13px;">{{ activity.timestamp|timesince }} ago</td>
+                                        <td class="text-muted" style="font-size: 13px;">{{ activity.ip_address }}</td>
+                                        <td class="text-muted" style="font-size: 13px;">{{ activity.user_agent|truncatechars:30 }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center py-4">No recent activity</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Inquiries Over Time (Line Chart)
+  const inquiriesChart = new Chart(document.getElementById('inquiriesChart'), {
+    type: 'line',
+    data: {
+      labels: ['Oct 5', 'Oct 6', 'Oct 7', 'Oct 8', 'Oct 9', 'Oct 10', 'Oct 11'],
+      datasets: [{
+        label: 'Inquiries',
+        data: [5, 8, 3, 12, 7, 10, 4], // Mock data; replace with real data
+        borderColor: '#001f3d',
+        backgroundColor: 'rgba(0, 31, 61, 0.1)',
+        fill: true,
+        tension: 0.4,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: true, position: 'top' },
+        tooltip: { enabled: true }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+
+  // Feedback Ratings Distribution (Pie Chart)
+  const feedbackChart = new Chart(document.getElementById('feedbackChart'), {
+    type: 'pie',
+    data: {
+      labels: ['1 Star', '2 Stars', '3 Stars', '4 Stars', '5 Stars'],
+      datasets: [{
+        data: [2, 5, 10, 15, 20], // Mock data; replace with real data
+        backgroundColor: ['#dc3545', '#fd7e14', '#ffc107', '#28a745', '#001f3d'],
+        borderColor: '#ffffff',
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'right' },
+        tooltip: { enabled: true }
+      }
+    }
+  });
+</script>
+
+{% endblock %}

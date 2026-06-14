@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Solutions Chatbot</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f7f9fc;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      #chat-container {
+        width: 100%;
+        max-width: 600px;
+        height: 80vh;
+        background: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+      }
+
+      #chat-box {
+        flex: 1;
+        overflow-y: auto;
+        padding-right: 10px;
+      }
+
+      .message-wrapper {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 10px;
+      }
+
+      .message {
+        padding: 10px 15px;
+        border-radius: 12px;
+        max-width: 80%;
+        word-wrap: break-word;
+      }
+
+      .user {
+        background: #007bff;
+        color: white;
+        align-self: flex-end;
+        text-align: right;
+      }
+
+      .bot {
+        background: #eaeaea;
+        color: #333;
+        align-self: flex-start;
+        text-align: left;
+      }
+
+      .label {
+        font-size: 12px;
+        color: #777;
+        margin-bottom: 2px;
+      }
+
+      #input-container {
+        display: flex;
+        margin-top: 15px;
+      }
+
+      #input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+      }
+
+      #send,
+      #reset {
+        padding: 10px 15px;
+        margin-left: 8px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
+      #send {
+        background: #007bff;
+        color: white;
+      }
+
+      #reset {
+        background: #ff4444;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chat-container">
+      <div id="chat-box"></div>
+      <div id="input-container">
+        <input type="text" id="input" placeholder="Type your message..." />
+        <button id="send">Send</button>
+        <button id="reset">Reset</button>
+      </div>
+    </div>
+
+    <script>
+      const chatBox = document.getElementById("chat-box");
+      const input = document.getElementById("input");
+      const sendBtn = document.getElementById("send");
+      const resetBtn = document.getElementById("reset");
+
+      function scrollToBottom() {
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+
+      function addMessage(message, sender) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "message-wrapper";
+
+        const label = document.createElement("div");
+        label.className = "label";
+
+        const msg = document.createElement("div");
+        msg.className = "message " + sender;
+
+        if (sender === "user") {
+          label.innerText = "You";
+          msg.innerText = message;
+        } else {
+          label.innerText = "AI Assistant";
+          typeMessage(msg, message);
+        }
+
+        wrapper.appendChild(label);
+        wrapper.appendChild(msg);
+        chatBox.appendChild(wrapper);
+
+        scrollToBottom();
+      }
+
+      function typeMessage(element, text, i = 0) {
+        if (i < text.length) {
+          element.innerHTML += text.charAt(i);
+          setTimeout(() => typeMessage(element, text, i + 1), 20);
+        } else {
+          scrollToBottom();
+        }
+      }
+
+      async function sendMessage() {
+        const query = input.value.trim();
+        if (!query) return;
+
+        addMessage(query, "user");
+        input.value = "";
+
+        try {
+          const response = await fetch("http://127.0.0.1:8001/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ query }),
+          });
+
+          const data = await response.json();
+          addMessage(data.response, "bot");
+        } catch (err) {
+          addMessage("Error: Could not reach server.", "bot");
+        }
+      }
+
+      sendBtn.addEventListener("click", sendMessage);
+      input.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") sendMessage();
+      });
+
+      resetBtn.addEventListener("click", async () => {
+        chatBox.innerHTML = "";
+        await fetch("http://127.0.0.1:8001/reset", { method: "POST" });
+      });
+
+      // -------------------------------
+      // Starting greeting from AI
+      // -------------------------------
+      window.onload = () => {
+        const greeting =
+          "👋 Hello! I'm your AI Solutions specialist. How may I assist you today?";
+        addMessage(greeting, "bot");
+      };
+    </script>
+  </body>
+</html>

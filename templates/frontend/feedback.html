@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Submit Feedback{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <h2 class="text-center mb-4">Submit Your Feedback</h2>
+    
+    <div class="text-end mb-3">
+      <a href="{% url 'core:client_logout' %}" class="btn btn-outline-danger">Logout</a>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card shadow">
+          <div class="card-body">
+            <form method="post">
+              {% csrf_token %}
+              {{ form.non_field_errors }}
+              
+              <div class="mb-3">
+                {{ form.company.label_tag }}
+                {{ form.company }}
+                {{ form.company.errors }}
+              </div>
+
+              <div class="mb-3">
+                {{ form.rating.label_tag }}
+                {{ form.rating }}
+                {{ form.rating.errors }}
+              </div>
+
+              <div class="mb-3">
+                {{ form.comment.label_tag }}
+                {{ form.comment }}
+                {{ form.comment.errors }}
+              </div>
+
+              <button type="submit" class="btn btn-primary w-100">Submit Feedback</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
