@@ -23,7 +23,7 @@ if [ -z "$PYTHON_BIN" ]; then
   exit 1
 fi
 
-"$PYTHON_BIN" -m pip install --user -r requirements.txt
+"$PYTHON_BIN" -m pip install -r requirements.txt
 "$PYTHON_BIN" manage.py migrate --noinput
 "$PYTHON_BIN" manage.py collectstatic --noinput
 
