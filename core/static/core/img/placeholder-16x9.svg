@@ -2,6 +2,6 @@
   <rect width="1280" height="720" fill="#e9ecef"/>
   <rect x="96" y="80" width="1088" height="560" rx="28" fill="#f8f9fa" stroke="#ced4da" stroke-width="8"/>
   <path d="M256 520 456 320l144 144 96-96 328 328H256Z" fill="#adb5bd"/>
-  <circle cx="858" cy="244" r="70" fill="#0d6efd" opacity=".8"/>
+  <circle cx="858" cy="244" r="70" fill="#2e8b57" opacity=".85"/>
   <text x="640" y="382" text-anchor="middle" font-family="Arial, sans-serif" font-size="54" font-weight="700" fill="#495057">PyLoom</text>
 </svg>

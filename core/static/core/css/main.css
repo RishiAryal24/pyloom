@@ -1,12 +1,102 @@
-/* Project-level styles loaded by templates/base.html. */
+:root {
+  --pyloom-gold: #d4af37;
+  --pyloom-blue: #003366;
+  --pyloom-blue-dark: #001f3d;
+  --pyloom-green: #2e8b57;
+  --pyloom-ink: #111827;
+  --pyloom-soft: #f5f8f7;
+}
 
+body {
+  color: var(--pyloom-ink);
+  background-color: #ffffff;
+}
+
+.navbar {
+  background: #ffffff !important;
+  border-bottom: 3px solid var(--pyloom-gold) !important;
+}
+
+.navbar .nav-link {
+  color: var(--pyloom-blue) !important;
+  font-weight: 600;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link.active {
+  color: var(--pyloom-green) !important;
+}
+
+.navbar .btn-outline-primary {
+  --bs-btn-color: var(--pyloom-blue);
+  --bs-btn-border-color: var(--pyloom-gold);
+  --bs-btn-hover-color: #ffffff;
+  --bs-btn-hover-bg: var(--pyloom-blue);
+  --bs-btn-hover-border-color: var(--pyloom-blue);
+}
+
+.bg-primary {
+  background-color: var(--pyloom-blue) !important;
+}
+
+.text-primary,
+.text-brand {
+  color: var(--pyloom-green) !important;
+}
+
+.bg-warning {
+  background-color: var(--pyloom-gold) !important;
+}
+
+.badge-soft.bg-primary {
+  background-color: var(--pyloom-blue) !important;
+}
+
+.badge-soft.bg-warning {
+  background-color: var(--pyloom-gold) !important;
+}
+
+.btn-primary,
 .btn-brand {
   --bs-btn-color: #fff;
-  --bs-btn-bg: #0d6efd;
-  --bs-btn-border-color: #0d6efd;
+  --bs-btn-bg: var(--pyloom-blue);
+  --bs-btn-border-color: var(--pyloom-blue);
   --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #0b5ed7;
-  --bs-btn-hover-border-color: #0a58ca;
+  --bs-btn-hover-bg: var(--pyloom-green);
+  --bs-btn-hover-border-color: var(--pyloom-green);
+  --bs-btn-active-bg: var(--pyloom-blue-dark);
+  --bs-btn-active-border-color: var(--pyloom-blue-dark);
+}
+
+.btn-outline-primary {
+  --bs-btn-color: var(--pyloom-blue);
+  --bs-btn-border-color: var(--pyloom-blue);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--pyloom-blue);
+  --bs-btn-hover-border-color: var(--pyloom-blue);
+}
+
+.card {
+  border-color: rgba(0, 51, 102, 0.12);
+}
+
+.card-header {
+  background-color: var(--pyloom-soft);
+}
+
+.section-accent,
+.hero-section {
+  background: linear-gradient(135deg, rgba(0, 51, 102, 0.08), rgba(46, 139, 87, 0.08)) !important;
+}
+
+footer.bg-dark {
+  background: var(--pyloom-blue-dark) !important;
+  border-top: 4px solid var(--pyloom-gold);
+}
+
+footer .footer-link:hover,
+footer .footer-social:hover {
+  color: var(--pyloom-gold) !important;
 }
 
 .card-hover {
