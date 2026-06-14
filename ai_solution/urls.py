@@ -1,8 +1,9 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from core import views  # Import views from the correct app
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.static import serve
 
 urlpatterns = [
     path('django-admin/', admin.site.urls),  # Custom admin URL (if necessary)
@@ -14,11 +15,13 @@ urlpatterns = [
     path('api/', include('core.api.urls')),
 ]
 
-# Static and media file handling.
+# Uploaded media handling.
 #
-# cPanel/Passenger may route /media/ through Django before LiteSpeed can serve
-# the public_html/media symlink, so keep media URLs available in production too.
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# cPanel/Passenger routes /media/ through Django before LiteSpeed can serve the
+# public_html/media symlink, and django.conf.urls.static.static() is debug-only.
+urlpatterns += [
+    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+]
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
