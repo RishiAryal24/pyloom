@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="160" viewBox="0 0 320 160" role="img" aria-label="Client logo placeholder">
+  <rect width="320" height="160" rx="18" fill="#f8f9fa"/>
+  <rect x="46" y="58" width="228" height="44" rx="22" fill="#dee2e6"/>
+  <circle cx="88" cy="80" r="18" fill="#0d6efd"/>
+  <text x="124" y="88" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#6c757d">CLIENT</text>
+</svg>
