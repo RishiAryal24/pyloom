@@ -368,38 +368,6 @@ class GalleryItemImage(models.Model):
     image = models.ImageField(upload_to='gallery/')
 
     def __str__(self):
-        return f"Image for {self.gallery_item}"# Gallery Model
-class GalleryItem(models.Model):
-    CATEGORY_CHOICES = [
-        ('conference', 'Conference'),
-        ('product_launch', 'Product Launch'),
-        ('workshop', 'Workshop'),
-        ('symposium', 'Symposium'),
-        ('team_event', 'Team Event'),
-        ('demo', 'Demo'),
-        ('tour', 'Tour'),
-        ('award', 'Award'),
-        ('partnership', 'Partnership'),
-    ]
-
-    event = models.ForeignKey(
-        Event,  # Link to your Event model
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='gallery_items'
-    )
-    is_featured = models.BooleanField(default=False)
-    order = models.PositiveIntegerField(default=0)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    uploaded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
-
-class GalleryItemImage(models.Model):
-    gallery_item = models.ForeignKey(GalleryItem, related_name='images', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='gallery/')
-
-    def __str__(self):
         return f"Image for {self.gallery_item}"
 
 # User model
