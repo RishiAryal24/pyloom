@@ -1,0 +1,53 @@
+{% load static %}
+<!-- templates/_partials/_navbar.html -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top border-bottom">
+    <div class="container">
+        <!-- Brand -->
+        <a class="navbar-brand d-flex align-items-center" href="{% url 'core:home' %}">
+            {% if settings.logo %}
+                <img src="{{ settings.logo.url }}" alt="PyLoom Logo" width="30" height="30" class="d-inline-block align-text-top me-2" loading="lazy">
+            {% else %}
+                <img src="{% static 'img/logo.png' %}" alt="PyLoom Logo" width="30" height="30" class="d-inline-block align-text-top me-2" loading="lazy">
+            {% endif %}
+            <span class="fw-bold">PyLoom</span>
+        </a>
+        
+        <!-- Mobile Toggle -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <!-- Navigation Links -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'core:home' %}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'solutions' %}active{% endif %}" href="{% url 'core:solutions' %}">Solutions</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'projects' %}active{% endif %}" href="{% url 'core:projects' %}">Projects</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'user_feedback' %}active{% endif %}" href="{% url 'core:user_feedback' %}">Feedback</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'articles' %}active{% endif %}" href="{% url 'core:articles' %}">Articles</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'events' %}active{% endif %}" href="{% url 'core:events' %}">Events Gallery</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="{% url 'core:about' %}">About Us</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" href="{% url 'core:contact' %}">Contact Us</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'chatbot' %}active{% endif %}" href="{% url 'core:chatbot' %}">Chatbot</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

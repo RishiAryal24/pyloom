@@ -1,0 +1,134 @@
+{% extends 'admin/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    {% if is_edit %}Edit{% else %}Add{% endif %} {{ content_type|title }} - Admin
+{% endblock %}
+
+{% block page_title %}
+    {% if is_edit %}Edit{% else %}Add New{% endif %} {{ content_type|title }}
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-{% if is_edit %}pencil{% else %}plus{% endif %} me-2"></i>
+                    {% if is_edit %}Edit{% else %}Add New{% endif %} {{ content_type|title }}
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    {% if form %}
+                        {% for field in form %}
+                            <div class="mb-3">
+                                {{ field.label_tag }}
+                                
+                                {% if field.field.widget.input_type == "file" %}
+                                    {{ field }}
+                                    {% if field.value %}
+                                        <div class="mt-1">
+                                            Current file: 
+                                            <a href="{{ field.value.url }}" target="_blank">View</a>
+                                        </div>
+                                    {% endif %}
+                                {% elif field.field.widget.input_type == "checkbox" %}
+                                    <div class="form-check">
+                                        {{ field }}
+                                        {{ field.label_tag }}
+                                    </div>
+                                {% elif field.name == "features" or field.name == "benefits" or field.name == "use_cases" or field.name == "faqs" %}
+                                    <textarea class="form-control" name="{{ field.name }}" rows="4">{{ field.value }}</textarea>
+                                {% else %}
+                                    {{ field }}
+                                {% endif %}
+
+                                {% if field.help_text %}
+                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                {% endif %}
+
+                                {% if field.errors %}
+                                    <div class="text-danger mt-1">{{ field.errors }}</div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            Full form implementation is pending for {{ content_type }}.
+                        </div>
+                    {% endif %}
+
+                    <!-- Render gallery images -->
+                    {% if content_type == 'gallery' and formset %}
+                        <h5 class="mt-4">Gallery Images</h5>
+                        {{ formset.management_form }}
+                        <div id="gallery-images">
+                            {% for image_form in formset %}
+                                <div class="mb-3 image-row">
+                                    {{ image_form.image.label_tag }} {{ image_form.image }}
+                                    {% if image_form.instance.pk %}
+                                        <img src="{{ image_form.instance.image.url }}" class="img-thumbnail mt-1" width="100">
+                                    {% endif %}
+                                    {% if image_form.DELETE %}
+                                        <div class="form-check">
+                                            {{ image_form.DELETE }} <label>Delete</label>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <button type="button" class="btn btn-outline-primary mb-3" id="add-image-btn">Add Image</button>
+                    {% endif %}
+
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary" color='green'>
+                            {% if is_edit %}Update{% else %}Create{% endif %} {{ content_type|title }}
+                        </button>
+                        <a href="{% url 'content_list' content_type %}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JS for dynamically adding images in gallery -->
+{% if content_type == 'gallery' %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const addBtn = document.getElementById('add-image-btn');
+    const formsetDiv = document.getElementById('gallery-images');
+    const totalForms = document.querySelector('#id_galleryitemimage_set-TOTAL_FORMS');
+
+    addBtn.addEventListener('click', function () {
+        const currentCount = parseInt(totalForms.value);
+        const emptyForm = formsetDiv.querySelector('.image-row').cloneNode(true);
+
+        emptyForm.querySelectorAll('input, select, textarea').forEach(el => {
+            if (el.type !== 'hidden') el.value = '';
+            el.name = el.name.replace(/\d+/, currentCount);
+            el.id = el.id.replace(/\d+/, currentCount);
+        });
+
+        // Remove any cloned image preview
+        const imgTag = emptyForm.querySelector('img');
+        if (imgTag) imgTag.remove();
+
+        // Uncheck DELETE checkbox
+        const deleteCheckbox = emptyForm.querySelector('input[type="checkbox"]');
+        if (deleteCheckbox) deleteCheckbox.checked = false;
+
+        formsetDiv.appendChild(emptyForm);
+        totalForms.value = currentCount + 1;
+    });
+});
+</script>
+{% endif %}
+
+{% endblock %}

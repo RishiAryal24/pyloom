@@ -1,51 +1,110 @@
-# Pyloom Tech Website
+# PyLoom
 
-This repository contains a simple static website for **Pyloom Tech**.
+A modern, responsive Django-powered website for PyLoom.
 
-## What is included
+## Features
 
-- `index.html` — the homepage
-- `styles.css` — styling for the website
-- `script.js` — a small interaction script
+- Custom admin dashboard with improved UI/UX
+- Content management for articles, events, projects, solutions, and more
+- Contact form with inquiry management
+- User authentication and role-based access
+- Maintenance mode support
+- Responsive design for all devices
 
-## How to use
+## Prerequisites
 
-1. Open `index.html` in a browser to preview the site locally.
-2. Customize the content, branding, and styling as needed.
+- Python 3.8 or higher
+- pip
+- Virtual environment (recommended)
 
-## Publish to GitHub
+## Installation
 
-1. Initialize git if needed:
+1. **Clone or navigate to the project directory:**
    ```bash
-   git init
-   git add .
-   git commit -m "Initial Pyloom Tech website"
+   cd "e:\Projects\pyloom website\pyloom"
    ```
-2. Create a GitHub repository named `pyloomweb` or another name you prefer.
-3. Add the remote and push:
+
+2. **Create and activate a virtual environment:**
    ```bash
-   git remote add origin https://github.com/<your-username>/<repo-name>.git
-   git branch -M main
-   git push -u origin main
+   # Windows
+   python -m venv venv
+   .\venv\Scripts\activate
+
+   # macOS/Linux
+   python3 -m venv venv
+   source venv/bin/activate
    ```
 
-## Deploy to prabhuhost
-
-- If prabhuhost supports FTP/SFTP, upload the site files from this repository to your hosting server.
-- If prabhuhost supports GitHub-based deployment, connect the GitHub repository and select the `main` branch.
-
-## cPanel Git deployment
-
-This repository now includes a `.cpanel.yml` file, which cPanel uses to deploy your site files to the `public_html` directory automatically.
-
-1. In cPanel, open **Git Version Control**.
-2. Create or clone a repository using this URL:
-   ```text
-   https://github.com/<your-username>/<repo-name>.git
+3. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
    ```
-3. Choose the branch you are using (`master` or `main`).
-4. Confirm the repository path is valid and writable.
 
-When cPanel detects `.cpanel.yml` in the repository root, it will run the deployment commands automatically after a push.
+4. **Configure environment variables (optional):**
+   - Create a `.env` file in the project root
+   - Add your configuration (database settings, secret key, etc.)
 
-> If you want, I can also help you add a contact form, a services page, or convert this into a React/Vite site.
+5. **Run database migrations:**
+   ```bash
+   python manage.py migrate
+   ```
+
+6. **Create a superuser (to access admin):**
+   ```bash
+   python manage.py createsuperuser
+   ```
+
+7. **Collect static files (for production):**
+   ```bash
+   python manage.py collectstatic
+   ```
+
+## Running the Development Server
+
+```bash
+python manage.py runserver
+```
+
+Then open your browser and navigate to:
+- Frontend: http://127.0.0.1:8000/
+- Custom Admin Dashboard: http://127.0.0.1:8000/admin/
+- Django Admin: http://127.0.0.1:8000/django-admin/
+
+## Project Structure
+
+```
+pyloom/
+├── admin_dashboard/    # Custom admin views and templates
+├── core/               # Main Django app with models, views, forms
+├── templates/          # HTML templates
+├── static/             # Static files (CSS, JS, images)
+├── media/              # User-uploaded media files (gitignored)
+├── ai_solution/        # Project settings and URLs
+├── manage.py           # Django management script
+├── requirements.txt    # Python dependencies
+└── README.md           # This file
+```
+
+## Default Admin Credentials
+
+If you used the superuser creation script:
+- Username: `pyadmin`
+- Password: `PyAdmin123!`
+
+**Important:** Change these credentials in production!
+
+## Tech Stack
+
+- **Backend:** Django 5.0
+- **Frontend:** HTML5, CSS3, Bootstrap 5
+- **Database:** MySQL (with SQLite fallback)
+- **Other:** Django REST Framework, TinyMCE, django-crispy-forms
+
+## Deployment
+
+Before deploying, make sure to:
+1. Set `DEBUG = False` in `settings.py`
+2. Configure your production database
+3. Set a secure `SECRET_KEY`
+4. Configure allowed hosts
+5. Set up static files serving (e.g., with Whitenoise or a CDN)

@@ -1,0 +1,546 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin Dashboard - PyLoom{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <!-- Custom Admin CSS -->
+    {% load static %}
+
+    {% block extra_css %}{% endblock %}
+
+    <!-- Redesigned Admin Styles -->
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: #212529;
+            margin-left: 280px;
+            padding-top: 0;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        /* Sidebar */
+        .admin-sidebar {
+            background: linear-gradient(180deg, #001f3d 0%, #002d5a 100%);
+            color: white;
+            height: 100vh;
+            width: 280px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        /* Sidebar Header */
+        .sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-header .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .sidebar-header .logo {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+        }
+
+        .sidebar-header .logo img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .sidebar-header h4 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        .sidebar-header p {
+            margin: 0;
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+        }
+
+        /* Sidebar Nav */
+        .admin-sidebar .nav {
+            flex-grow: 1;
+            padding: 16px;
+            overflow-y: auto;
+            flex-direction: column;
+            flex-wrap: nowrap;
+        }
+
+        .admin-sidebar .nav-item {
+            margin-bottom: 4px;
+            width: 100%;
+        }
+
+        .admin-sidebar .nav-link {
+            color: rgba(255,255,255,0.8);
+            padding: 12px 16px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s ease;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .admin-sidebar .nav-link i {
+            font-size: 18px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .admin-sidebar .nav-link.active {
+            background-color: rgba(255,255,255,0.15);
+            color: white;
+            font-weight: 600;
+        }
+
+        .admin-sidebar .nav-link:hover {
+            background-color: rgba(255,255,255,0.08);
+            color: white;
+        }
+
+        /* Sidebar Footer */
+        .sidebar-footer {
+            padding: 16px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-footer .nav {
+            flex-direction: column;
+            flex-wrap: nowrap;
+            padding: 0;
+        }
+
+        .sidebar-footer .nav-item {
+            width: 100%;
+        }
+
+        .sidebar-footer .nav-link {
+            padding: 10px 16px;
+        }
+
+        /* Top Navbar */
+        .top-navbar {
+            background: white;
+            border-bottom: 1px solid #e9ecef;
+            padding: 16px 32px;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 32px;
+        }
+
+        /* Cards */
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            background: white;
+            border-bottom: 1px solid #e9ecef;
+            padding: 20px 24px;
+            border-radius: 12px 12px 0 0 !important;
+        }
+
+        .card-header h5 {
+            margin: 0;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        .card-body {
+            padding: 24px;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background-color: #001f3d !important;
+            border-color: #001f3d !important;
+            color: white !important;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .btn-primary:hover {
+            background-color: #003366 !important;
+            border-color: #003366 !important;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline-primary {
+            border-color: #001f3d !important;
+            color: #001f3d !important;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #001f3d !important;
+            color: white !important;
+        }
+
+        /* Table */
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+            color: #495057;
+            font-weight: 600;
+            padding: 14px 16px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .table tbody td {
+            padding: 14px 16px;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f3f5;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Alerts */
+        .alert {
+            border-radius: 10px;
+            border: none;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .alert-warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        /* Badges */
+        .badge {
+            padding: 6px 10px;
+            font-weight: 600;
+            border-radius: 6px;
+        }
+
+        .badge.bg-danger {
+            background-color: #dc3545 !important;
+        }
+
+        .badge.bg-warning {
+            background-color: #ffc107 !important;
+            color: #212529;
+        }
+
+        /* Sidebar Scrollbar */
+        .admin-sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .admin-sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .admin-sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+        }
+
+        .admin-sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Form Styling */
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+
+        .form-control, .form-select {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 10px 14px;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #001f3d;
+            box-shadow: 0 0 0 0.2rem rgba(0, 31, 61, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <nav class="admin-sidebar">
+            <!-- Sidebar Header -->
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <div class="logo">
+                        {% if settings.logo %}
+                            <img src="{{ settings.logo.url }}" alt="PyLoom Logo" loading="lazy" style="max-width: 100%; max-height: 100%;">
+                        {% else %}
+                            <img src="{% static 'img/logo.png' %}" alt="PyLoom Logo" loading="lazy">
+                        {% endif %}
+                    </div>
+                    <div>
+                        <h4>PyLoom</h4>
+                        <p>Admin Dashboard</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}"
+                        href="{% url 'admin_dashboard' %}">
+                        <i class="bi bi-speedometer2"></i>Dashboard
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {% if 'inquiries' in request.path %}active{% endif %}"
+                        href="{% url 'content_list' 'inquiries' %}">
+                        <i class="bi bi-envelope"></i>Contact Inquiries
+                        {% if unread_inquiries_count %}
+                        <span class="badge bg-danger ms-auto">{{ unread_inquiries_count }}</span>
+                        {% endif %}
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {% if 'feedback' in request.path %}active{% endif %}"
+                        href="{% url 'content_list' 'feedback' %}">
+                        <i class="bi bi-star"></i>Feedback
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link {% if 'about' in request.path %}active{% endif %}"
+                        href="{% url 'content_list' 'about' %}">
+                        <i class="bi bi-envelope-paper"></i>About Us
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link {% if 'Projects' in request.path %}active{% endif %}"
+                        href="{% url 'content_list' 'Projects' %}">
+                        <i class="bi bi-folder"></i>Projects
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link {% if 'articles' in request.path %}active{% endif %}"
+                        href="{% url 'content_list' 'articles' %}">
+                        <i class="bi bi-file-text"></i>Articles
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {% if 'events' in request.path %}active{% endif %}"
+                        href="{% url 'content_list' 'events' %}">
+                        <i class="bi bi-calendar-event"></i>Events
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {% if 'gallery' in request.path %}active{% endif %}"
+                        href="{% url 'content_list' 'gallery' %}">
+                        <i class="bi bi-images"></i>Gallery
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {% if 'solutions' in request.path %}active{% endif %}"
+                        href="{% url 'content_list' 'solutions' %}">
+                        <i class="bi bi-gear"></i>Solutions
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {% if 'users' in request.path %}active{% endif %}"
+                        href="{% url 'content_list' 'users' %}">
+                        <i class="bi bi-people"></i>Users
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {% if 'team' in request.path %}active{% endif %}"
+                        href="{% url 'content_list' 'team' %}">
+                        <i class="bi bi-person-workspace"></i>Team Members
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link {% if 'settings' in request.path %}active{% endif %}"
+                        href="{% url 'admin_settings' %}">
+                        <i class="bi bi-gear-fill"></i>Settings
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Sidebar Footer (User Actions) -->
+            <div class="sidebar-footer">
+                <ul class="nav nav-pills flex-column">
+                    <li class="nav-item">
+                        <h6 class="text-white-50 text-uppercase small mb-2 px-3">{{ user.first_name|default:user.username }}</h6>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'admin_change_password' %}">
+                            <i class="bi bi-key"></i>Change Password
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" href="{% url 'admin_logout' %}">
+                            <i class="bi bi-box-arrow-right"></i>Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="flex-grow-1">
+            <!-- Top Navbar -->
+            <nav class="top-navbar">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                    <div>
+                        <!-- Page Title -->
+                        {% block page_header %}
+                        <h5 class="mb-0 fw-bold" style="color: #1a202c;">{% block page_title %}Dashboard{% endblock %}</h5>
+                        {% endblock %}
+                    </div>
+
+                    <div class="d-flex align-items-center gap-3">
+                        <!-- Notifications Badge -->
+                        {% if stats.unread_inquiries or stats.pending_feedback %}
+                        <div class="d-flex gap-2">
+                            {% if stats.unread_inquiries %}
+                            <span class="badge bg-danger">{{ stats.unread_inquiries }} new inquiries</span>
+                            {% endif %}
+                            {% if stats.pending_feedback %}
+                            <span class="badge bg-warning">{{ stats.pending_feedback }} pending feedback</span>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Quick Actions -->
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary dropdown-toggle" type="button"
+                                data-bs-toggle="dropdown">
+                                <i class="bi bi-plus me-1"></i>Quick Add
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow">
+                                <li><a class="dropdown-item" href="{% url 'content_add' 'blog' %}">
+                                    <i class="bi bi-file-text me-2"></i>Article
+                                </a></li>
+                                <li><a class="dropdown-item" href="{% url 'content_add' 'events' %}">
+                                        <i class="bi bi-calendar-event me-2"></i>Event
+                                    </a></li>
+                                <li><a class="dropdown-item" href="{% url 'content_add' 'solutions' %}">
+                                        <i class="bi bi-gear me-2"></i>Solution
+                                    </a></li>
+                                <li><a class="dropdown-item" href="{% url 'content_add' 'users' %}">
+                                        <i class="bi bi-person-plus me-2"></i>User
+                                    </a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Content Area -->
+            <div class="main-content">
+                <!-- Messages -->
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                {% endfor %}
+                {% endif %}
+
+                <!-- Page Content -->
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom Admin JS -->
+    <script src="{% static 'js/main.js' %}"></script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

@@ -1,0 +1,213 @@
+<!-- templates/project_detail.html -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ project.title }} - AI-Solutions{% endblock %}
+{% block description %}{{ project.summary }}{% endblock %}
+
+{% block content %}
+<!-- Project Header -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1>{{ project.title }}</h1>
+                <div class="d-flex align-items-center mb-3">
+                    {% for tag in project.tags.all %}
+                        <span class="badge-soft bg-primary text-white">{{ tag.name }}</span>
+                    {% endfor %}
+                    <span class="text-muted ms-2">
+                        <i class="bi bi-calendar me-1"></i>Completed: {{ project.completed_on|date:"F Y" }}
+                    </span>
+                </div>
+                <p class="lead text-muted">{{ project.summary }}</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="{% url 'core:solutions' %}" class="btn btn-outline-dark">
+                    <i class="bi bi-lightbulb me-2"></i>Explore Solutions
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Project Content -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <!-- Project Description -->
+                <div class="mb-5">
+                    {{ project.description|safe }}
+                </div>
+                
+                <!-- Project Sections -->
+                <div class="mb-5">
+                    <h3><i class="bi bi-info-circle text-brand me-2"></i>Project Context</h3>
+                    <p class="text-muted">
+                        This project was developed to address specific business challenges and deliver measurable results. 
+                        Our team worked closely with stakeholders to ensure the solution met all requirements and exceeded expectations.
+                    </p>
+                </div>
+                
+                <div class="mb-5">
+                    <h3><i class="bi bi-gear text-brand me-2"></i>Our Approach</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Discovery & Planning</h6>
+                            <ul class="list-unstyled text-muted">
+                                <li><i class="bi bi-check-circle text-success me-2"></i>Requirements analysis</li>
+                                <li><i class="bi bi-check-circle text-success me-2"></i>Technology assessment</li>
+                                <li><i class="bi bi-check-circle text-success me-2"></i>Project roadmap</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Implementation & Testing</h6>
+                            <ul class="list-unstyled text-muted">
+                                <li><i class="bi bi-check-circle text-success me-2"></i>Agile development</li>
+                                <li><i class="bi bi-check-circle text-success me-2"></i>Continuous integration</li>
+                                <li><i class="bi bi-check-circle text-success me-2"></i>Quality assurance</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-5">
+                    <h3><i class="bi bi-trophy text-brand me-2"></i>Key Outcomes</h3>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="card border-0 bg-light h-100">
+                                <div class="card-body text-center">
+                                    <h4 class="text-success">85%</h4>
+                                    <p class="text-muted mb-0">Efficiency Improvement</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card border-0 bg-light h-100">
+                                <div class="card-body text-center">
+                                    <h4 class="text-primary">50%</h4>
+                                    <p class="text-muted mb-0">Cost Reduction</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card border-0 bg-light h-100">
+                                <div class="card-body text-center">
+                                    <h4 class="text-warning">24/7</h4>
+                                    <p class="text-muted mb-0">Availability</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Project Image -->
+                {% if project.cover_image %}
+                    <div class="card mb-4">
+                        <img src="{{ project.cover_image.url }}" class="card-img-top" alt="{{ project.title }} main image">
+                    </div>
+                {% endif %}
+                
+                <!-- Project Info -->
+                <div class="card">
+                    <div class="card-body">
+                        <h6>Project Details</h6>
+                        <hr>
+                        <div class="mb-3">
+                            <strong>Completion Date:</strong><br>
+                            <span class="text-muted">{{ project.completed_on|date:"F j, Y" }}</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Technologies:</strong><br>
+                            {% for tag in project.tags.all %}
+                                <span class="badge-soft bg-secondary text-white me-1 mt-1">{{ tag.name }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Status:</strong><br>
+                            <span class="badge bg-success">Completed</span>
+                        </div>
+                        <hr>
+                        <a href="{% url 'core:contact' %}" class="btn btn-brand w-100">
+                            <i class="bi bi-chat-dots me-2"></i>Discuss Similar Project
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Project Gallery -->
+{% if images %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h3>Project Gallery</h3>
+                <p class="text-muted">Visual highlights from the project development and implementation</p>
+            </div>
+        </div>
+        
+        <!-- Carousel -->
+        <div id="projectCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                {% for image in images %}
+                    <button type="button" data-bs-target="#projectCarousel" data-bs-slide-to="{{ forloop.counter0 }}" 
+                            {% if forloop.first %}class="active" aria-current="true"{% endif %} 
+                            aria-label="Slide {{ forloop.counter }}"></button>
+                {% endfor %}
+            </div>
+            
+            <div class="carousel-inner rounded">
+                {% for image in images %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <img src="{{ image.image.url }}" class="d-block w-100 gallery-image" 
+                             alt="{{ image.caption|default:project.title }}" loading="lazy">
+                        {% if image.caption %}
+                            <div class="carousel-caption d-none d-md-block">
+                                <p>{{ image.caption }}</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            
+            <button class="carousel-control-prev" type="button" data-bs-target="#projectCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#projectCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Call to Action -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h3>Inspired by This Project?</h3>
+                <p class="text-muted mb-4">Let's discuss how we can create something similar for your business</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{% url 'core:contact' %}" class="btn btn-brand">
+                        <i class="bi bi-chat-dots me-2"></i>Start a Project
+                    </a>
+                    <a href="{% url 'core:solutions' %}" class="btn btn-outline-dark">
+                        <i class="bi bi-lightbulb me-2"></i>Explore Related Solutions
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
