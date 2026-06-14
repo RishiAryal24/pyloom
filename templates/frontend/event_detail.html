@@ -40,9 +40,9 @@
             <!-- Main Content -->
             <div class="col-lg-8">
                 <!-- Cover Image -->
-                {% if event.cover_image %}
+                {% if event.featured_image %}
                     <div class="mb-4">
-                        <img src="{{ event.cover_image.url }}" class="img-fluid rounded" alt="{{ event.title }} main image">
+                        <img src="{{ event.featured_image.url }}" class="img-fluid rounded" alt="{{ event.title }} main image">
                     </div>
                 {% endif %}
                 
