@@ -48,18 +48,24 @@
                 <div class="card shadow-sm border-0 h-100 gallery-item" data-bs-toggle="modal" data-bs-target="#galleryModal" 
                      onclick="showGalleryItem({{ item.id }})">
                     <div class="position-relative overflow-hidden">
-                        {% if item.image %}
-                        <img src="{{ item.image.url }}" class="card-img-top gallery-image" alt="{{ item.title }}" 
+                        {% with images=item.images.all %}
+                        {% if images %}
+                        {% for gallery_image in images %}
+                        {% if forloop.first %}
+                        <img src="{{ gallery_image.image.url }}" class="card-img-top gallery-image" alt="{{ item.event.title|default:'Gallery image' }}" 
                              style="height: 250px; object-fit: cover; transition: transform 0.3s;">
+                        {% endif %}
+                        {% endfor %}
                         {% else %}
                         <div class="card-img-top bg-gradient-primary d-flex align-items-center justify-content-center" 
                              style="height: 250px;">
                             <i class="bi bi-image text-white" style="font-size: 3rem;"></i>
                         </div>
                         {% endif %}
+                        {% endwith %}
                         
                         <div class="position-absolute top-0 end-0 m-2">
-                            <span class="badge bg-dark bg-opacity-75">{{ item.get_category_display }}</span>
+                            <span class="badge bg-dark bg-opacity-75">{{ item.event.get_event_type_display|default:"Gallery" }}</span>
                         </div>
                         
                         {% if item.is_featured %}
@@ -70,20 +76,20 @@
                     </div>
                     
                     <div class="card-body">
-                        <h5 class="card-title">{{ item.title }}</h5>
-                        <p class="card-text text-muted">{{ item.description|truncatewords:15 }}</p>
+                        <h5 class="card-title">{{ item.event.title|default:"Gallery Item" }}</h5>
+                        <p class="card-text text-muted">{{ item.event.description|striptags|truncatewords:15 }}</p>
                         
                         <div class="d-flex justify-content-between align-items-center">
                             <small class="text-muted">
-                                <i class="bi bi-calendar me-1"></i>{{ item.event_date|date:"M d, Y" }}
+                                <i class="bi bi-calendar me-1"></i>{{ item.event.date|date:"M d, Y" }}
                             </small>
                             <small class="text-muted">
-                                <i class="bi bi-geo-alt me-1"></i>{{ item.location|truncatechars:15 }}
+                                <i class="bi bi-geo-alt me-1"></i>{{ item.event.location|truncatechars:15 }}
                             </small>
                         </div>
                         
                         <div class="mt-2">
-                            <small class="text-primary fw-bold">{{ item.event_name }}</small>
+                            <small class="text-primary fw-bold">{{ item.event.title }}</small>
                         </div>
                     </div>
                 </div>
@@ -189,13 +195,13 @@ function showGalleryItem(itemId) {
     const galleryItems = {
         {% for item in gallery_items %}
         {{ item.id }}: {
-            title: "{{ item.title|escapejs }}",
-            description: "{{ item.description|escapejs }}",
-            category: "{{ item.get_category_display }}",
-            event_date: "{{ item.event_date|date:'F d, Y' }}",
-            location: "{{ item.location|escapejs }}",
-            event_name: "{{ item.event_name|escapejs }}",
-            image: "{% if item.image %}{{ item.image.url }}{% endif %}"
+            title: "{{ item.event.title|default:'Gallery Item'|escapejs }}",
+            description: "{{ item.event.description|striptags|escapejs }}",
+            category: "{{ item.event.get_event_type_display|default:'Gallery' }}",
+            event_date: "{{ item.event.date|date:'F d, Y' }}",
+            location: "{{ item.event.location|escapejs }}",
+            event_name: "{{ item.event.title|escapejs }}",
+            image: "{% for gallery_image in item.images.all %}{% if forloop.first %}{{ gallery_image.image.url }}{% endif %}{% endfor %}"
         },
         {% endfor %}
     };
