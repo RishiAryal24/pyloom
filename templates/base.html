@@ -419,9 +419,12 @@
     input.value = "";
 
     try {
-      const response = await fetch("http://127.0.0.1:8001/chat", {
+      const response = await fetch("{% url 'core:chatbot_proxy' %}", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": "{{ csrf_token }}",
+        },
         body: JSON.stringify({ query }),
       });
 
@@ -440,7 +443,10 @@
   resetBtn.addEventListener("click", async () => {
     chatBox.innerHTML = "";
     try {
-      await fetch("http://127.0.0.1:8001/reset", { method: "POST" });
+      await fetch("{% url 'core:chatbot_reset' %}", {
+        method: "POST",
+        headers: { "X-CSRFToken": "{{ csrf_token }}" },
+      });
     } catch (err) {
       console.error("Reset failed:", err);
     }

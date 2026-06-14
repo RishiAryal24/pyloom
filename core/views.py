@@ -423,17 +423,59 @@ def newsletter_signup(request):
     
 def chatbot(request):
     return render(request, 'frontend/chatbot.html')
+
+def get_local_chatbot_response(message):
+    message = (message or '').lower()
+    responses = {
+        'hello': "Hello! How can I help you today?",
+        'hi': "Hi there! What would you like to know about PyLoom?",
+        'services': "We offer AI-powered solutions for healthcare, finance, education, automation, and modern web systems. Which area interests you?",
+        'healthcare': "Our healthcare AI solutions can support diagnostics, patient management, and predictive analytics.",
+        'finance': "Our finance AI solutions can help with fraud detection, risk assessment, automation, and analytics.",
+        'education': "Our education AI solutions can support personalized learning, assessment, and administrative automation.",
+        'contact': "You can contact PyLoom through the contact page or email the team for a project discussion.",
+        'pricing': "Pricing depends on your project scope. Please contact us for a customized quote.",
+        'demo': "We can arrange a demo. Please use the contact form to schedule one.",
+        'thanks': "You're welcome! Is there anything else I can help with?",
+        'bye': "Thank you for visiting PyLoom. Have a great day!",
+    }
+
+    for keyword, reply in responses.items():
+        if keyword in message:
+            return reply
+
+    return "I can help with PyLoom services, AI solutions, events, projects, and contact information. What would you like to know?"
+
+@csrf_exempt
 def chatbot_proxy(request):
     if request.method == "POST":
         query = request.POST.get("query")
+        if not query and request.body:
+            try:
+                query = json.loads(request.body.decode("utf-8")).get("query")
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                query = None
         if not query:
             return JsonResponse({"error": "No query provided"}, status=400)
         try:
-            response = requests.post("http://127.0.0.1:8001/chat", json={"query": query})
+            response = requests.post("http://127.0.0.1:8001/chat", json={"query": query}, timeout=5)
             response.raise_for_status()  # Raise an exception for bad status codes
             return JsonResponse(response.json())
         except requests.RequestException as e:
-            return JsonResponse({"error": f"Failed to connect to chatbot server: {str(e)}"}, status=500)
+            return JsonResponse({
+                "response": get_local_chatbot_response(query),
+                "fallback": True,
+            })
+    return JsonResponse({"error": "Invalid request"}, status=400)
+
+@csrf_exempt
+def chatbot_reset(request):
+    if request.method == "POST":
+        try:
+            requests.post("http://127.0.0.1:8001/reset", timeout=3)
+        except requests.RequestException:
+            pass
+        return JsonResponse({"status": "chat reset"})
     return JsonResponse({"error": "Invalid request"}, status=400)
 
 def download_article(request, article_id):
@@ -627,26 +669,7 @@ def chatbot_response(request):
             data = json.loads(request.body)
             message = data.get('message', '').lower()
 
-            responses = {
-                'hello': "Hello! How can I help you today?",
-                'hi': "Hi there! What would you like to know about PyLoom?",
-                'services': "We offer AI solutions for Healthcare, Finance, and Education. Which area interests you?",
-                'healthcare': "Our healthcare AI solutions include diagnostic assistance, patient management, and predictive analytics.",
-                'finance': "Our finance AI solutions include fraud detection, risk assessment, and algorithmic trading.",
-                'education': "Our education AI solutions include personalized learning, student assessment, and administrative automation.",
-                'contact': "You can reach us through our contact form or email us at info@pyloom.com",
-                'pricing': "Our pricing varies based on your specific needs. Please contact us for a customized quote.",
-                'demo': "We'd be happy to show you a demo! Please use our contact form to schedule one.",
-                'thanks': "You're welcome! Is there anything else I can help you with?",
-                'bye': "Thank you for visiting PyLoom. Have a great day!",
-            }
-
-            response = "I'm sorry, I didn't understand that. Could you please rephrase your question or contact our support team?"
-
-            for keyword, reply in responses.items():
-                if keyword in message:
-                    response = reply
-                    break
+            response = get_local_chatbot_response(message)
 
             return JsonResponse({'success': True, 'response': response})
 
