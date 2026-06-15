@@ -106,16 +106,44 @@ class Feedback(models.Model):
 # ----------------------------
 # Solution Model
 # ----------------------------
-class Solution(models.Model):
-    CATEGORY_CHOICES = [
-        ('healthcare', 'Healthcare'),
-        ('finance', 'Finance'),
-        ('education', 'Education'),
+class Category(models.Model):
+    CONTENT_TYPE_CHOICES = [
+        ('solution', 'Solution'),
+        ('blog', 'Blog'),
     ]
+
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=120, blank=True)
+    content_type = models.CharField(max_length=20, choices=CONTENT_TYPE_CHOICES)
+    is_active = models.BooleanField(default=True)
+    order = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['content_type', 'order', 'name']
+        unique_together = ('content_type', 'slug')
+        verbose_name_plural = 'Categories'
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+
+class Solution(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
     detailed_content = HTMLField(help_text="Rich text content for solution details", blank=True)
-    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.PROTECT,
+        related_name='solutions',
+        limit_choices_to={'content_type': 'solution', 'is_active': True},
+    )
     icon = models.CharField(max_length=50)
     features = models.JSONField(default=list)
     benefits = models.JSONField(default=list)
@@ -141,6 +169,9 @@ class Solution(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.get_category_display()})"
+
+    def get_category_display(self):
+        return self.category.name if self.category_id else ''
 
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
@@ -438,22 +469,17 @@ class BlogPost(models.Model):
         ('archived', 'Archived'),
     ]
 
-    CATEGORY_CHOICES = [
-        ('healthcare', 'Healthcare'),
-        ('finance', 'Finance'),
-        ('education', 'Education'),
-        ('technology', 'Technology'),
-        ('ethics', 'Ethics'),
-        ('tutorial', 'Tutorial'),
-        ('news', 'News'),
-    ]
-
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
     excerpt = models.TextField(max_length=300)
     content = HTMLField()
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.PROTECT,
+        related_name='blog_posts',
+        limit_choices_to={'content_type': 'blog', 'is_active': True},
+    )
     tags = models.JSONField(default=list)
     featured_image = models.ImageField(upload_to='blog/', blank=True, null=True)
     is_featured = models.BooleanField(default=False)
@@ -472,6 +498,9 @@ class BlogPost(models.Model):
 
     def get_absolute_url(self):
         return reverse('blog_detail', kwargs={'slug': self.slug})
+
+    def get_category_display(self):
+        return self.category.name if self.category_id else ''
 
     def save(self, *args, **kwargs):
         if self.status == 'published' and not self.published_at:

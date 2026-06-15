@@ -7,13 +7,22 @@ import random
 
 from core.models import (
     AboutUs, TeamMember, Solution, ContactInquiry, Feedback, 
-    BlogPost, Article, GalleryItem, Event, SiteSettings
+    BlogPost, Article, GalleryItem, Event, SiteSettings, Category
 )
 
 User = get_user_model()
 
 class Command(BaseCommand):
     help = 'Populate the database with sample data for AI-Solution'
+
+    def get_category(self, content_type, slug):
+        name = slug.replace('_', ' ').title()
+        category, _ = Category.objects.get_or_create(
+            content_type=content_type,
+            slug=slug,
+            defaults={'name': name}
+        )
+        return category
 
     def handle(self, *args, **options):
         self.stdout.write('Creating sample data for AI-Solution...')
@@ -379,6 +388,7 @@ class Command(BaseCommand):
 
         admin_user = User.objects.get(username='admin')
         for solution_data in solutions:
+            solution_data['category'] = self.get_category('solution', solution_data['category'])
             solution, created = Solution.objects.get_or_create(
                 title=solution_data['title'],
                 defaults={**solution_data, 'created_by': admin_user}
@@ -507,6 +517,7 @@ class Command(BaseCommand):
         ]
 
         for blog_data in blog_posts:
+            blog_data['category'] = self.get_category('blog', blog_data['category'])
             blog_post, created = BlogPost.objects.get_or_create(
                 slug=blog_data['slug'],
                 defaults={

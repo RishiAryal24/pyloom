@@ -6,7 +6,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import (
     CustomUser, Feedback, GalleryItem, GalleryItemImage, SiteSettings, AboutUs, Solution,
     ContactInquiry, BlogPost, Article, Event, EventRegistration,
-    Project, Tag, Project_tags, Newsletter, ActivityLog, TeamMember
+    Project, Tag, Project_tags, Newsletter, ActivityLog, TeamMember, Category
 )
 
 User = get_user_model()
@@ -63,6 +63,16 @@ class AboutUsAdmin(admin.ModelAdmin):
 # ---------------------------
 # Solution Admin
 # ---------------------------
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'slug', 'content_type', 'is_active', 'order')
+    list_filter = ('content_type', 'is_active')
+    search_fields = ('name', 'slug')
+    list_editable = ('is_active', 'order')
+    prepopulated_fields = {'slug': ('name',)}
+    ordering = ('content_type', 'order', 'name')
+
+
 @admin.register(Solution)
 class SolutionAdmin(admin.ModelAdmin):
     list_display = ('title', 'category', 'is_featured', 'is_active', 'order', 'created_at')

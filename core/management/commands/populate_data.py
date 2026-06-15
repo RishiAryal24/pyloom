@@ -12,6 +12,15 @@ User = get_user_model()
 class Command(BaseCommand):
     help = 'Populate the database with sample data'
 
+    def get_category(self, content_type, slug):
+        name = slug.replace('_', ' ').title()
+        category, _ = Category.objects.get_or_create(
+            content_type=content_type,
+            slug=slug,
+            defaults={'name': name}
+        )
+        return category
+
     def handle(self, *args, **options):
         self.stdout.write('Populating database with sample data...')
         
@@ -253,6 +262,7 @@ class Command(BaseCommand):
         admin_user = User.objects.get(username='admin')
         
         for solution_data in solutions_data:
+            solution_data['category'] = self.get_category('solution', solution_data['category'])
             solution, created = Solution.objects.get_or_create(
                 title=solution_data['title'],
                 defaults={**solution_data, 'created_by': admin_user}
@@ -356,6 +366,7 @@ The integration of AI in education promises to create more engaging, effective, 
         authors = list(User.objects.filter(role__in=['admin', 'editor']))
         
         for blog_data_item in blog_data:
+            blog_data_item['category'] = self.get_category('blog', blog_data_item['category'])
             post, created = BlogPost.objects.get_or_create(
                 slug=blog_data_item['slug'],
                 defaults={

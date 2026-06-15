@@ -1,5 +1,5 @@
 from django import forms
-from core.models import Solution, BlogPost, CustomUser
+from core.models import Solution, BlogPost, CustomUser, Category
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Row, Column
 from crispy_forms.bootstrap import PrependedText, AppendedText
@@ -44,6 +44,7 @@ class SolutionForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['category'].queryset = Category.objects.filter(content_type='solution', is_active=True)
         self.helper = FormHelper()
         self.helper.layout = Layout(
             'title',
@@ -69,6 +70,7 @@ class BlogPostForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['category'].queryset = Category.objects.filter(content_type='blog', is_active=True)
         self.helper = FormHelper()
         self.helper.layout = Layout(
             'title',
