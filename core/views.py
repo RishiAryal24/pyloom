@@ -117,13 +117,13 @@ def solutions(request):
     
     # Filter by category if provided
     if category:
-        queryset = queryset.filter(category=category)
+        queryset = queryset.filter(category__slug=category)
     
     # Order by 'order' field and 'title' field
     solutions_list = queryset.order_by('order', 'title')
     
     # Fetch categories and complexities for filters
-    categories = Solution.CATEGORY_CHOICES
+    categories = Category.objects.filter(content_type='solution', is_active=True).values_list('slug', 'name')
     # complexities = Solution.COMPLEXITY_CHOICES  # Assuming this exists in your model
     
     context = {
