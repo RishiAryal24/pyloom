@@ -48,9 +48,6 @@
                 <li class="nav-item">
                     <a class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" href="{% url 'core:contact' %}">Contact Us</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if request.resolver_match.url_name == 'chatbot' %}active{% endif %}" href="{% url 'core:chatbot' %}">Chatbot</a>
-                </li>
                 <li class="nav-item ms-lg-2">
                     <a class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 mt-2 mt-lg-0" href="https://pyloomtech.com/webmail" target="_blank" rel="noopener">
                         <i class="bi bi-envelope-at"></i>
