@@ -122,7 +122,8 @@
         <div class="row g-4">
             {% for member in team_members %}
             <div class="col-lg-3 col-md-6">
-                <div class="card border-0 shadow-sm text-center team-card">
+                <div class="card border-0 shadow-sm text-center team-card" role="button" tabindex="0"
+                     data-bs-toggle="modal" data-bs-target="#teamMemberModal{{ member.id }}">
                     {% if member.photo %}
                     <img src="{{ member.photo.url }}" class="card-img-top rounded-circle mx-auto mt-4" 
                          alt="{{ member.name }}" style="width: 120px; height: 120px; object-fit: cover;">
@@ -135,20 +136,66 @@
                     
                     <div class="card-body">
                         <h5 class="card-title fw-bold">{{ member.name }}</h5>
-                        <p class="text-primary fw-semibold">{{ member.role }}</p>
+                        <p class="text-primary fw-semibold">{{ member.get_role_display|upper }}</p>
                         <p class="card-text text-muted small">{{ member.bio|truncatewords:20 }}</p>
+                        <span class="btn btn-sm btn-outline-primary mb-3">View Profile</span>
                         
                         <div class="d-flex justify-content-center gap-2">
                             {% if member.email %}
-                            <a href="mailto:{{ member.email }}" class="btn btn-sm btn-outline-primary">
+                            <a href="mailto:{{ member.email }}" class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation();">
                                 <i class="bi bi-envelope"></i>
                             </a>
                             {% endif %}
                             {% if member.linkedin_url %}
-                            <a href="{{ member.linkedin_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                            <a href="{{ member.linkedin_url }}" target="_blank" class="btn btn-sm btn-outline-primary" rel="noopener" onclick="event.stopPropagation();">
                                 <i class="bi bi-linkedin"></i>
                             </a>
                             {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="teamMemberModal{{ member.id }}" tabindex="-1" aria-labelledby="teamMemberModalLabel{{ member.id }}" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <div>
+                                    <h5 class="modal-title fw-bold" id="teamMemberModalLabel{{ member.id }}">{{ member.name }}</h5>
+                                    <p class="text-primary fw-semibold mb-0">{{ member.get_role_display|upper }}</p>
+                                </div>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row g-4 align-items-start">
+                                    <div class="col-md-4 text-center">
+                                        {% if member.photo %}
+                                        <img src="{{ member.photo.url }}" class="rounded-circle img-fluid mb-3"
+                                             alt="{{ member.name }}" style="width: 160px; height: 160px; object-fit: cover;">
+                                        {% else %}
+                                        <div class="rounded-circle bg-primary d-inline-flex align-items-center justify-content-center mb-3"
+                                             style="width: 160px; height: 160px;">
+                                            <i class="bi bi-person-fill text-white" style="font-size: 4rem;"></i>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-8">
+                                        <h6 class="fw-bold">Bio</h6>
+                                        <div class="text-muted">{{ member.bio|linebreaks }}</div>
+                                        <div class="d-flex gap-2 mt-3">
+                                            {% if member.email %}
+                                            <a href="mailto:{{ member.email }}" class="btn btn-outline-primary btn-sm">
+                                                <i class="bi bi-envelope me-1"></i>Email
+                                            </a>
+                                            {% endif %}
+                                            {% if member.linkedin_url %}
+                                            <a href="{{ member.linkedin_url }}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm">
+                                                <i class="bi bi-linkedin me-1"></i>LinkedIn
+                                            </a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -204,12 +251,29 @@
 {% block extra_css %}
 <style>
 .team-card {
+    cursor: pointer;
     transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.team-card:hover {
+.team-card:hover,
+.team-card:focus {
     transform: translateY(-10px);
     box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important;
+    outline: 2px solid rgba(0, 51, 102, 0.2);
+    outline-offset: 3px;
 }
 </style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.querySelectorAll('.team-card').forEach((card) => {
+    card.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            card.click();
+        }
+    });
+});
+</script>
 {% endblock %}
