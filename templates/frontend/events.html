@@ -6,7 +6,7 @@
 
 {% block content %}
 <!-- Page Header -->
-<section class="py-5 bg-light">
+<section class="page-header-compact bg-light">
     <div class="container">
         <div class="row">
             <div class="col-12 text-center">
@@ -18,7 +18,7 @@
 </section>
 
 <!-- Event Filters -->
-<section class="py-4 border-bottom">
+<section class="page-filter-compact border-bottom">
     <div class="container">
         <div class="d-flex flex-wrap justify-content-center gap-2">
             <a href="{% url 'core:events' %}" class="btn btn-sm {% if not request.GET.type %}btn-brand{% else %}btn-outline-secondary{% endif %}">All Events</a>

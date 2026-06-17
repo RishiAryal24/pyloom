@@ -112,17 +112,25 @@ main > article:first-child .lead {
   margin-bottom: 0;
 }
 
+.page-header-compact,
 .solutions-page-header {
   padding: 2rem 0 1.25rem;
 }
 
+.page-filter-compact,
 .solutions-filter {
   padding: 0.25rem 0 1.5rem;
 }
 
+.page-filter-compact .btn,
 .solutions-filter .btn {
   padding: 0.45rem 0.8rem;
   font-size: 0.95rem;
+}
+
+.page-header-compact h1,
+.solutions-page-header h1 {
+  margin-bottom: 0.65rem !important;
 }
 
 footer.bg-dark {
@@ -160,10 +168,12 @@ footer .footer-social:hover {
     font-size: 1rem;
   }
 
+  .page-header-compact,
   .solutions-page-header {
     padding: 1.5rem 0 1rem;
   }
 
+  .page-filter-compact,
   .solutions-filter {
     padding-bottom: 1.25rem;
   }
