@@ -89,6 +89,15 @@ body {
   background: linear-gradient(135deg, rgba(0, 51, 102, 0.08), rgba(46, 139, 87, 0.08)) !important;
 }
 
+main > section:first-child:not(.hero-section),
+main > article:first-child {
+  padding-top: 2rem !important;
+}
+
+main > section:first-child:not(.hero-section) > .container.py-4 {
+  padding-top: 0 !important;
+}
+
 footer.bg-dark {
   background: var(--pyloom-blue-dark) !important;
   border-top: 4px solid var(--pyloom-gold);
@@ -106,4 +115,11 @@ footer .footer-social:hover {
 .card-hover:hover {
   transform: translateY(-2px);
   box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.12);
+}
+
+@media (max-width: 767.98px) {
+  main > section:first-child:not(.hero-section),
+  main > article:first-child {
+    padding-top: 1.5rem !important;
+  }
 }
