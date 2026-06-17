@@ -112,6 +112,19 @@ main > article:first-child .lead {
   margin-bottom: 0;
 }
 
+.solutions-page-header {
+  padding: 2rem 0 1.25rem;
+}
+
+.solutions-filter {
+  padding: 0.25rem 0 1.5rem;
+}
+
+.solutions-filter .btn {
+  padding: 0.45rem 0.8rem;
+  font-size: 0.95rem;
+}
+
 footer.bg-dark {
   background: var(--pyloom-blue-dark) !important;
   border-top: 4px solid var(--pyloom-gold);
@@ -145,5 +158,13 @@ footer .footer-social:hover {
   main > section:first-child:not(.hero-section) .lead,
   main > article:first-child .lead {
     font-size: 1rem;
+  }
+
+  .solutions-page-header {
+    padding: 1.5rem 0 1rem;
+  }
+
+  .solutions-filter {
+    padding-bottom: 1.25rem;
   }
 }
