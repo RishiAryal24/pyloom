@@ -98,6 +98,20 @@ main > section:first-child:not(.hero-section) > .container.py-4 {
   padding-top: 0 !important;
 }
 
+main > section:first-child:not(.hero-section) :is(.display-4, .display-5),
+main > article:first-child :is(.display-4, .display-5) {
+  font-size: 2.25rem;
+  line-height: 1.15;
+  margin-bottom: 0.75rem !important;
+}
+
+main > section:first-child:not(.hero-section) .lead,
+main > article:first-child .lead {
+  font-size: 1.05rem;
+  line-height: 1.55;
+  margin-bottom: 0;
+}
+
 footer.bg-dark {
   background: var(--pyloom-blue-dark) !important;
   border-top: 4px solid var(--pyloom-gold);
@@ -121,5 +135,15 @@ footer .footer-social:hover {
   main > section:first-child:not(.hero-section),
   main > article:first-child {
     padding-top: 1.5rem !important;
+  }
+
+  main > section:first-child:not(.hero-section) :is(.display-4, .display-5),
+  main > article:first-child :is(.display-4, .display-5) {
+    font-size: 1.8rem;
+  }
+
+  main > section:first-child:not(.hero-section) .lead,
+  main > article:first-child .lead {
+    font-size: 1rem;
   }
 }
