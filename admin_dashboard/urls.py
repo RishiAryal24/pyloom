@@ -1,6 +1,5 @@
 # admin_dashboard/urls.py
 from django.urls import path
-from django.contrib import admin
 from . import views
 
 urlpatterns = [
@@ -37,7 +36,4 @@ urlpatterns = [
     
     # Settings
     path('settings/', views.site_settings, name='admin_settings'),
-    
-    # Default admin route
-    path('admin/', admin.site.urls),
 ]

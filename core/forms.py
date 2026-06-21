@@ -104,7 +104,6 @@ class FeedbackForm(forms.ModelForm):
             'company',
             'rating',
             'comment',
-            'avatar',
             Submit('submit', 'Submit Feedback', css_class='btn btn-primary w-100 mt-3')
         )
 # Newsletter Form

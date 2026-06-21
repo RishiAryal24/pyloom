@@ -415,7 +415,7 @@ def export_csv(request, content_type):
         'users': CustomUser,
         'newsletter': Newsletter,
         'team': TeamMember,
-        'projects': projects,
+        'projects': Project,
     }
     
     if content_type not in model_mapping:
@@ -465,9 +465,6 @@ def toggle_approval(request):
         
         feedback = get_object_or_404(Feedback, id=feedback_id)
         feedback.is_approved = not feedback.is_approved
-        
-        if feedback.is_approved:
-            feedback.approved_by = request.user
         
         feedback.save()
         
@@ -593,7 +590,7 @@ def bulk_action(request):
                 'users': CustomUser,
                 'newsletter': Newsletter,
                 'team': TeamMember,
-                'project': projects,
+                'projects': Project,
             }
             
             if content_type not in model_mapping:
@@ -607,7 +604,7 @@ def bulk_action(request):
                 queryset.delete()
                 messages.success(request, f'{count} items deleted successfully.')
             elif action == 'approve' and content_type == 'feedback':
-                queryset.update(is_approved=True, approved_by=request.user)
+                queryset.update(is_approved=True)
                 messages.success(request, f'{queryset.count()} feedback items approved.')
             elif action == 'mark_read' and content_type == 'inquiries':
                 queryset.update(is_read=True)
@@ -616,7 +613,7 @@ def bulk_action(request):
             # Log bulk action
             ActivityLog.objects.create(
                 user=request.user,
-                action='bulk_' + action,
+                action='delete' if action == 'delete' else 'update',
                 content_type=content_type.capitalize(),
                 object_id=0,
                 object_repr=f'Bulk action on {len(object_ids)} items',
