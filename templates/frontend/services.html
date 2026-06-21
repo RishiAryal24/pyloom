@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Services - {{ settings.site_name|default:"PyLoom" }}{% endblock %}
+
+{% block content %}
+<section class="page-header-compact bg-primary text-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-4 fw-bold mb-3">Services</h1>
+                <p class="lead">AI, automation, and software services built around practical business outcomes.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <h3 class="h5">AI Strategy</h3>
+                        <p class="text-muted mb-0">Roadmaps, opportunity discovery, and implementation planning for AI adoption.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <h3 class="h5">Custom Development</h3>
+                        <p class="text-muted mb-0">Web platforms, dashboards, integrations, and tools tailored to your workflow.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <h3 class="h5">Automation</h3>
+                        <p class="text-muted mb-0">Process automation, data pipelines, and intelligent assistants for daily operations.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if featured_solutions %}
+        <div class="mt-5">
+            <h2 class="h3 mb-4">Featured Solutions</h2>
+            <div class="row g-4">
+                {% for solution in featured_solutions %}
+                <div class="col-md-6 col-lg-4">
+                    <a class="card h-100 shadow-sm border-0 text-decoration-none text-dark" href="{% url 'core:solution_detail' solution.slug %}">
+                        <div class="card-body">
+                            <h3 class="h5">{{ solution.title }}</h3>
+                            <p class="text-muted mb-0">{{ solution.description|truncatewords:22 }}</p>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

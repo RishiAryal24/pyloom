@@ -136,6 +136,24 @@ def solutions(request):
     return render(request, 'frontend/solutions.html', context)
 
 
+def services(request):
+    """Services page"""
+    context = {
+        'settings': SiteSettings.load(),
+        'featured_solutions': Solution.objects.filter(is_active=True, is_featured=True).order_by('order', 'title')[:6],
+    }
+    return render(request, 'frontend/services.html', context)
+
+
+def trainings(request):
+    """Trainings page"""
+    context = {
+        'settings': SiteSettings.load(),
+        'upcoming_events': Event.objects.filter(status='upcoming').order_by('date', 'time')[:6],
+    }
+    return render(request, 'frontend/trainings.html', context)
+
+
 def solution_detail(request, solution_slug):
     """Solution detail page"""
     # Fetch the solution using its slug
@@ -355,15 +373,15 @@ def gallery(request):
     else:
         form = GalleryItemForm()
 
-    category = request.GET.get('category', '')  # filter by category if given
+    event_type = request.GET.get('category', '')  # kept for existing template/query string
 
-    queryset = GalleryItem.objects.all()
-    if category:
-        queryset = queryset.filter(category=category)
+    queryset = GalleryItem.objects.select_related('event').prefetch_related('images')
+    if event_type:
+        queryset = queryset.filter(event__event_type=event_type)
 
-    gallery_items = queryset.order_by('-event_date', 'order')
+    gallery_items = queryset.order_by('-is_featured', 'order', '-created_at')
 
-    categories = GalleryItem.CATEGORY_CHOICES
+    categories = Event.TYPE_CHOICES
 
     # Pagination (optional, 9 per page)
     paginator = Paginator(gallery_items, 9)
@@ -371,12 +389,13 @@ def gallery(request):
     page_obj = paginator.get_page(page_number)
 
     context = {
-    'form': form,
-    'formset': formset,   # <-- Add this
-    'is_edit': bool(instance),
-    'content_type': 'gallery',
-}
-
+        'form': form,
+        'gallery_items': page_obj.object_list,
+        'page_obj': page_obj,
+        'categories': categories,
+        'selected_category': event_type,
+        'settings': SiteSettings.load(),
+    }
 
     return render(request, 'frontend/gallery.html', context)
 
@@ -481,16 +500,19 @@ def chatbot_reset(request):
 def download_article(request, article_id):
     """Download article PDF"""
     article = get_object_or_404(Article, id=article_id)
-    
-    if article.pdf_file:
-        article.download_count += 1
-        article.save(update_fields=['download_count'])
-        
-        response = HttpResponse(article.pdf_file.read(), content_type='application/pdf')
-        response['Content-Disposition'] = f'attachment; filename="{article.title}.pdf"'
-        return response
-    else:
+
+    if not hasattr(article, 'pdf_file'):
+        raise Http404("Article downloads are not configured.")
+
+    if not article.pdf_file:
         raise Http404("PDF file not found")
+
+    article.download_count += 1
+    article.save(update_fields=['download_count'])
+
+    response = HttpResponse(article.pdf_file.read(), content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{article.title}.pdf"'
+    return response
 
 @require_http_methods(["POST"])
 def event_registration(request, event_id):
@@ -587,7 +609,7 @@ def feedback(request):
 def projects(request):
     """Projects page"""
     tag = request.GET.get('tag', '')
-    queryset = Project.objects.all()
+    queryset = Project.objects.order_by('-completed_on', 'title')
     
     if tag:
         queryset = queryset.filter(tags__name__iexact=tag)
