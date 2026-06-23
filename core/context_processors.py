@@ -21,8 +21,11 @@ DEFAULT_SITE_SETTINGS = SimpleNamespace(
 
 def site_settings(request):
     """Add site settings to all templates"""
+    settings_obj = SiteSettings.load() or DEFAULT_SITE_SETTINGS
     return {
-        'settings': SiteSettings.load() or DEFAULT_SITE_SETTINGS
+        'settings': settings_obj,
+        'site_name': getattr(settings_obj, 'site_name', None) or 'PyLoom',
+        'site_slogan': getattr(settings_obj, 'slogan', None) or 'Weaving Innovation Beyond Expectations',
     }
 
 def admin_notifications(request):
