@@ -1,37 +1,64 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}{{ article.title }} - {{ settings.site_name|default:"PyLoom" }}{% endblock %}
+{% block title %}{% if article.meta_title %}{{ article.meta_title }}{% else %}{{ article.title }} - {{ settings.site_name|default:"PyLoom" }}{% endif %}{% endblock %}
 
 {% block description %}
-{{ article.excerpt|default:article.content|striptags|truncatewords:30 }}
+{% if article.meta_description %}{{ article.meta_description|striptags }}{% else %}{{ article.excerpt|default:article.content|striptags|truncatewords:30 }}{% endif %}
 {% endblock %}
+{% block canonical_url %}{% if article.canonical_url %}{{ article.canonical_url }}{% else %}{{ request.build_absolute_uri }}{% endif %}{% endblock %}
 {% block og_type %}article{% endblock %}
-{% block og_title %}{{ article.title }} - {{ settings.site_name|default:"PyLoom" }}{% endblock %}
-{% block og_description %}{{ article.excerpt|default:article.content|striptags|truncatewords:30 }}{% endblock %}
-{% if article.featured_image %}
-{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{{ article.featured_image.url }}{% endblock %}
-{% block twitter_image %}{{ request.scheme }}://{{ request.get_host }}{{ article.featured_image.url }}{% endblock %}
-{% endif %}
+{% block og_title %}{% if article.meta_title %}{{ article.meta_title }}{% else %}{{ article.title }} - {{ settings.site_name|default:"PyLoom" }}{% endif %}{% endblock %}
+{% block og_description %}{% if article.meta_description %}{{ article.meta_description|striptags }}{% else %}{{ article.excerpt|default:article.content|striptags|truncatewords:30 }}{% endif %}{% endblock %}
+{% block twitter_title %}{% if article.meta_title %}{{ article.meta_title }}{% else %}{{ article.title }} - {{ settings.site_name|default:"PyLoom" }}{% endif %}{% endblock %}
+{% block twitter_description %}{% if article.meta_description %}{{ article.meta_description|striptags }}{% else %}{{ article.excerpt|default:article.content|striptags|truncatewords:30 }}{% endif %}{% endblock %}
+{% block og_image %}{% if article.og_image %}{{ request.scheme }}://{{ request.get_host }}{{ article.og_image.url }}{% elif article.featured_image %}{{ request.scheme }}://{{ request.get_host }}{{ article.featured_image.url }}{% else %}{{ block.super }}{% endif %}{% endblock %}
+{% block twitter_image %}{% if article.og_image %}{{ request.scheme }}://{{ request.get_host }}{{ article.og_image.url }}{% elif article.featured_image %}{{ request.scheme }}://{{ request.get_host }}{{ article.featured_image.url }}{% else %}{{ block.super }}{% endif %}{% endblock %}
 {% block structured_data %}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "{{ article.title|escapejs }}",
-  "description": "{{ article.excerpt|default:article.content|striptags|truncatewords:40|escapejs }}",
+  "headline": "{% if article.meta_title %}{{ article.meta_title|escapejs }}{% else %}{{ article.title|escapejs }}{% endif %}",
+  "description": "{% if article.meta_description %}{{ article.meta_description|striptags|escapejs }}{% else %}{{ article.excerpt|default:article.content|striptags|truncatewords:40|escapejs }}{% endif %}",
   "datePublished": "{{ article.published_at|date:'c' }}",
   "dateModified": "{{ article.updated_at|date:'c' }}",
   "author": {
     "@type": "Person",
-    "name": "{{ article.author|default:settings.site_name|default:'PyLoom'|escapejs }}"
+    "name": "{{ article.author|default:'PyLoom'|escapejs }}"
   },
   "publisher": {
     "@type": "Organization",
     "name": "{{ settings.site_name|default:'PyLoom'|escapejs }}"
   },
-  "mainEntityOfPage": "{{ request.build_absolute_uri }}"{% if article.featured_image %},
-  "image": "{{ request.scheme }}://{{ request.get_host }}{{ article.featured_image.url }}"{% endif %}
+  "mainEntityOfPage": "{{ request.build_absolute_uri }}"{% if article.og_image or article.featured_image %},
+  "image": "{% if article.og_image %}{{ request.scheme }}://{{ request.get_host }}{{ article.og_image.url }}{% else %}{{ request.scheme }}://{{ request.get_host }}{{ article.featured_image.url }}{% endif %}"{% endif %}
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'core:home' %}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Articles",
+      "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'core:articles' %}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "{{ article.title|escapejs }}",
+      "item": "{{ request.build_absolute_uri }}"
+    }
+  ]
 }
 </script>
 {% endblock %}

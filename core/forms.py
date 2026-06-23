@@ -132,6 +132,10 @@ class SolutionForm(forms.ModelForm):
             'faqs',
             'demo_url',  # Added this field
             'image',
+            'meta_title',
+            'meta_description',
+            'canonical_url',
+            'og_image',
         ]
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Solution Title'}),
@@ -145,6 +149,10 @@ class SolutionForm(forms.ModelForm):
             'faqs': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Enter FAQs as JSON list of dicts'}),
             'demo_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'Demo URL'}),  # Widget for demo_url
             'image': forms.ClearableFileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
+            'meta_title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'SEO title, 50-60 characters'}),
+            'meta_description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'SEO description, 150-160 characters'}),
+            'canonical_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'Optional canonical URL'}),
+            'og_image': forms.ClearableFileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -164,6 +172,10 @@ class SolutionForm(forms.ModelForm):
             'faqs',
             'demo_url',  # Ensure demo_url is in the layout
             'image',
+            'meta_title',
+            'meta_description',
+            'canonical_url',
+            'og_image',
             Submit('submit', 'Save Solution', css_class='btn btn-primary')
         )
 
@@ -171,7 +183,7 @@ class SolutionForm(forms.ModelForm):
 class BlogPostForm(forms.ModelForm):
     class Meta:
         model = BlogPost
-        fields = ['title', 'content', 'category', 'status', 'excerpt', 'featured_image']
+        fields = ['title', 'content', 'category', 'status', 'excerpt', 'featured_image', 'meta_title', 'meta_description', 'canonical_url', 'og_image']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Blog Title'}),
             'content': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Blog Content'}),
@@ -179,6 +191,10 @@ class BlogPostForm(forms.ModelForm):
             'status': forms.Select(attrs={'class': 'form-select'}),
             'excerpt': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Short excerpt for the blog'}),
             'featured_image': forms.ClearableFileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
+            'meta_title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'SEO title, 50-60 characters'}),
+            'meta_description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'SEO description, 150-160 characters'}),
+            'canonical_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'Optional canonical URL'}),
+            'og_image': forms.ClearableFileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -192,6 +208,10 @@ class BlogPostForm(forms.ModelForm):
             'status',
             'excerpt',
             'featured_image',
+            'meta_title',
+            'meta_description',
+            'canonical_url',
+            'og_image',
             Submit('submit', 'Save Blog Post', css_class='btn btn-primary')
         )
 
@@ -244,7 +264,8 @@ class EventForm(forms.ModelForm):
         fields = [
             'title', 'description', 'event_type', 'date', 'time', 'location',
             'capacity', 'price', 'featured_image', 'speakers', 'agenda',
-            'status', 'is_featured', 'registration_url', 'is_promoted'
+            'status', 'is_featured', 'registration_url', 'is_promoted',
+            'meta_title', 'meta_description', 'canonical_url', 'og_image'
         ]
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
@@ -262,6 +283,10 @@ class EventForm(forms.ModelForm):
             'is_featured': forms.CheckboxInput(),
             'is_promoted': forms.CheckboxInput(),
             'registration_url': forms.URLInput(attrs={'class': 'form-control'}),
+            'meta_title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'SEO title, 50-60 characters'}),
+            'meta_description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'SEO description, 150-160 characters'}),
+            'canonical_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'Optional canonical URL'}),
+            'og_image': forms.ClearableFileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
         }
 
     def clean_speakers(self):
@@ -310,6 +335,10 @@ class ArticleForm(forms.ModelForm):
             'status', 
             'is_featured',
             'published_at',  # optional, if you want to allow setting publish date
+            'meta_title',
+            'meta_description',
+            'canonical_url',
+            'og_image',
         ]
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Article Title'}),
@@ -322,6 +351,10 @@ class ArticleForm(forms.ModelForm):
             'status': forms.Select(attrs={'class': 'form-select'}),
             'is_featured': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'published_at': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
+            'meta_title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'SEO title, 50-60 characters'}),
+            'meta_description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'SEO description, 150-160 characters'}),
+            'canonical_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'Optional canonical URL'}),
+            'og_image': forms.ClearableFileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -339,6 +372,10 @@ class ArticleForm(forms.ModelForm):
             'status',
             'is_featured',
             'published_at',
+            'meta_title',
+            'meta_description',
+            'canonical_url',
+            'og_image',
             Submit('submit', 'Save Article', css_class='btn btn-primary')
         )
 
@@ -346,7 +383,7 @@ class ArticleForm(forms.ModelForm):
 class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
-        fields = ['title', 'summary', 'description', 'cover_image', 'tags', 'completed_on', 'slug']
+        fields = ['title', 'summary', 'description', 'cover_image', 'tags', 'completed_on', 'slug', 'meta_title', 'meta_description', 'canonical_url', 'og_image']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'summary': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
@@ -355,6 +392,10 @@ class ProjectForm(forms.ModelForm):
             'tags': forms.SelectMultiple(attrs={'class': 'form-select'}),
             'completed_on': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'slug': forms.TextInput(attrs={'class': 'form-control'}),
+            'meta_title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'SEO title, 50-60 characters'}),
+            'meta_description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'SEO description, 150-160 characters'}),
+            'canonical_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'Optional canonical URL'}),
+            'og_image': forms.ClearableFileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
         }
 class AboutUsForm(forms.ModelForm):
     class Meta:

@@ -158,6 +158,10 @@ class Solution(models.Model):
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     slug = models.SlugField(max_length=200, blank=True)
     demo_url = models.URLField(blank=True, null=True)
+    meta_title = models.CharField(max_length=70, blank=True, help_text="Optional SEO title. Recommended: 50-60 characters.")
+    meta_description = models.TextField(blank=True, help_text="Optional SEO description. Recommended: 150-160 characters.")
+    canonical_url = models.URLField(blank=True, help_text="Optional canonical URL if this content has a preferred external URL.")
+    og_image = models.ImageField(upload_to='seo/', blank=True, null=True, help_text="Optional social sharing image.")
 
     class Meta:
         ordering = ['order', 'title']
@@ -195,6 +199,10 @@ class Project(models.Model):
     completed_on = models.DateField()
     slug = models.SlugField(max_length=200, blank=True)
     views_count = models.PositiveIntegerField(default=0) 
+    meta_title = models.CharField(max_length=70, blank=True, help_text="Optional SEO title. Recommended: 50-60 characters.")
+    meta_description = models.TextField(blank=True, help_text="Optional SEO description. Recommended: 150-160 characters.")
+    canonical_url = models.URLField(blank=True, help_text="Optional canonical URL if this content has a preferred external URL.")
+    og_image = models.ImageField(upload_to='seo/', blank=True, null=True, help_text="Optional social sharing image.")
 
     def __str__(self):
         return self.title
@@ -267,6 +275,10 @@ class Article(models.Model):
     is_featured = models.BooleanField(default=False)
     download_count = models.PositiveIntegerField(default=0)
     slug = models.SlugField(max_length=200, blank=True)
+    meta_title = models.CharField(max_length=70, blank=True, help_text="Optional SEO title. Recommended: 50-60 characters.")
+    meta_description = models.TextField(blank=True, help_text="Optional SEO description. Recommended: 150-160 characters.")
+    canonical_url = models.URLField(blank=True, help_text="Optional canonical URL if this content has a preferred external URL.")
+    og_image = models.ImageField(upload_to='seo/', blank=True, null=True, help_text="Optional social sharing image.")
 
     class Meta:
         ordering = ['-published_at']
@@ -328,6 +340,10 @@ class Event(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     views_count = models.PositiveIntegerField(default=0) 
+    meta_title = models.CharField(max_length=70, blank=True, help_text="Optional SEO title. Recommended: 50-60 characters.")
+    meta_description = models.TextField(blank=True, help_text="Optional SEO description. Recommended: 150-160 characters.")
+    canonical_url = models.URLField(blank=True, help_text="Optional canonical URL if this content has a preferred external URL.")
+    og_image = models.ImageField(upload_to='seo/', blank=True, null=True, help_text="Optional social sharing image.")
     
     class Meta:
         ordering = ['date', 'time']
@@ -489,6 +505,10 @@ class BlogPost(models.Model):
     published_at = models.DateTimeField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    meta_title = models.CharField(max_length=70, blank=True, help_text="Optional SEO title. Recommended: 50-60 characters.")
+    meta_description = models.TextField(blank=True, help_text="Optional SEO description. Recommended: 150-160 characters.")
+    canonical_url = models.URLField(blank=True, help_text="Optional canonical URL if this content has a preferred external URL.")
+    og_image = models.ImageField(upload_to='seo/', blank=True, null=True, help_text="Optional social sharing image.")
 
     class Meta:
         ordering = ['-published_at', '-created_at']

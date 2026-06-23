@@ -1,22 +1,23 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ solution.title }} - {{ settings.site_name }}{% endblock %}
-{% block description %}{{ solution.description|striptags|truncatewords:30 }}{% endblock %}
+{% block title %}{% if solution.meta_title %}{{ solution.meta_title }}{% else %}{{ solution.title }} - {{ settings.site_name }}{% endif %}{% endblock %}
+{% block description %}{% if solution.meta_description %}{{ solution.meta_description|striptags }}{% else %}{{ solution.description|striptags|truncatewords:30 }}{% endif %}{% endblock %}
+{% block canonical_url %}{% if solution.canonical_url %}{{ solution.canonical_url }}{% else %}{{ request.build_absolute_uri }}{% endif %}{% endblock %}
 {% block og_type %}article{% endblock %}
-{% block og_title %}{{ solution.title }} - {{ settings.site_name|default:"PyLoom" }}{% endblock %}
-{% block og_description %}{{ solution.description|striptags|truncatewords:30 }}{% endblock %}
-{% if solution.image %}
-{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{{ solution.image.url }}{% endblock %}
-{% block twitter_image %}{{ request.scheme }}://{{ request.get_host }}{{ solution.image.url }}{% endblock %}
-{% endif %}
+{% block og_title %}{% if solution.meta_title %}{{ solution.meta_title }}{% else %}{{ solution.title }} - {{ settings.site_name|default:"PyLoom" }}{% endif %}{% endblock %}
+{% block og_description %}{% if solution.meta_description %}{{ solution.meta_description|striptags }}{% else %}{{ solution.description|striptags|truncatewords:30 }}{% endif %}{% endblock %}
+{% block twitter_title %}{% if solution.meta_title %}{{ solution.meta_title }}{% else %}{{ solution.title }} - {{ settings.site_name|default:"PyLoom" }}{% endif %}{% endblock %}
+{% block twitter_description %}{% if solution.meta_description %}{{ solution.meta_description|striptags }}{% else %}{{ solution.description|striptags|truncatewords:30 }}{% endif %}{% endblock %}
+{% block og_image %}{% if solution.og_image %}{{ request.scheme }}://{{ request.get_host }}{{ solution.og_image.url }}{% elif solution.image %}{{ request.scheme }}://{{ request.get_host }}{{ solution.image.url }}{% else %}{{ block.super }}{% endif %}{% endblock %}
+{% block twitter_image %}{% if solution.og_image %}{{ request.scheme }}://{{ request.get_host }}{{ solution.og_image.url }}{% elif solution.image %}{{ request.scheme }}://{{ request.get_host }}{{ solution.image.url }}{% else %}{{ block.super }}{% endif %}{% endblock %}
 {% block structured_data %}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "Service",
-  "name": "{{ solution.title|escapejs }}",
-  "description": "{{ solution.description|striptags|truncatewords:40|escapejs }}",
+  "name": "{% if solution.meta_title %}{{ solution.meta_title|escapejs }}{% else %}{{ solution.title|escapejs }}{% endif %}",
+  "description": "{% if solution.meta_description %}{{ solution.meta_description|striptags|escapejs }}{% else %}{{ solution.description|striptags|truncatewords:40|escapejs }}{% endif %}",
   "provider": {
     "@type": "Organization",
     "name": "{{ settings.site_name|default:'PyLoom'|escapejs }}",
@@ -25,6 +26,52 @@
   "url": "{{ request.build_absolute_uri }}"
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'core:home' %}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Solutions",
+      "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'core:solutions' %}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "{{ solution.title|escapejs }}",
+      "item": "{{ request.build_absolute_uri }}"
+    }
+  ]
+}
+</script>
+{% if solution.faqs %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {% for faq in solution.faqs %}
+    {
+      "@type": "Question",
+      "name": "{{ faq.question|striptags|escapejs }}",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{{ faq.answer|striptags|escapejs }}"
+      }
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ]
+}
+</script>
+{% endif %}
 {% endblock %}
 
 {% block content %}
