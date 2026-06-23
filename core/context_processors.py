@@ -1,9 +1,28 @@
+from types import SimpleNamespace
+
 from .models import SiteSettings, ContactInquiry, Feedback
+
+
+DEFAULT_SITE_SETTINGS = SimpleNamespace(
+    site_name='PyLoom',
+    slogan='Weaving Innovation Beyond Expectations',
+    logo=None,
+    favicon=None,
+    contact_email='',
+    contact_phone='',
+    address='',
+    facebook_url='',
+    twitter_url='',
+    linkedin_url='',
+    instagram_url='',
+    youtube_url='',
+    maintenance_mode=False,
+)
 
 def site_settings(request):
     """Add site settings to all templates"""
     return {
-        'settings': SiteSettings.load()
+        'settings': SiteSettings.load() or DEFAULT_SITE_SETTINGS
     }
 
 def admin_notifications(request):
