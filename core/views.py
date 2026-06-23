@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse, HttpResponse, Http404
 from django.contrib import messages
 from django.core.paginator import Paginator
+from django.db import DatabaseError
 from django.db.models import Q
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
@@ -18,6 +19,18 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 import requests
+import logging
+
+
+logger = logging.getLogger('django')
+
+
+def _safe_content_list(queryset, label):
+    try:
+        return list(queryset)
+    except DatabaseError:
+        logger.exception("Unable to load %s; rendering the page without that content.", label)
+        return []
 
 
 def _absolute_url(request, url_name, *args, **kwargs):
@@ -89,17 +102,26 @@ def home(request):
         'values': 'No values available.'
     }
     # Get Latest 3 Solutions
-    latest_solutions = Solution.objects.filter(is_active=True).order_by('-created_at')[:3]
+    latest_solutions = _safe_content_list(
+        Solution.objects.filter(is_active=True).order_by('-created_at')[:3],
+        'homepage solutions',
+    )
 
     # Get latest 3 projects
-    latest_projects = Project.objects.order_by('-completed_on')[:3]
+    latest_projects = _safe_content_list(
+        Project.objects.order_by('-completed_on')[:3],
+        'homepage projects',
+    )
 
 
     # Get latest 3 articles
-    latest_articles = Article.objects.filter(status='published').order_by('-published_at')[:3]
+    latest_articles = _safe_content_list(
+        Article.objects.filter(status='published').order_by('-published_at')[:3],
+        'homepage articles',
+    )
 
     # Get all featured Feedbacks
-    feedbacks = Feedback.objects.all()[:5]
+    feedbacks = _safe_content_list(Feedback.objects.all()[:5], 'homepage feedback')
     
 
     context = {
@@ -141,10 +163,19 @@ def solutions(request):
         queryset = queryset.filter(category__slug=category)
     
     # Order by 'order' field and 'title' field
-    solutions_list = queryset.order_by('order', 'title')
+    solutions_list = _safe_content_list(
+        queryset.order_by('order', 'title'),
+        'solutions',
+    )
     
     # Fetch categories and complexities for filters
-    categories = Category.objects.filter(content_type='solution', is_active=True).values_list('slug', 'name')
+    categories = _safe_content_list(
+        Category.objects.filter(
+            content_type='solution',
+            is_active=True,
+        ).values_list('slug', 'name'),
+        'solution categories',
+    )
     # complexities = Solution.COMPLEXITY_CHOICES  # Assuming this exists in your model
     
     context = {
@@ -161,7 +192,13 @@ def services(request):
     """Services page"""
     context = {
         'settings': SiteSettings.load(),
-        'featured_solutions': Solution.objects.filter(is_active=True, is_featured=True).order_by('order', 'title')[:6],
+        'featured_solutions': _safe_content_list(
+            Solution.objects.filter(
+                is_active=True,
+                is_featured=True,
+            ).order_by('order', 'title')[:6],
+            'featured solutions',
+        ),
     }
     return render(request, 'frontend/services.html', context)
 
@@ -170,7 +207,10 @@ def trainings(request):
     """Trainings page"""
     context = {
         'settings': SiteSettings.load(),
-        'upcoming_events': Event.objects.filter(status='upcoming').order_by('date', 'time')[:6],
+        'upcoming_events': _safe_content_list(
+            Event.objects.filter(status='upcoming').order_by('date', 'time')[:6],
+            'upcoming training events',
+        ),
     }
     return render(request, 'frontend/trainings.html', context)
 
