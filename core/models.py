@@ -73,7 +73,13 @@ class SiteSettings(models.Model):
 
     @classmethod
     def load(cls):
-        return cls.objects.first()
+        return cls.objects.first() or cls(
+            site_name="PyLoom",
+            slogan="Weaving Innovation Beyond Expectations",
+            contact_email="",
+            contact_phone="",
+            address="",
+        )
 
 # ----------------------------
 # Feedback Model
