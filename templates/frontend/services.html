@@ -50,7 +50,7 @@
             <div class="row g-4">
                 {% for solution in featured_solutions %}
                 <div class="col-md-6 col-lg-4">
-                    <a class="card h-100 shadow-sm border-0 text-decoration-none text-dark" href="{% url 'core:solution_detail' solution.slug %}">
+                    <a class="card h-100 shadow-sm border-0 text-decoration-none text-dark" href="{% if solution.slug %}{% url 'core:solution_detail' solution.slug %}{% else %}{% url 'core:solutions' %}{% endif %}">
                         <div class="card-body">
                             <h3 class="h5">{{ solution.title }}</h3>
                             <p class="text-muted mb-0">{{ solution.description|truncatewords:22 }}</p>
