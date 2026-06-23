@@ -82,7 +82,7 @@
                         {% endif %}
 
                         <div class="d-flex gap-2 mt-auto align-items-center">
-                            <a href="{% url 'core:solution_detail' solution.slug %}" class="btn btn-sm btn-primary">
+                            <a href="{% if solution.slug %}{% url 'core:solution_detail' solution.slug %}{% else %}{% url 'core:solutions' %}{% endif %}" class="btn btn-sm btn-primary">
                                 Learn More
                             </a>
                             <button class="btn btn-sm btn-outline-primary demo-btn" data-demo-url="{{ solution.demo_url }}">

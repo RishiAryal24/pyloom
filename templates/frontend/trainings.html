@@ -50,7 +50,7 @@
             <div class="row g-4">
                 {% for event in upcoming_events %}
                 <div class="col-md-6 col-lg-4">
-                    <a class="card h-100 shadow-sm border-0 text-decoration-none text-dark" href="{% url 'core:event_detail' event.slug %}">
+                    <a class="card h-100 shadow-sm border-0 text-decoration-none text-dark" href="{% if event.slug %}{% url 'core:event_detail' event.slug %}{% else %}{% url 'core:events' %}{% endif %}">
                         <div class="card-body">
                             <h3 class="h5">{{ event.title }}</h3>
                             <p class="text-muted mb-2">{{ event.date|date:"M d, Y" }} at {{ event.time|time:"g:i A" }}</p>
