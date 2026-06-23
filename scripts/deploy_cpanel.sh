@@ -12,7 +12,7 @@ if [ -n "$VIRTUAL_ENV" ] && [ -x "$VIRTUAL_ENV/bin/python" ]; then
   PYTHON_BIN="$VIRTUAL_ENV/bin/python"
 elif [ -d "$HOME/virtualenv" ]; then
   PROJECT_NAME="$(basename "$APP_DIR")"
-  PYTHON_BIN="$(find "$HOME/virtualenv" -path "*/$PROJECT_NAME/*/bin/python" -type f -executable 2>/dev/null | head -n 1)"
+  PYTHON_BIN="$(find -L "$HOME/virtualenv" -path "*/$PROJECT_NAME/*/bin/python" -executable 2>/dev/null | head -n 1)"
 fi
 
 if [ -z "$PYTHON_BIN" ]; then
