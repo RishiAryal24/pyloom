@@ -4,10 +4,8 @@ Use cPanel's **Setup Python App** for this project. The old static-file copy flo
 
 After the first Python App setup, Git deployment can run automatically through `.cpanel.yml`. It calls `scripts/deploy_cpanel.sh`, which installs dependencies, runs migrations, collects static files, and restarts Passenger.
 
-The deploy script also maintains the Passenger block in `~/public_html/.htaccess`.
-This prevents the domain root from falling back to LiteSpeed's generic 404 page.
-If a legacy `~/public_html/index.html` exists, the first deployment renames it to
-`index.html.pre-passenger` so it cannot override Django.
+CloudLinux/cPanel owns the Passenger block in `~/public_html/.htaccess`.
+The deployment script deliberately does not rewrite it.
 
 ## Python App
 
@@ -46,9 +44,6 @@ On every cPanel Git deployment, `.cpanel.yml` runs:
 
 The script tries to find the active cPanel virtualenv automatically. If cPanel has not created the Python App yet, the script will stop and ask you to create it first.
 
-By default, the domain document root is assumed to be `~/public_html`. For a
-different document root, define `PUBLIC_ROOT` in the deployment environment.
-
 ## Manual First-Time Commands
 
 If you need to run the steps manually, use:
@@ -62,18 +57,17 @@ python manage.py createsuperuser
 
 Restart the Python app after changes. The `.cpanel.yml` file also touches `tmp/restart.txt` during Git deployment so Passenger reloads the app.
 
-If the public site returns a small LiteSpeed 404 page for every URL, redeploy
-the repository and verify that `~/public_html/.htaccess` contains:
+If static files work but every Django URL returns LiteSpeed's small 404 page,
+restart or recreate the application through cPanel's **Setup Python App**.
+Its CloudLinux-managed block should contain directives equivalent to:
 
 ```apache
-# BEGIN PYLOOM PASSENGER
 PassengerEnabled on
 PassengerAppType wsgi
 PassengerStartupFile passenger_wsgi.py
 PassengerAppRoot "/absolute/path/to/the/repository"
 PassengerBaseURI "/"
 PassengerPython "/absolute/path/to/the/cpanel/virtualenv/bin/python"
-# END PYLOOM PASSENGER
 ```
 
 ## URLs
