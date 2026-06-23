@@ -1,10 +1,39 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}{{ article.title }} - AI-Solutions{% endblock %}
+{% block title %}{{ article.title }} - {{ settings.site_name|default:"PyLoom" }}{% endblock %}
 
 {% block description %}
 {{ article.excerpt|default:article.content|striptags|truncatewords:30 }}
+{% endblock %}
+{% block og_type %}article{% endblock %}
+{% block og_title %}{{ article.title }} - {{ settings.site_name|default:"PyLoom" }}{% endblock %}
+{% block og_description %}{{ article.excerpt|default:article.content|striptags|truncatewords:30 }}{% endblock %}
+{% if article.featured_image %}
+{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{{ article.featured_image.url }}{% endblock %}
+{% block twitter_image %}{{ request.scheme }}://{{ request.get_host }}{{ article.featured_image.url }}{% endblock %}
+{% endif %}
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "{{ article.title|escapejs }}",
+  "description": "{{ article.excerpt|default:article.content|striptags|truncatewords:40|escapejs }}",
+  "datePublished": "{{ article.published_at|date:'c' }}",
+  "dateModified": "{{ article.updated_at|date:'c' }}",
+  "author": {
+    "@type": "Person",
+    "name": "{{ article.author|default:settings.site_name|default:'PyLoom'|escapejs }}"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "{{ settings.site_name|default:'PyLoom'|escapejs }}"
+  },
+  "mainEntityOfPage": "{{ request.build_absolute_uri }}"{% if article.featured_image %},
+  "image": "{{ request.scheme }}://{{ request.get_host }}{{ article.featured_image.url }}"{% endif %}
+}
+</script>
 {% endblock %}
 
 {% block content %}

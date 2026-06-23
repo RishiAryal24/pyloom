@@ -6,6 +6,8 @@ from django.conf.urls.static import static
 from django.views.static import serve
 
 urlpatterns = [
+    path('robots.txt', views.robots_txt, name='robots_txt'),
+    path('sitemap.xml', views.sitemap_xml, name='sitemap_xml'),
     path('django-admin/', admin.site.urls),  # Custom admin URL (if necessary)
     path('admin/', include('admin_dashboard.urls')),  # Custom admin URLs
     path('', views.home, name='home'),  # Home page URL for 'Back to site'
