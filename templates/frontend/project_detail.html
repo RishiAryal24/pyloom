@@ -2,30 +2,57 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}{{ project.title }} - {{ settings.site_name|default:"PyLoom" }}{% endblock %}
-{% block description %}{{ project.summary|striptags|truncatewords:30 }}{% endblock %}
+{% block title %}{% if project.meta_title %}{{ project.meta_title }}{% else %}{{ project.title }} - {{ settings.site_name|default:"PyLoom" }}{% endif %}{% endblock %}
+{% block description %}{% if project.meta_description %}{{ project.meta_description|striptags }}{% else %}{{ project.summary|striptags|truncatewords:30 }}{% endif %}{% endblock %}
+{% block canonical_url %}{% if project.canonical_url %}{{ project.canonical_url }}{% else %}{{ request.build_absolute_uri }}{% endif %}{% endblock %}
 {% block og_type %}article{% endblock %}
-{% block og_title %}{{ project.title }} - {{ settings.site_name|default:"PyLoom" }}{% endblock %}
-{% block og_description %}{{ project.summary|striptags|truncatewords:30 }}{% endblock %}
-{% if project.cover_image %}
-{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{{ project.cover_image.url }}{% endblock %}
-{% block twitter_image %}{{ request.scheme }}://{{ request.get_host }}{{ project.cover_image.url }}{% endblock %}
-{% endif %}
+{% block og_title %}{% if project.meta_title %}{{ project.meta_title }}{% else %}{{ project.title }} - {{ settings.site_name|default:"PyLoom" }}{% endif %}{% endblock %}
+{% block og_description %}{% if project.meta_description %}{{ project.meta_description|striptags }}{% else %}{{ project.summary|striptags|truncatewords:30 }}{% endif %}{% endblock %}
+{% block twitter_title %}{% if project.meta_title %}{{ project.meta_title }}{% else %}{{ project.title }} - {{ settings.site_name|default:"PyLoom" }}{% endif %}{% endblock %}
+{% block twitter_description %}{% if project.meta_description %}{{ project.meta_description|striptags }}{% else %}{{ project.summary|striptags|truncatewords:30 }}{% endif %}{% endblock %}
+{% block og_image %}{% if project.og_image %}{{ request.scheme }}://{{ request.get_host }}{{ project.og_image.url }}{% elif project.cover_image %}{{ request.scheme }}://{{ request.get_host }}{{ project.cover_image.url }}{% else %}{{ block.super }}{% endif %}{% endblock %}
+{% block twitter_image %}{% if project.og_image %}{{ request.scheme }}://{{ request.get_host }}{{ project.og_image.url }}{% elif project.cover_image %}{{ request.scheme }}://{{ request.get_host }}{{ project.cover_image.url }}{% else %}{{ block.super }}{% endif %}{% endblock %}
 {% block structured_data %}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "CreativeWork",
-  "name": "{{ project.title|escapejs }}",
-  "description": "{{ project.summary|striptags|truncatewords:40|escapejs }}",
+  "name": "{% if project.meta_title %}{{ project.meta_title|escapejs }}{% else %}{{ project.title|escapejs }}{% endif %}",
+  "description": "{% if project.meta_description %}{{ project.meta_description|striptags|escapejs }}{% else %}{{ project.summary|striptags|truncatewords:40|escapejs }}{% endif %}",
   "dateCreated": "{{ project.completed_on|date:'Y-m-d' }}",
   "creator": {
     "@type": "Organization",
     "name": "{{ settings.site_name|default:'PyLoom'|escapejs }}",
     "url": "{{ request.scheme }}://{{ request.get_host }}"
   },
-  "url": "{{ request.build_absolute_uri }}"{% if project.cover_image %},
-  "image": "{{ request.scheme }}://{{ request.get_host }}{{ project.cover_image.url }}"{% endif %}
+  "url": "{{ request.build_absolute_uri }}"{% if project.og_image or project.cover_image %},
+  "image": "{% if project.og_image %}{{ request.scheme }}://{{ request.get_host }}{{ project.og_image.url }}{% else %}{{ request.scheme }}://{{ request.get_host }}{{ project.cover_image.url }}{% endif %}"{% endif %}
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'core:home' %}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Projects",
+      "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'core:projects' %}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "{{ project.title|escapejs }}",
+      "item": "{{ request.build_absolute_uri }}"
+    }
+  ]
 }
 </script>
 {% endblock %}
