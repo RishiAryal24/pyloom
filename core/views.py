@@ -10,6 +10,7 @@ from django.utils import timezone
 import json
 import random
 from django.urls import reverse
+from django.utils.html import escape
 from django.core.paginator import Paginator
 from .forms import ClientLoginForm, ContactForm, FeedbackForm, NewsletterForm, ArticleForm ,EventForm, GalleryItemForm, ClientSignupForm
 from .models import *
@@ -17,6 +18,26 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 import requests
+
+
+def _absolute_url(request, url_name, *args, **kwargs):
+    return request.build_absolute_uri(reverse(url_name, args=args, kwargs=kwargs))
+
+
+def _sitemap_url(location, lastmod=None, priority='0.7', changefreq='monthly'):
+    lastmod_xml = ''
+    if lastmod:
+        if hasattr(lastmod, 'date'):
+            lastmod = lastmod.date()
+        lastmod_xml = f'<lastmod>{lastmod.isoformat()}</lastmod>'
+    return (
+        '<url>'
+        f'<loc>{escape(location)}</loc>'
+        f'{lastmod_xml}'
+        f'<changefreq>{changefreq}</changefreq>'
+        f'<priority>{priority}</priority>'
+        '</url>'
+    )
 
 
 
@@ -439,6 +460,78 @@ def newsletter_signup(request):
         return JsonResponse({'success': False, 'message': 'Please enter a valid email address.'})
     except Exception:
         return JsonResponse({'success': False, 'message': 'An error occurred. Please try again.'})
+
+
+def robots_txt(request):
+    """Search crawler instructions."""
+    sitemap_url = request.build_absolute_uri(reverse('sitemap_xml'))
+    lines = [
+        'User-agent: *',
+        'Allow: /',
+        'Disallow: /admin/',
+        'Disallow: /django-admin/',
+        'Disallow: /login/',
+        'Disallow: /signup/',
+        'Disallow: /feedback/',
+        'Disallow: /api/',
+        f'Sitemap: {sitemap_url}',
+    ]
+    return HttpResponse('\n'.join(lines), content_type='text/plain')
+
+
+def sitemap_xml(request):
+    """XML sitemap for public marketing and content pages."""
+    urls = [
+        _sitemap_url(_absolute_url(request, 'core:home'), priority='1.0', changefreq='weekly'),
+        _sitemap_url(_absolute_url(request, 'core:about'), priority='0.8', changefreq='monthly'),
+        _sitemap_url(_absolute_url(request, 'core:solutions'), priority='0.9', changefreq='weekly'),
+        _sitemap_url(_absolute_url(request, 'core:services'), priority='0.8', changefreq='monthly'),
+        _sitemap_url(_absolute_url(request, 'core:trainings'), priority='0.7', changefreq='weekly'),
+        _sitemap_url(_absolute_url(request, 'core:events'), priority='0.8', changefreq='weekly'),
+        _sitemap_url(_absolute_url(request, 'core:articles'), priority='0.8', changefreq='weekly'),
+        _sitemap_url(_absolute_url(request, 'core:gallery'), priority='0.6', changefreq='monthly'),
+        _sitemap_url(_absolute_url(request, 'core:projects'), priority='0.8', changefreq='monthly'),
+        _sitemap_url(_absolute_url(request, 'core:user_feedback'), priority='0.5', changefreq='monthly'),
+        _sitemap_url(_absolute_url(request, 'core:contact'), priority='0.8', changefreq='monthly'),
+    ]
+
+    for solution in Solution.objects.filter(is_active=True).only('slug', 'updated_at'):
+        urls.append(_sitemap_url(
+            _absolute_url(request, 'core:solution_detail', solution.slug),
+            solution.updated_at,
+            priority='0.85',
+            changefreq='monthly',
+        ))
+
+    for article in Article.objects.filter(status='published').only('slug', 'updated_at', 'published_at'):
+        urls.append(_sitemap_url(
+            _absolute_url(request, 'core:article_detail', article.slug),
+            article.updated_at or article.published_at,
+            priority='0.75',
+            changefreq='monthly',
+        ))
+
+    for event in Event.objects.exclude(status='cancelled').only('slug', 'updated_at', 'date'):
+        urls.append(_sitemap_url(
+            _absolute_url(request, 'core:event_detail', event.slug),
+            event.updated_at or event.date,
+            priority='0.7',
+            changefreq='monthly',
+        ))
+
+    for project in Project.objects.all().only('slug', 'completed_on'):
+        urls.append(_sitemap_url(
+            _absolute_url(request, 'core:project_detail', project.slug),
+            project.completed_on,
+            priority='0.75',
+            changefreq='monthly',
+        ))
+
+    xml = '<?xml version="1.0" encoding="UTF-8"?>'
+    xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+    xml += ''.join(urls)
+    xml += '</urlset>'
+    return HttpResponse(xml, content_type='application/xml')
     
 def chatbot(request):
     return render(request, 'frontend/chatbot.html')

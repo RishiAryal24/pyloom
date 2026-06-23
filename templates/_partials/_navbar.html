@@ -30,14 +30,26 @@
                 <li class="nav-item">
                     <a class="nav-link {% if request.resolver_match.url_name == 'solutions' %}active{% endif %}" href="{% url 'core:solutions' %}">Solutions</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if request.resolver_match.url_name == 'projects' %}active{% endif %}" href="{% url 'core:projects' %}">Projects</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if request.resolver_match.url_name == 'services' %}active{% endif %}" href="{% url 'core:services' %}">Services</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if request.resolver_match.url_name == 'trainings' %}active{% endif %}" href="{% url 'core:trainings' %}">Trainings</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {% if request.resolver_match.url_name == 'projects' or request.resolver_match.url_name == 'services' or request.resolver_match.url_name == 'trainings' %}active{% endif %}"
+                       href="#"
+                       id="projectsDropdown"
+                       role="button"
+                       data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        Projects
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="projectsDropdown">
+                        <li>
+                            <a class="dropdown-item {% if request.resolver_match.url_name == 'projects' %}active{% endif %}" href="{% url 'core:projects' %}">Projects</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item {% if request.resolver_match.url_name == 'services' %}active{% endif %}" href="{% url 'core:services' %}">Services</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item {% if request.resolver_match.url_name == 'trainings' %}active{% endif %}" href="{% url 'core:trainings' %}">Trainings</a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {% if request.resolver_match.url_name == 'user_feedback' %}active{% endif %}" href="{% url 'core:user_feedback' %}">Feedback</a>

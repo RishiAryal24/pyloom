@@ -2,6 +2,30 @@
 {% load static %}
 
 {% block title %}{{ solution.title }} - {{ settings.site_name }}{% endblock %}
+{% block description %}{{ solution.description|striptags|truncatewords:30 }}{% endblock %}
+{% block og_type %}article{% endblock %}
+{% block og_title %}{{ solution.title }} - {{ settings.site_name|default:"PyLoom" }}{% endblock %}
+{% block og_description %}{{ solution.description|striptags|truncatewords:30 }}{% endblock %}
+{% if solution.image %}
+{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{{ solution.image.url }}{% endblock %}
+{% block twitter_image %}{{ request.scheme }}://{{ request.get_host }}{{ solution.image.url }}{% endblock %}
+{% endif %}
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "{{ solution.title|escapejs }}",
+  "description": "{{ solution.description|striptags|truncatewords:40|escapejs }}",
+  "provider": {
+    "@type": "Organization",
+    "name": "{{ settings.site_name|default:'PyLoom'|escapejs }}",
+    "url": "{{ request.scheme }}://{{ request.get_host }}"
+  },
+  "url": "{{ request.build_absolute_uri }}"
+}
+</script>
+{% endblock %}
 
 {% block content %}
 <!-- Hero Section -->

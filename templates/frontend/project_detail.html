@@ -2,8 +2,33 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}{{ project.title }} - AI-Solutions{% endblock %}
-{% block description %}{{ project.summary }}{% endblock %}
+{% block title %}{{ project.title }} - {{ settings.site_name|default:"PyLoom" }}{% endblock %}
+{% block description %}{{ project.summary|striptags|truncatewords:30 }}{% endblock %}
+{% block og_type %}article{% endblock %}
+{% block og_title %}{{ project.title }} - {{ settings.site_name|default:"PyLoom" }}{% endblock %}
+{% block og_description %}{{ project.summary|striptags|truncatewords:30 }}{% endblock %}
+{% if project.cover_image %}
+{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{{ project.cover_image.url }}{% endblock %}
+{% block twitter_image %}{{ request.scheme }}://{{ request.get_host }}{{ project.cover_image.url }}{% endblock %}
+{% endif %}
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  "name": "{{ project.title|escapejs }}",
+  "description": "{{ project.summary|striptags|truncatewords:40|escapejs }}",
+  "dateCreated": "{{ project.completed_on|date:'Y-m-d' }}",
+  "creator": {
+    "@type": "Organization",
+    "name": "{{ settings.site_name|default:'PyLoom'|escapejs }}",
+    "url": "{{ request.scheme }}://{{ request.get_host }}"
+  },
+  "url": "{{ request.build_absolute_uri }}"{% if project.cover_image %},
+  "image": "{{ request.scheme }}://{{ request.get_host }}{{ project.cover_image.url }}"{% endif %}
+}
+</script>
+{% endblock %}
 
 {% block content %}
 <!-- Project Header -->

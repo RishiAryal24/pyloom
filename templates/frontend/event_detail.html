@@ -2,8 +2,39 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}{{ event.title }} - AI-Solutions Events{% endblock %}
-{% block description %}{{ event.summary }}{% endblock %}
+{% block title %}{{ event.title }} - {{ settings.site_name|default:"PyLoom" }} Events{% endblock %}
+{% block description %}{{ event.description|striptags|truncatewords:30 }}{% endblock %}
+{% block og_type %}article{% endblock %}
+{% block og_title %}{{ event.title }} - {{ settings.site_name|default:"PyLoom" }} Events{% endblock %}
+{% block og_description %}{{ event.description|striptags|truncatewords:30 }}{% endblock %}
+{% if event.featured_image %}
+{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{{ event.featured_image.url }}{% endblock %}
+{% block twitter_image %}{{ request.scheme }}://{{ request.get_host }}{{ event.featured_image.url }}{% endblock %}
+{% endif %}
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Event",
+  "name": "{{ event.title|escapejs }}",
+  "description": "{{ event.description|striptags|truncatewords:40|escapejs }}",
+  "startDate": "{{ event.date|date:'Y-m-d' }}T{{ event.time|time:'H:i:s' }}",
+  "eventStatus": "https://schema.org/EventScheduled",
+  "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+  "location": {
+    "@type": "Place",
+    "name": "{{ event.location|escapejs }}"
+  },
+  "organizer": {
+    "@type": "Organization",
+    "name": "{{ settings.site_name|default:'PyLoom'|escapejs }}",
+    "url": "{{ request.scheme }}://{{ request.get_host }}"
+  },
+  "url": "{{ request.build_absolute_uri }}"{% if event.featured_image %},
+  "image": "{{ request.scheme }}://{{ request.get_host }}{{ event.featured_image.url }}"{% endif %}
+}
+</script>
+{% endblock %}
 
 {% block content %}
 <!-- Event Header -->
@@ -49,7 +80,7 @@
                 <!-- Event Description -->
                 <div class="mb-5">
                     <h3><i class="bi bi-info-circle text-brand me-2"></i>About This Event</h3>
-                    <p>{{ event.summary }}</p>
+                    <div>{{ event.description|safe }}</div>
                     
                     <!-- Event Highlights -->
                     <div class="row mt-4">
