@@ -3,6 +3,8 @@
 
 {% block title %}AI Solutions - {{ settings.site_name }}{% endblock %}
 {% block description %}Explore AI solutions from {{ settings.site_name|default:"PyLoom" }} for automation, analytics, productivity, business intelligence, and digital transformation.{% endblock %}
+{% block canonical_url %}{{ request.scheme }}://{{ request.get_host }}{{ request.path }}{% endblock %}
+{% block robots %}{% if request.GET %}noindex, follow{% else %}index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1{% endif %}{% endblock %}
 
 {% block content %}
 <!-- Page Header -->

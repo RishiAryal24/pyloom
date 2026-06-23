@@ -58,6 +58,16 @@
 {% endblock %}
 
 {% block content %}
+<nav class="bg-light border-bottom py-2" aria-label="breadcrumb">
+    <div class="container">
+        <ol class="breadcrumb mb-0 small">
+            <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'core:projects' %}">Projects</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ project.title }}</li>
+        </ol>
+    </div>
+</nav>
+
 <!-- Project Header -->
 <section class="page-header-compact bg-light">
     <div class="container">

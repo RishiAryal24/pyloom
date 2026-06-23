@@ -1,8 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Events Gallery - AI-Solutions{% endblock %}
+{% block title %}Events Gallery - {{ settings.site_name|default:"PyLoom" }}{% endblock %}
 {% block description %}Explore our participation in conferences, workshops, and industry events showcasing our AI solutions and expertise.{% endblock %}
+{% block canonical_url %}{{ request.scheme }}://{{ request.get_host }}{{ request.path }}{% endblock %}
+{% block robots %}{% if request.GET %}noindex, follow{% else %}index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1{% endif %}{% endblock %}
 
 {% block content %}
 <!-- Page Header -->

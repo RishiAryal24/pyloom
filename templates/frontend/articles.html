@@ -2,10 +2,12 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Articles & Insights - AI-Solutions{% endblock %}
+{% block title %}Articles & Insights - {{ settings.site_name|default:"PyLoom" }}{% endblock %}
 {% block description %}
 Stay updated with the latest insights, trends, and knowledge in AI and software development from our expert team.
 {% endblock %}
+{% block canonical_url %}{{ request.scheme }}://{{ request.get_host }}{{ request.path }}{% endblock %}
+{% block robots %}{% if request.GET %}noindex, follow{% else %}index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1{% endif %}{% endblock %}
 
 {% block content %}
 
