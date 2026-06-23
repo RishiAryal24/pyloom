@@ -2,13 +2,13 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}{% if project.meta_title %}{{ project.meta_title }}{% else %}{{ project.title }} - {{ settings.site_name|default:"PyLoom" }}{% endif %}{% endblock %}
+{% block title %}{% if project.meta_title %}{{ project.meta_title }}{% else %}{{ project.title }} - {{ site_name }}{% endif %}{% endblock %}
 {% block description %}{% if project.meta_description %}{{ project.meta_description|striptags }}{% else %}{{ project.summary|striptags|truncatewords:30 }}{% endif %}{% endblock %}
 {% block canonical_url %}{% if project.canonical_url %}{{ project.canonical_url }}{% else %}{{ request.build_absolute_uri }}{% endif %}{% endblock %}
 {% block og_type %}article{% endblock %}
-{% block og_title %}{% if project.meta_title %}{{ project.meta_title }}{% else %}{{ project.title }} - {{ settings.site_name|default:"PyLoom" }}{% endif %}{% endblock %}
+{% block og_title %}{% if project.meta_title %}{{ project.meta_title }}{% else %}{{ project.title }} - {{ site_name }}{% endif %}{% endblock %}
 {% block og_description %}{% if project.meta_description %}{{ project.meta_description|striptags }}{% else %}{{ project.summary|striptags|truncatewords:30 }}{% endif %}{% endblock %}
-{% block twitter_title %}{% if project.meta_title %}{{ project.meta_title }}{% else %}{{ project.title }} - {{ settings.site_name|default:"PyLoom" }}{% endif %}{% endblock %}
+{% block twitter_title %}{% if project.meta_title %}{{ project.meta_title }}{% else %}{{ project.title }} - {{ site_name }}{% endif %}{% endblock %}
 {% block twitter_description %}{% if project.meta_description %}{{ project.meta_description|striptags }}{% else %}{{ project.summary|striptags|truncatewords:30 }}{% endif %}{% endblock %}
 {% block og_image %}{% if project.og_image %}{{ request.scheme }}://{{ request.get_host }}{{ project.og_image.url }}{% elif project.cover_image %}{{ request.scheme }}://{{ request.get_host }}{{ project.cover_image.url }}{% else %}{{ block.super }}{% endif %}{% endblock %}
 {% block twitter_image %}{% if project.og_image %}{{ request.scheme }}://{{ request.get_host }}{{ project.og_image.url }}{% elif project.cover_image %}{{ request.scheme }}://{{ request.get_host }}{{ project.cover_image.url }}{% else %}{{ block.super }}{% endif %}{% endblock %}
@@ -22,7 +22,7 @@
   "dateCreated": "{{ project.completed_on|date:'Y-m-d' }}",
   "creator": {
     "@type": "Organization",
-    "name": "{{ settings.site_name|default:'PyLoom'|escapejs }}",
+    "name": "{{ site_name|escapejs }}",
     "url": "{{ request.scheme }}://{{ request.get_host }}"
   },
   "url": "{{ request.build_absolute_uri }}"{% if project.og_image or project.cover_image %},
