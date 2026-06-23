@@ -45,6 +45,19 @@
       ]
     }
     </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "{{ settings.site_name|default:'PyLoom'|escapejs }}",
+      "url": "{{ request.scheme }}://{{ request.get_host }}",
+      "description": "{{ settings.slogan|default:'Weaving Innovation Beyond Expectations'|escapejs }}",
+      "publisher": {
+        "@type": "Organization",
+        "name": "{{ settings.site_name|default:'PyLoom'|escapejs }}"
+      }
+    }
+    </script>
     {% block structured_data %}{% endblock %}
     
     <!-- Bootstrap 5 CSS -->
