@@ -67,6 +67,9 @@ the repository and verify that `~/public_html/.htaccess` contains:
 
 ```apache
 # BEGIN PYLOOM PASSENGER
+PassengerEnabled on
+PassengerAppType wsgi
+PassengerStartupFile passenger_wsgi.py
 PassengerAppRoot "/absolute/path/to/the/repository"
 PassengerBaseURI "/"
 PassengerPython "/absolute/path/to/the/cpanel/virtualenv/bin/python"

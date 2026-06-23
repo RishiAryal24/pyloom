@@ -41,6 +41,9 @@ awk -v start="$PASSENGER_BLOCK_START" -v end="$PASSENGER_BLOCK_END" '
     $0 == start { skip = 1; next }
     $0 == end { skip = 0; next }
     skip { next }
+    $1 == "PassengerEnabled" { next }
+    $1 == "PassengerAppType" { next }
+    $1 == "PassengerStartupFile" { next }
     $1 == "PassengerAppRoot" { next }
     $1 == "PassengerBaseURI" { next }
     $1 == "PassengerPython" { next }
@@ -50,6 +53,9 @@ awk -v start="$PASSENGER_BLOCK_START" -v end="$PASSENGER_BLOCK_END" '
 cat >> "$HTACCESS_TMP" <<EOF
 
 $PASSENGER_BLOCK_START
+PassengerEnabled on
+PassengerAppType wsgi
+PassengerStartupFile passenger_wsgi.py
 PassengerAppRoot "$APP_DIR"
 PassengerBaseURI "/"
 PassengerPython "$PYTHON_BIN"
