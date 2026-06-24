@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Trainings - {{ site_name }}{% endblock %}
-{% block description %}Browse upcoming {{ site_name }} trainings, workshops, and learning sessions on AI, automation, and modern technology solutions.{% endblock %}
+{% block title %}Trainings - {{ settings.site_name|default:"PyLoom" }}{% endblock %}
 
 {% block content %}
 <section class="page-header-compact bg-primary text-white">
@@ -50,7 +49,7 @@
             <div class="row g-4">
                 {% for event in upcoming_events %}
                 <div class="col-md-6 col-lg-4">
-                    <a class="card h-100 shadow-sm border-0 text-decoration-none text-dark" href="{% if event.slug %}{% url 'core:event_detail' event.slug %}{% else %}{% url 'core:events' %}{% endif %}">
+                    <a class="card h-100 shadow-sm border-0 text-decoration-none text-dark" href="{% url 'core:event_detail' event.slug %}">
                         <div class="card-body">
                             <h3 class="h5">{{ event.title }}</h3>
                             <p class="text-muted mb-2">{{ event.date|date:"M d, Y" }} at {{ event.time|time:"g:i A" }}</p>
