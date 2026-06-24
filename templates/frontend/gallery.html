@@ -1,10 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Event Gallery - {{ site_name }}{% endblock %}
-{% block description %}Explore {{ site_name }} event gallery highlights from conferences, workshops, demos, showcases, and community activities.{% endblock %}
-{% block canonical_url %}{{ request.scheme }}://{{ request.get_host }}{{ request.path }}{% endblock %}
-{% block robots %}{% if request.GET %}noindex, follow{% else %}index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1{% endif %}{% endblock %}
+{% block title %}Event Gallery - {{ settings.site_name }}{% endblock %}
 
 {% block content %}
 <!-- Page Header -->

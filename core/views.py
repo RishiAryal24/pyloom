@@ -2,7 +2,6 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse, HttpResponse, Http404
 from django.contrib import messages
 from django.core.paginator import Paginator
-from django.db import DatabaseError
 from django.db.models import Q
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
@@ -11,7 +10,6 @@ from django.utils import timezone
 import json
 import random
 from django.urls import reverse
-from django.utils.html import escape
 from django.core.paginator import Paginator
 from .forms import ClientLoginForm, ContactForm, FeedbackForm, NewsletterForm, ArticleForm ,EventForm, GalleryItemForm, ClientSignupForm
 from .models import *
@@ -19,38 +17,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 import requests
-import logging
-
-
-logger = logging.getLogger('django')
-
-
-def _safe_content_list(queryset, label):
-    try:
-        return list(queryset)
-    except DatabaseError:
-        logger.exception("Unable to load %s; rendering the page without that content.", label)
-        return []
-
-
-def _absolute_url(request, url_name, *args, **kwargs):
-    return request.build_absolute_uri(reverse(url_name, args=args, kwargs=kwargs))
-
-
-def _sitemap_url(location, lastmod=None, priority='0.7', changefreq='monthly'):
-    lastmod_xml = ''
-    if lastmod:
-        if hasattr(lastmod, 'date'):
-            lastmod = lastmod.date()
-        lastmod_xml = f'<lastmod>{lastmod.isoformat()}</lastmod>'
-    return (
-        '<url>'
-        f'<loc>{escape(location)}</loc>'
-        f'{lastmod_xml}'
-        f'<changefreq>{changefreq}</changefreq>'
-        f'<priority>{priority}</priority>'
-        '</url>'
-    )
 
 
 
@@ -102,26 +68,17 @@ def home(request):
         'values': 'No values available.'
     }
     # Get Latest 3 Solutions
-    latest_solutions = _safe_content_list(
-        Solution.objects.filter(is_active=True).order_by('-created_at')[:3],
-        'homepage solutions',
-    )
+    latest_solutions = Solution.objects.filter(is_active=True).order_by('-created_at')[:3]
 
     # Get latest 3 projects
-    latest_projects = _safe_content_list(
-        Project.objects.order_by('-completed_on')[:3],
-        'homepage projects',
-    )
+    latest_projects = Project.objects.order_by('-completed_on')[:3]
 
 
     # Get latest 3 articles
-    latest_articles = _safe_content_list(
-        Article.objects.filter(status='published').order_by('-published_at')[:3],
-        'homepage articles',
-    )
+    latest_articles = Article.objects.filter(status='published').order_by('-published_at')[:3]
 
     # Get all featured Feedbacks
-    feedbacks = _safe_content_list(Feedback.objects.all()[:5], 'homepage feedback')
+    feedbacks = Feedback.objects.all()[:5]
     
 
     context = {
@@ -163,19 +120,10 @@ def solutions(request):
         queryset = queryset.filter(category__slug=category)
     
     # Order by 'order' field and 'title' field
-    solutions_list = _safe_content_list(
-        queryset.order_by('order', 'title'),
-        'solutions',
-    )
+    solutions_list = queryset.order_by('order', 'title')
     
     # Fetch categories and complexities for filters
-    categories = _safe_content_list(
-        Category.objects.filter(
-            content_type='solution',
-            is_active=True,
-        ).values_list('slug', 'name'),
-        'solution categories',
-    )
+    categories = Category.objects.filter(content_type='solution', is_active=True).values_list('slug', 'name')
     # complexities = Solution.COMPLEXITY_CHOICES  # Assuming this exists in your model
     
     context = {
@@ -192,13 +140,7 @@ def services(request):
     """Services page"""
     context = {
         'settings': SiteSettings.load(),
-        'featured_solutions': _safe_content_list(
-            Solution.objects.filter(
-                is_active=True,
-                is_featured=True,
-            ).order_by('order', 'title')[:6],
-            'featured solutions',
-        ),
+        'featured_solutions': Solution.objects.filter(is_active=True, is_featured=True).order_by('order', 'title')[:6],
     }
     return render(request, 'frontend/services.html', context)
 
@@ -207,10 +149,7 @@ def trainings(request):
     """Trainings page"""
     context = {
         'settings': SiteSettings.load(),
-        'upcoming_events': _safe_content_list(
-            Event.objects.filter(status='upcoming').order_by('date', 'time')[:6],
-            'upcoming training events',
-        ),
+        'upcoming_events': Event.objects.filter(status='upcoming').order_by('date', 'time')[:6],
     }
     return render(request, 'frontend/trainings.html', context)
 
@@ -500,78 +439,6 @@ def newsletter_signup(request):
         return JsonResponse({'success': False, 'message': 'Please enter a valid email address.'})
     except Exception:
         return JsonResponse({'success': False, 'message': 'An error occurred. Please try again.'})
-
-
-def robots_txt(request):
-    """Search crawler instructions."""
-    sitemap_url = request.build_absolute_uri(reverse('sitemap_xml'))
-    lines = [
-        'User-agent: *',
-        'Allow: /',
-        'Disallow: /admin/',
-        'Disallow: /django-admin/',
-        'Disallow: /login/',
-        'Disallow: /signup/',
-        'Disallow: /feedback/',
-        'Disallow: /api/',
-        f'Sitemap: {sitemap_url}',
-    ]
-    return HttpResponse('\n'.join(lines), content_type='text/plain')
-
-
-def sitemap_xml(request):
-    """XML sitemap for public marketing and content pages."""
-    urls = [
-        _sitemap_url(_absolute_url(request, 'core:home'), priority='1.0', changefreq='weekly'),
-        _sitemap_url(_absolute_url(request, 'core:about'), priority='0.8', changefreq='monthly'),
-        _sitemap_url(_absolute_url(request, 'core:solutions'), priority='0.9', changefreq='weekly'),
-        _sitemap_url(_absolute_url(request, 'core:services'), priority='0.8', changefreq='monthly'),
-        _sitemap_url(_absolute_url(request, 'core:trainings'), priority='0.7', changefreq='weekly'),
-        _sitemap_url(_absolute_url(request, 'core:events'), priority='0.8', changefreq='weekly'),
-        _sitemap_url(_absolute_url(request, 'core:articles'), priority='0.8', changefreq='weekly'),
-        _sitemap_url(_absolute_url(request, 'core:gallery'), priority='0.6', changefreq='monthly'),
-        _sitemap_url(_absolute_url(request, 'core:projects'), priority='0.8', changefreq='monthly'),
-        _sitemap_url(_absolute_url(request, 'core:user_feedback'), priority='0.5', changefreq='monthly'),
-        _sitemap_url(_absolute_url(request, 'core:contact'), priority='0.8', changefreq='monthly'),
-    ]
-
-    for solution in Solution.objects.filter(is_active=True).only('slug', 'updated_at'):
-        urls.append(_sitemap_url(
-            _absolute_url(request, 'core:solution_detail', solution.slug),
-            solution.updated_at,
-            priority='0.85',
-            changefreq='monthly',
-        ))
-
-    for article in Article.objects.filter(status='published').only('slug', 'updated_at', 'published_at'):
-        urls.append(_sitemap_url(
-            _absolute_url(request, 'core:article_detail', article.slug),
-            article.updated_at or article.published_at,
-            priority='0.75',
-            changefreq='monthly',
-        ))
-
-    for event in Event.objects.exclude(status='cancelled').only('slug', 'updated_at', 'date'):
-        urls.append(_sitemap_url(
-            _absolute_url(request, 'core:event_detail', event.slug),
-            event.updated_at or event.date,
-            priority='0.7',
-            changefreq='monthly',
-        ))
-
-    for project in Project.objects.all().only('slug', 'completed_on'):
-        urls.append(_sitemap_url(
-            _absolute_url(request, 'core:project_detail', project.slug),
-            project.completed_on,
-            priority='0.75',
-            changefreq='monthly',
-        ))
-
-    xml = '<?xml version="1.0" encoding="UTF-8"?>'
-    xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
-    xml += ''.join(urls)
-    xml += '</urlset>'
-    return HttpResponse(xml, content_type='application/xml')
     
 def chatbot(request):
     return render(request, 'frontend/chatbot.html')

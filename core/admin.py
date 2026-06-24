@@ -77,7 +77,7 @@ class CategoryAdmin(admin.ModelAdmin):
 class SolutionAdmin(admin.ModelAdmin):
     list_display = ('title', 'category', 'is_featured', 'is_active', 'order', 'created_at')
     list_filter = ('category', 'is_featured', 'is_active')
-    search_fields = ('title', 'description', 'meta_title', 'meta_description')
+    search_fields = ('title', 'description')
     list_editable = ('is_featured', 'is_active', 'order')
     ordering = ('order', 'title')
     readonly_fields = ('created_at', 'updated_at')
@@ -115,7 +115,7 @@ class FeedbackAdmin(admin.ModelAdmin):
 class BlogPostAdmin(admin.ModelAdmin):
     list_display = ('title', 'author', 'category', 'status', 'is_featured', 'views_count', 'published_at')
     list_filter = ('status', 'category', 'is_featured', 'published_at')
-    search_fields = ('title', 'excerpt', 'content', 'meta_title', 'meta_description')
+    search_fields = ('title', 'excerpt', 'content')
     list_editable = ('status', 'is_featured')
     prepopulated_fields = {'slug': ('title',)}
     readonly_fields = ('views_count', 'created_at', 'updated_at', 'published_at')
@@ -134,7 +134,7 @@ class BlogPostAdmin(admin.ModelAdmin):
 class ArticleAdmin(admin.ModelAdmin):
     list_display = ('title', 'article_type', 'author', 'is_featured', 'download_count', 'published_at')
     list_filter = ('article_type', 'is_featured', 'published_at')
-    search_fields = ('title', 'content', 'meta_title', 'meta_description')
+    search_fields = ('title', 'content')
     list_editable = ('is_featured',)
     readonly_fields = ('download_count', 'created_at', 'updated_at')
     ordering = ('-published_at',)
@@ -147,7 +147,7 @@ class ArticleAdmin(admin.ModelAdmin):
 class EventAdmin(admin.ModelAdmin):
     list_display = ('title', 'event_type', 'date', 'location', 'status', 'capacity', 'is_featured', 'is_promoted')
     list_filter = ('event_type', 'status', 'is_featured', 'date')
-    search_fields = ('title', 'description', 'location', 'meta_title', 'meta_description')
+    search_fields = ('title', 'description', 'location')
     list_editable = ('status', 'is_featured', 'is_promoted')
     ordering = ('date', 'time')
     readonly_fields = ('created_at', 'updated_at')
@@ -195,7 +195,7 @@ class ProjectAdmin(admin.ModelAdmin):
     list_display = ('title', 'completed_on')
     prepopulated_fields = {'slug': ('title',)}
     inlines = [ProjectTagsInline]
-    search_fields = ('title', 'summary', 'description', 'meta_title', 'meta_description')
+    search_fields = ('title', 'summary', 'description')
     list_filter = ('completed_on',)
 
 

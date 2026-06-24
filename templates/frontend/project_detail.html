@@ -2,72 +2,10 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}{% if project.meta_title %}{{ project.meta_title }}{% else %}{{ project.title }} - {{ site_name }}{% endif %}{% endblock %}
-{% block description %}{% if project.meta_description %}{{ project.meta_description|striptags }}{% else %}{{ project.summary|striptags|truncatewords:30 }}{% endif %}{% endblock %}
-{% block canonical_url %}{% if project.canonical_url %}{{ project.canonical_url }}{% else %}{{ request.build_absolute_uri }}{% endif %}{% endblock %}
-{% block og_type %}article{% endblock %}
-{% block og_title %}{% if project.meta_title %}{{ project.meta_title }}{% else %}{{ project.title }} - {{ site_name }}{% endif %}{% endblock %}
-{% block og_description %}{% if project.meta_description %}{{ project.meta_description|striptags }}{% else %}{{ project.summary|striptags|truncatewords:30 }}{% endif %}{% endblock %}
-{% block twitter_title %}{% if project.meta_title %}{{ project.meta_title }}{% else %}{{ project.title }} - {{ site_name }}{% endif %}{% endblock %}
-{% block twitter_description %}{% if project.meta_description %}{{ project.meta_description|striptags }}{% else %}{{ project.summary|striptags|truncatewords:30 }}{% endif %}{% endblock %}
-{% block og_image %}{% if project.og_image %}{{ request.scheme }}://{{ request.get_host }}{{ project.og_image.url }}{% elif project.cover_image %}{{ request.scheme }}://{{ request.get_host }}{{ project.cover_image.url }}{% else %}{{ block.super }}{% endif %}{% endblock %}
-{% block twitter_image %}{% if project.og_image %}{{ request.scheme }}://{{ request.get_host }}{{ project.og_image.url }}{% elif project.cover_image %}{{ request.scheme }}://{{ request.get_host }}{{ project.cover_image.url }}{% else %}{{ block.super }}{% endif %}{% endblock %}
-{% block structured_data %}
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "CreativeWork",
-  "name": "{% if project.meta_title %}{{ project.meta_title|escapejs }}{% else %}{{ project.title|escapejs }}{% endif %}",
-  "description": "{% if project.meta_description %}{{ project.meta_description|striptags|escapejs }}{% else %}{{ project.summary|striptags|truncatewords:40|escapejs }}{% endif %}",
-  "dateCreated": "{{ project.completed_on|date:'Y-m-d' }}",
-  "creator": {
-    "@type": "Organization",
-    "name": "{{ site_name|escapejs }}",
-    "url": "{{ request.scheme }}://{{ request.get_host }}"
-  },
-  "url": "{{ request.build_absolute_uri }}"{% if project.og_image or project.cover_image %},
-  "image": "{% if project.og_image %}{{ request.scheme }}://{{ request.get_host }}{{ project.og_image.url }}{% else %}{{ request.scheme }}://{{ request.get_host }}{{ project.cover_image.url }}{% endif %}"{% endif %}
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'core:home' %}"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Projects",
-      "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'core:projects' %}"
-    },
-    {
-      "@type": "ListItem",
-      "position": 3,
-      "name": "{{ project.title|escapejs }}",
-      "item": "{{ request.build_absolute_uri }}"
-    }
-  ]
-}
-</script>
-{% endblock %}
+{% block title %}{{ project.title }} - AI-Solutions{% endblock %}
+{% block description %}{{ project.summary }}{% endblock %}
 
 {% block content %}
-<nav class="bg-light border-bottom py-2" aria-label="breadcrumb">
-    <div class="container">
-        <ol class="breadcrumb mb-0 small">
-            <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'core:projects' %}">Projects</a></li>
-            <li class="breadcrumb-item active" aria-current="page">{{ project.title }}</li>
-        </ol>
-    </div>
-</nav>
-
 <!-- Project Header -->
 <section class="page-header-compact bg-light">
     <div class="container">

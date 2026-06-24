@@ -4,9 +4,6 @@
 {% block title %}
 PyLoom - Weaving Innovation Beyond Expectations
 {% endblock %}
-{% block description %}PyLoom builds AI-powered software, automation, analytics, and digital transformation solutions that help organizations improve productivity and make smarter decisions.{% endblock %}
-{% block og_title %}PyLoom - AI Solutions and Digital Innovation{% endblock %}
-{% block og_description %}AI-powered software, automation, analytics, and modern digital tools for organizations ready to work smarter.{% endblock %}
 
 {% block content %}
 
@@ -17,7 +14,7 @@ PyLoom - Weaving Innovation Beyond Expectations
     <div class="row align-items-center">
       <div class="col-lg-6">
         <h1 class="display-4 fw-bold mb-4">
-          {{ site_slogan }}
+          {{ settings.slogan|default:"Weaving Innovation Beyond Expectations" }}
         </h1>
         <p class="lead text-muted mb-4">
           At PyLoom, we are committed to providing advanced technology solutions powered by Artificial Intelligence, automation, and modern digital tools that help businesses streamline operations, increase productivity, and achieve their goals efficiently.
@@ -122,7 +119,7 @@ PyLoom - Weaving Innovation Beyond Expectations
             </p>
             <div class="d-flex justify-content-between align-items-center">
               <small class="text-muted">{{ project.completed_on|date:"Y-m-d" }}</small>
-              <a href="{% if project.slug %}{% url 'core:project_detail' project.slug %}{% else %}{% url 'core:projects' %}{% endif %}" class="btn btn-sm btn-outline-primary">View
+              <a href="{% url 'core:project_detail' project.slug %}" class="btn btn-sm btn-outline-primary">View
                 Details</a>
             </div>
           </div>
@@ -169,7 +166,7 @@ PyLoom - Weaving Innovation Beyond Expectations
             <p class="card-text text-muted flex-grow-1">{{ article.excerpt|truncatewords:20 }}</p>
             <div class="d-flex justify-content-between align-items-center mt-auto">
               <small class="text-muted">{{ article.published_at|date:"M j, Y" }}</small>
-              <a href="{% if article.slug %}{% url 'core:article_detail' article.slug %}{% else %}{% url 'core:articles' %}{% endif %}" class="btn btn-sm btn-outline-primary">View
+              <a href="{% url 'core:article_detail' article.slug %}" class="btn btn-sm btn-outline-primary">View
                 Details</a>
             </div>
           </div>

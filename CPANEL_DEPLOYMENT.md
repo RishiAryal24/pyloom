@@ -4,9 +4,6 @@ Use cPanel's **Setup Python App** for this project. The old static-file copy flo
 
 After the first Python App setup, Git deployment can run automatically through `.cpanel.yml`. It calls `scripts/deploy_cpanel.sh`, which installs dependencies, runs migrations, collects static files, and restarts Passenger.
 
-CloudLinux/cPanel owns the Passenger block in `~/public_html/.htaccess`.
-The deployment script deliberately does not rewrite it.
-
 ## Python App
 
 - Application root: the folder containing `manage.py`
@@ -56,19 +53,6 @@ python manage.py createsuperuser
 ```
 
 Restart the Python app after changes. The `.cpanel.yml` file also touches `tmp/restart.txt` during Git deployment so Passenger reloads the app.
-
-If static files work but every Django URL returns LiteSpeed's small 404 page,
-restart or recreate the application through cPanel's **Setup Python App**.
-Its CloudLinux-managed block should contain directives equivalent to:
-
-```apache
-PassengerEnabled on
-PassengerAppType wsgi
-PassengerStartupFile passenger_wsgi.py
-PassengerAppRoot "/absolute/path/to/the/repository"
-PassengerBaseURI "/"
-PassengerPython "/absolute/path/to/the/cpanel/virtualenv/bin/python"
-```
 
 ## URLs
 
