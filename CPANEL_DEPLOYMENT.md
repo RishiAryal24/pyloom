@@ -82,6 +82,27 @@ The health endpoint should return:
 {"status": "ok"}
 ```
 
+## Optimize Uploaded Images
+
+Large uploaded PNG/JPEG files make the public pages feel slow even when Django
+and LiteSpeed are healthy. Preview potential savings first:
+
+```bash
+python manage.py optimize_media_images
+```
+
+Apply safe in-place resizing and compression while keeping the same media URLs:
+
+```bash
+python manage.py optimize_media_images --apply
+```
+
+The defaults cap images at `1600x1200`. Custom example:
+
+```bash
+python manage.py optimize_media_images --apply --max-width 1400 --max-height 1000 --quality 80
+```
+
 ## URLs
 
 - Public site: `https://pyloomtech.com/`
