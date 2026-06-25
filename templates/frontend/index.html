@@ -30,7 +30,7 @@ PyLoom - Weaving Innovation Beyond Expectations
       </div>
       <div class="col-lg-6">
         <img src="{% static 'img/ai.svg' %}" alt="AI-powered software development" class="img-fluid rounded shadow"
-          style="width: 100%; height: auto; object-fit: cover" loading="lazy" />
+          style="width: 100%; height: auto; object-fit: cover" decoding="async" />
       </div>
     </div>
   </div>
@@ -53,7 +53,7 @@ PyLoom - Weaving Innovation Beyond Expectations
           <div class="card h-100 card-hover">
             {% if solution.image %}
             <img src="{{ solution.image.url }}" class="card-img-top" height="500px" width="100%"
-              alt="{{ solution.title }} cover" loading="lazy" />
+              alt="{{ solution.title }} cover" loading="lazy" decoding="async" />
             {% else %}
             <img src="{% static 'core/img/placeholder-16x9.svg' %}" class="card-img-top"
               alt="{{ solution.title }} cover" loading="lazy" />
@@ -107,7 +107,7 @@ PyLoom - Weaving Innovation Beyond Expectations
         <div class="card h-100 card-hover">
           {% if project.cover_image %}
           <img src="{{ project.cover_image.url }}" class="card-img-top" alt="{{ project.title }} cover"
-            loading="lazy" />
+            loading="lazy" decoding="async" />
           {% else %}
           <img src="{% static 'core/img/placeholder-16x9.svg' %}" class="card-img-top" alt="{{ project.title }} cover"
             loading="lazy" />
@@ -156,7 +156,7 @@ PyLoom - Weaving Innovation Beyond Expectations
         <div class="card h-100 card-hover">
           {% if article.featured_image %}
           <img src="{{ article.featured_image.url }}" class="card-img-top" alt="{{ article.title }} cover"
-            loading="lazy">
+            loading="lazy" decoding="async">
           {% else %}
           <img src="{% static 'core/img/placeholder-16x9.svg' %}" class="card-img-top" alt="{{ article.title }} cover"
             loading="lazy">
