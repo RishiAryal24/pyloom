@@ -1,4 +1,5 @@
 import os
+import stat
 import tempfile
 from pathlib import Path
 
@@ -100,7 +101,8 @@ class Command(BaseCommand):
         )
 
     def _process_image(self, path, *, apply_changes, max_size, quality):
-        original_size = path.stat().st_size
+        original_stat = path.stat()
+        original_size = original_stat.st_size
 
         with Image.open(path) as source:
             image_format = source.format
@@ -144,6 +146,10 @@ class Command(BaseCommand):
 
                 if apply_changes:
                     temporary_path.replace(path)
+                    os.chmod(
+                        path,
+                        stat.S_IMODE(original_stat.st_mode) or 0o644,
+                    )
                 return original_size, new_size, new_dimensions
             finally:
                 temporary_path.unlink(missing_ok=True)
