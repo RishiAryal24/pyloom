@@ -6,6 +6,7 @@ from django.conf.urls.static import static
 from django.views.static import serve
 
 urlpatterns = [
+    path('health/', views.health_check, name='health_check'),
     path('django-admin/', admin.site.urls),  # Custom admin URL (if necessary)
     path('admin/', include('admin_dashboard.urls')),  # Custom admin URLs
     path('', views.home, name='home'),  # Home page URL for 'Back to site'

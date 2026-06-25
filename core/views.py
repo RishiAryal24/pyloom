@@ -6,6 +6,7 @@ from django.db.models import Q
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
+from django.db import connection
 from django.utils import timezone
 import json
 import random
@@ -17,6 +18,15 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 import requests
+
+
+def health_check(request):
+    """Minimal deployment health check with database verification."""
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT 1")
+        cursor.fetchone()
+
+    return JsonResponse({"status": "ok"})
 
 
 
