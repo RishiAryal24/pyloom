@@ -2,7 +2,13 @@
 
 Use cPanel's **Setup Python App** for this project. The old static-file copy flow is not enough because this is a Django application.
 
-After the first Python App setup, Git deployment can run automatically through `.cpanel.yml`. It calls `scripts/deploy_cpanel.sh`, which installs dependencies, runs migrations, collects static files, and restarts Passenger.
+After the first Python App setup, Git deployment can run automatically through `.cpanel.yml`. It calls `scripts/deploy_cpanel.sh`, which:
+
+- locates the cPanel virtualenv, including CloudLinux's symlinked Python wrapper;
+- installs dependencies and validates `passenger_wsgi.py`;
+- runs Django checks, migrations, and `collectstatic`;
+- creates `~/public_html/static` and `~/public_html/media` symlinks so LiteSpeed serves assets directly;
+- restarts Passenger and verifies `https://pyloomtech.com/health/`.
 
 ## Python App
 
@@ -41,6 +47,12 @@ On every cPanel Git deployment, `.cpanel.yml` runs:
 
 The script tries to find the active cPanel virtualenv automatically. If cPanel has not created the Python App yet, the script will stop and ask you to create it first.
 
+The deployment intentionally refuses to replace an existing non-symlink
+`public_html/static` or `public_html/media` path. Move that old path manually,
+then redeploy. To use another document root, set `PUBLIC_ROOT`. To use another
+health URL, set `DEPLOY_HEALTH_URL`. Emergency-only HTTP check bypass:
+`SKIP_HTTP_HEALTHCHECK=1`.
+
 ## Manual First-Time Commands
 
 If you need to run the steps manually, use:
@@ -53,6 +65,22 @@ python manage.py createsuperuser
 ```
 
 Restart the Python app after changes. The `.cpanel.yml` file also touches `tmp/restart.txt` during Git deployment so Passenger reloads the app.
+
+## Verification
+
+```bash
+curl -I https://pyloomtech.com/
+curl https://pyloomtech.com/health/
+curl -o /dev/null -s \
+  -w "Static TTFB: %{time_starttransfer}s Total: %{time_total}s\n" \
+  https://pyloomtech.com/static/core/css/main.css
+```
+
+The health endpoint should return:
+
+```json
+{"status": "ok"}
+```
 
 ## URLs
 
