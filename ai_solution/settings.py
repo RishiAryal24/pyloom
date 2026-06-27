@@ -90,6 +90,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'core.context_processors.site_settings',  # Add site settings to all templates
+                'core.context_processors.navigation_items',  # Add dynamic nav items
                 'core.context_processors.admin_notifications',  # Add admin notifications
             ],
         },
