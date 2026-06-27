@@ -16,67 +16,26 @@
 
 <section class="py-5" id="training-programs">
     <div class="container">
-        <div class="row g-4">
-            <div class="col-md-6 col-lg-4" id="ai-for-corporate-workers">
-                <div class="card h-100 shadow-sm border-0">
-                    <div class="card-body">
-                        <h3 class="h5">AI for Corporate Workers</h3>
-                        <p class="text-muted mb-0">Practical AI skills for teams driving digital transformation in business operations.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4" id="python-development">
-                <div class="card h-100 shadow-sm border-0">
-                    <div class="card-body">
-                        <h3 class="h5">Python Development</h3>
-                        <p class="text-muted mb-0">Foundational Python training for software development and automation workflows.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4" id="data-analytics">
-                <div class="card h-100 shadow-sm border-0">
-                    <div class="card-body">
-                        <h3 class="h5">Data Analytics</h3>
-                        <p class="text-muted mb-0">Data skills for business insights, reporting, dashboards, and analytics automation.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row g-4 mt-4">
-            <div class="col-md-6 col-lg-4" id="microsoft-excel">
-                <div class="card h-100 shadow-sm border-0">
-                    <div class="card-body">
-                        <h3 class="h5">Microsoft Excel</h3>
-                        <p class="text-muted mb-0">Advanced spreadsheet training for business reporting, automation, and analytics.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4" id="corporate-programs">
-                <div class="card h-100 shadow-sm border-0">
-                    <div class="card-body">
-                        <h3 class="h5">Corporate Programs</h3>
-                        <p class="text-muted mb-0">Tailored corporate learning paths for enterprise teams and leadership development.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         {% if upcoming_trainings %}
-        <div class="mt-5">
-            <h2 class="h3 mb-4">Upcoming Sessions</h2>
-            <div class="row g-4">
-                {% for training in upcoming_trainings %}
-                <div class="col-md-6 col-lg-4">
-                    <a class="card h-100 shadow-sm border-0 text-decoration-none text-dark" href="{% url 'core:training_detail' training.slug %}">
-                        <div class="card-body">
-                            <h3 class="h5">{{ training.title }}</h3>
-                            <p class="text-muted mb-2">{% if training.start_date %}Start: {{ training.start_date|date:"M d, Y" }}{% else %}{{ training.date|date:"M d, Y" }}{% endif %}{% if training.time %} at {{ training.time|time:"g:i A" }}{% endif %}</p>
-                            <p class="text-muted small mb-1">Level: {{ training.get_level_display|default:training.level }} · Duration: {{ training.duration }}</p>
-                            <p class="text-muted mb-0">{{ training.summary|striptags|truncatewords:18 }}</p>
-                        </div>
-                    </a>
-                </div>
-                {% endfor %}
+        <div class="row g-4">
+            {% for training in upcoming_trainings %}
+            <div class="col-md-6 col-lg-4" id="{{ training.slug }}">
+                <a class="card h-100 shadow-sm border-0 text-decoration-none text-dark" href="{% url 'core:training_detail' training.slug %}">
+                    <div class="card-body">
+                        <h3 class="h5">{{ training.title }}</h3>
+                        <p class="text-muted mb-2">{% if training.start_date %}Start: {{ training.start_date|date:"M d, Y" }}{% else %}{{ training.date|date:"M d, Y" }}{% endif %}{% if training.time %} at {{ training.time|time:"g:i A" }}{% endif %}</p>
+                        <p class="text-muted small mb-1">Level: {{ training.get_level_display|default:training.level }} · Duration: {{ training.duration }}</p>
+                        <p class="text-muted mb-0">{{ training.summary|striptags|truncatewords:18 }}</p>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="row">
+            <div class="col-12 text-center py-5">
+                <h3 class="text-muted">No Trainings Available</h3>
+                <p class="text-muted">Add upcoming trainings in the admin dashboard to display them here.</p>
             </div>
         </div>
         {% endif %}

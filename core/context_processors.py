@@ -1,4 +1,4 @@
-from .models import SiteSettings, ContactInquiry, Feedback
+from .models import SiteSettings, ContactInquiry, Feedback, Solution, Training
 
 def site_settings(request):
     """Add site settings to all templates"""
@@ -17,6 +17,18 @@ def site_settings(request):
             'favicon': None,
         }
     }
+
+
+def navigation_items(request):
+    """Add dynamic navigation items for services and trainings."""
+    nav_services = Solution.objects.filter(is_active=True).order_by('order', 'title')[:10]
+    nav_trainings = Training.objects.filter(status='upcoming').order_by('date', 'time')[:10]
+
+    return {
+        'nav_services': nav_services,
+        'nav_trainings': nav_trainings,
+    }
+
 
 def admin_notifications(request):
     """Add admin notifications to templates"""

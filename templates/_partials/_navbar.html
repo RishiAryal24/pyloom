@@ -33,21 +33,25 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Services</a>
                     <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
-                        <li><a class="dropdown-item" href="{% url 'core:services' %}#ai-development">AI Development</a></li>
-                        <li><a class="dropdown-item" href="{% url 'core:services' %}#web-development">Web Development</a></li>
-                        <li><a class="dropdown-item" href="{% url 'core:services' %}#mobile-apps">Mobile Apps</a></li>
-                        <li><a class="dropdown-item" href="{% url 'core:services' %}#cloud-services">Cloud Services</a></li>
-                        <li><a class="dropdown-item" href="{% url 'core:services' %}#it-consulting">IT Consulting</a></li>
+                        {% if nav_services %}
+                            {% for service in nav_services %}
+                                <li><a class="dropdown-item" href="{% url 'core:services' %}#{{ service.slug }}">{{ service.title }}</a></li>
+                            {% endfor %}
+                        {% else %}
+                            <li><a class="dropdown-item" href="{% url 'core:services' %}">View Services</a></li>
+                        {% endif %}
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="trainingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Training</a>
                     <ul class="dropdown-menu" aria-labelledby="trainingDropdown">
-                        <li><a class="dropdown-item" href="{% url 'core:trainings' %}#ai-for-corporate-workers">AI for Corporate Workers</a></li>
-                        <li><a class="dropdown-item" href="{% url 'core:trainings' %}#python-development">Python Development</a></li>
-                        <li><a class="dropdown-item" href="{% url 'core:trainings' %}#data-analytics">Data Analytics</a></li>
-                        <li><a class="dropdown-item" href="{% url 'core:trainings' %}#microsoft-excel">Microsoft Excel</a></li>
-                        <li><a class="dropdown-item" href="{% url 'core:trainings' %}#corporate-programs">Corporate Programs</a></li>
+                        {% if nav_trainings %}
+                            {% for training in nav_trainings %}
+                                <li><a class="dropdown-item" href="{% url 'core:trainings' %}#{{ training.slug }}">{{ training.title }}</a></li>
+                            {% endfor %}
+                        {% else %}
+                            <li><a class="dropdown-item" href="{% url 'core:trainings' %}">View Trainings</a></li>
+                        {% endif %}
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
