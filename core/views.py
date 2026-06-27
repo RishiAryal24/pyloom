@@ -162,13 +162,13 @@ def solutions(request):
 
 def services(request):
     """Services page"""
-    active_services = Solution.objects.filter(is_active=True).order_by('order', 'title')
-    featured_solutions = active_services.filter(is_featured=True)[:6]
+    active_services = Service.objects.filter(is_active=True).order_by('order', 'title')
+    featured_services = active_services.filter(is_featured=True)[:6]
 
     context = {
         'settings': SiteSettings.load(),
         'services': active_services,
-        'featured_solutions': featured_solutions,
+        'featured_services': featured_services,
     }
     return render(request, 'frontend/services.html', context)
 

@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from import_export.admin import ImportExportModelAdmin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import (
-    CustomUser, Feedback, GalleryItem, GalleryItemImage, SiteSettings, AboutUs, Solution,
+    CustomUser, Feedback, GalleryItem, GalleryItemImage, SiteSettings, AboutUs, Solution, Service,
     ContactInquiry, BlogPost, Article, Event, EventRegistration,
     Training,
     Project, Tag, Project_tags, Newsletter, ActivityLog, TeamMember, Category
@@ -78,6 +78,16 @@ class CategoryAdmin(admin.ModelAdmin):
 class SolutionAdmin(admin.ModelAdmin):
     list_display = ('title', 'category', 'is_featured', 'is_active', 'order', 'created_at')
     list_filter = ('category', 'is_featured', 'is_active')
+    search_fields = ('title', 'description')
+    list_editable = ('is_featured', 'is_active', 'order')
+    ordering = ('order', 'title')
+    readonly_fields = ('created_at', 'updated_at')
+
+
+@admin.register(Service)
+class ServiceAdmin(admin.ModelAdmin):
+    list_display = ('title', 'is_featured', 'is_active', 'order', 'created_at')
+    list_filter = ('is_featured', 'is_active')
     search_fields = ('title', 'description')
     list_editable = ('is_featured', 'is_active', 'order')
     ordering = ('order', 'title')

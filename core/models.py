@@ -177,6 +177,33 @@ class Solution(models.Model):
     def get_category_display(self):
         return self.category.name if self.category_id else ''
 
+
+class Service(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    detailed_content = HTMLField(help_text="Rich text content for service details", blank=True)
+    icon = models.CharField(max_length=50, blank=True)
+    image = models.ImageField(upload_to='services/', blank=True, null=True)
+    is_featured = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    order = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
+    slug = models.SlugField(max_length=200, blank=True)
+
+    class Meta:
+        ordering = ['order', 'title']
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.title
+
+
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
     slug = models.SlugField(max_length=60, unique=True, blank=True)
