@@ -30,29 +30,47 @@
                 <li class="nav-item">
                     <a class="nav-link {% if request.resolver_match.url_name == 'solutions' %}active{% endif %}" href="{% url 'core:solutions' %}">Solutions</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if request.resolver_match.url_name == 'projects' %}active{% endif %}" href="{% url 'core:projects' %}">Projects</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Services</a>
+                    <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
+                        <li><a class="dropdown-item" href="{% url 'core:services' %}#ai-development">AI Development</a></li>
+                        <li><a class="dropdown-item" href="{% url 'core:services' %}#web-development">Web Development</a></li>
+                        <li><a class="dropdown-item" href="{% url 'core:services' %}#mobile-apps">Mobile Apps</a></li>
+                        <li><a class="dropdown-item" href="{% url 'core:services' %}#cloud-services">Cloud Services</a></li>
+                        <li><a class="dropdown-item" href="{% url 'core:services' %}#it-consulting">IT Consulting</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="trainingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Training</a>
+                    <ul class="dropdown-menu" aria-labelledby="trainingDropdown">
+                        <li><a class="dropdown-item" href="{% url 'core:trainings' %}#ai-for-corporate-workers">AI for Corporate Workers</a></li>
+                        <li><a class="dropdown-item" href="{% url 'core:trainings' %}#python-development">Python Development</a></li>
+                        <li><a class="dropdown-item" href="{% url 'core:trainings' %}#data-analytics">Data Analytics</a></li>
+                        <li><a class="dropdown-item" href="{% url 'core:trainings' %}#microsoft-excel">Microsoft Excel</a></li>
+                        <li><a class="dropdown-item" href="{% url 'core:trainings' %}#corporate-programs">Corporate Programs</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="resourcesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Resources</a>
+                    <ul class="dropdown-menu" aria-labelledby="resourcesDropdown">
+                        <li><a class="dropdown-item" href="{% url 'core:articles' %}">Articles</a></li>
+                        <li><a class="dropdown-item" href="{% url 'core:projects' %}">Case Studies</a></li>
+                        <li><a class="dropdown-item" href="{% url 'core:events' %}">Events</a></li>
+                        <li><a class="dropdown-item" href="{% url 'core:gallery' %}">Gallery</a></li>
+                        <li><a class="dropdown-item" href="{% url 'core:user_feedback' %}">Testimonials</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="aboutDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">About</a>
+                    <ul class="dropdown-menu" aria-labelledby="aboutDropdown">
+                        <li><a class="dropdown-item" href="{% url 'core:about' %}#company">Company</a></li>
+                        <li><a class="dropdown-item" href="{% url 'core:about' %}#team">Team</a></li>
+                        <li><a class="dropdown-item" href="{% url 'core:contact' %}">Careers</a></li>
+                        <li><a class="dropdown-item" href="{% url 'core:contact' %}">Partners</a></li>
+                    </ul>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if request.resolver_match.url_name == 'services' %}active{% endif %}" href="{% url 'core:services' %}">Services</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if request.resolver_match.url_name == 'trainings' %}active{% endif %}" href="{% url 'core:trainings' %}">Trainings</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if request.resolver_match.url_name == 'user_feedback' %}active{% endif %}" href="{% url 'core:user_feedback' %}">Feedback</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if request.resolver_match.url_name == 'articles' %}active{% endif %}" href="{% url 'core:articles' %}">Articles</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if request.resolver_match.url_name == 'events' %}active{% endif %}" href="{% url 'core:events' %}">Events Gallery</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="{% url 'core:about' %}">About Us</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" href="{% url 'core:contact' %}">Contact Us</a>
+                    <a class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" href="{% url 'core:contact' %}">Contact</a>
                 </li>
                 <li class="nav-item ms-lg-2">
                     <a class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 mt-2 mt-lg-0" href="https://pyloomtech.com/webmail" target="_blank" rel="noopener">
