@@ -187,14 +187,13 @@ class Tag(models.Model):
 # Project model
 class Project(models.Model):
     title = models.CharField(max_length=255)
-    slug = models.SlugField(unique=True)  # Ensure slug field exists
+    slug = models.SlugField(max_length=200, unique=True, blank=True)
     summary = models.TextField()
     description = models.TextField()
     cover_image = models.ImageField(upload_to='projects/')
     tags = models.ManyToManyField('Tag', through='Project_tags', blank=True)  # Many-to-many relationship with through model
     completed_on = models.DateField()
-    slug = models.SlugField(max_length=200, blank=True)
-    views_count = models.PositiveIntegerField(default=0) 
+    views_count = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.title
@@ -347,6 +346,52 @@ class Event(models.Model):
     
     def __str__(self):
         return f"{self.title} - {self.date}"
+
+class Training(models.Model):
+    STATUS_CHOICES = [
+        ('upcoming', 'Upcoming'),
+        ('ongoing', 'Ongoing'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled'),
+    ]
+
+    title = models.CharField(max_length=200)
+    summary = models.TextField(blank=True)
+    course_overview = HTMLField(blank=True)
+    duration = models.CharField(max_length=100, blank=True)
+    who_can_attend = models.TextField(blank=True)
+    prerequisites = models.TextField(blank=True)
+    location = models.CharField(max_length=200, blank=True)
+    date = models.DateField(blank=True, null=True)
+    time = models.TimeField(blank=True, null=True)
+    price = models.CharField(max_length=50, default='Free', blank=True)
+    featured_image = models.ImageField(upload_to='trainings/', blank=True, null=True)
+    registration_url = models.URLField(blank=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='upcoming')
+    is_featured = models.BooleanField(default=False)
+    slug = models.SlugField(max_length=200, blank=True, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
+
+    class Meta:
+        ordering = ['date', 'time']
+        verbose_name = 'Training'
+        verbose_name_plural = 'Trainings'
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(self.title)
+            slug = base_slug
+            counter = 1
+            while Training.objects.filter(slug=slug).exclude(id=self.id).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.title
 
 class EventRegistration(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='registrations')

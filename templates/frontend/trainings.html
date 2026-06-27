@@ -43,17 +43,17 @@
             </div>
         </div>
 
-        {% if upcoming_events %}
+        {% if upcoming_trainings %}
         <div class="mt-5">
             <h2 class="h3 mb-4">Upcoming Sessions</h2>
             <div class="row g-4">
-                {% for event in upcoming_events %}
+                {% for training in upcoming_trainings %}
                 <div class="col-md-6 col-lg-4">
-                    <a class="card h-100 shadow-sm border-0 text-decoration-none text-dark" href="{% url 'core:event_detail' event.slug %}">
+                    <a class="card h-100 shadow-sm border-0 text-decoration-none text-dark" href="{% url 'core:training_detail' training.slug %}">
                         <div class="card-body">
-                            <h3 class="h5">{{ event.title }}</h3>
-                            <p class="text-muted mb-2">{{ event.date|date:"M d, Y" }} at {{ event.time|time:"g:i A" }}</p>
-                            <p class="text-muted mb-0">{{ event.description|striptags|truncatewords:18 }}</p>
+                            <h3 class="h5">{{ training.title }}</h3>
+                            <p class="text-muted mb-2">{{ training.date|date:"M d, Y" }}{% if training.time %} at {{ training.time|time:"g:i A" }}{% endif %}</p>
+                            <p class="text-muted mb-0">{{ training.summary|striptags|truncatewords:18 }}</p>
                         </div>
                     </a>
                 </div>

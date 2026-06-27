@@ -35,11 +35,11 @@ from core.forms import (
     SolutionForm,
     BlogPostForm,
     EventForm,
+    TrainingForm,
     GalleryItemForm,
     CustomUserCreationForm,
     ArticleForm,
     TeamMemberForm,
-    
 )
 
 # Content type mappings used throughout the admin dashboard
@@ -52,7 +52,7 @@ CONTENT_MODEL_MAPPING = {
     'gallery': GalleryItem,
     'solutions': Solution,
     'services': Solution,
-    'trainings': Event,
+    'trainings': Training,
     'users': CustomUser,
     'team': TeamMember,
     'projects': Project,
@@ -66,7 +66,7 @@ CONTENT_FORM_MAPPING = {
     'blog': BlogPostForm,
     'users': CustomUserCreationForm,
     'events': EventForm,
-    'trainings': EventForm,
+    'trainings': TrainingForm,
     'gallery': GalleryItemForm,
     'articles': ArticleForm,
     'team': TeamMemberForm,
@@ -263,9 +263,13 @@ def content_list(request, content_type):
             queryset = queryset.filter(
                 Q(title__icontains=search_query) | Q(description__icontains=search_query)
             )
-        elif content_type in ['events', 'trainings']:
+        elif content_type == 'events':
             queryset = queryset.filter(
                 Q(title__icontains=search_query) | Q(description__icontains=search_query)
+            )
+        elif content_type == 'trainings':
+            queryset = queryset.filter(
+                Q(title__icontains=search_query) | Q(summary__icontains=search_query) | Q(course_overview__icontains=search_query) | Q(who_can_attend__icontains=search_query)
             )
         elif content_type in ['articles', 'blog']:
             queryset = queryset.filter(
@@ -367,7 +371,7 @@ def content_form(request, content_type, object_id=None):
             if form.is_valid():
                 obj = form.save(commit=False)
                 # Auto-assign user fields
-                if content_type == 'events' and not getattr(obj, 'created_by', None):
+                if content_type in ['events', 'trainings'] and not getattr(obj, 'created_by', None):
                     obj.created_by = request.user
                 if content_type == 'articles' and not getattr(obj, 'author', None):
                     obj.author = request.user

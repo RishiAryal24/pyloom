@@ -6,6 +6,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import (
     CustomUser, Feedback, GalleryItem, GalleryItemImage, SiteSettings, AboutUs, Solution,
     ContactInquiry, BlogPost, Article, Event, EventRegistration,
+    Training,
     Project, Tag, Project_tags, Newsletter, ActivityLog, TeamMember, Category
 )
 
@@ -149,6 +150,17 @@ class EventAdmin(admin.ModelAdmin):
     list_filter = ('event_type', 'status', 'is_featured', 'date')
     search_fields = ('title', 'description', 'location')
     list_editable = ('status', 'is_featured', 'is_promoted')
+    ordering = ('date', 'time')
+    readonly_fields = ('created_at', 'updated_at')
+
+
+@admin.register(Training)
+class TrainingAdmin(admin.ModelAdmin):
+    list_display = ('title', 'date', 'time', 'location', 'status', 'duration', 'is_featured')
+    list_filter = ('status', 'is_featured', 'date')
+    search_fields = ('title', 'summary', 'course_overview', 'who_can_attend')
+    list_editable = ('status', 'is_featured')
+    prepopulated_fields = {'slug': ('title',)}
     ordering = ('date', 'time')
     readonly_fields = ('created_at', 'updated_at')
 
