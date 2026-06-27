@@ -19,11 +19,7 @@
         <div class="overflow-auto">
             <div class="d-flex flex-wrap gap-2">
                 {% for service in services %}
-                <a href="#{% raw %}{{ service.slug }}{% endraw %}" class="btn btn-sm btn-outline-dark">{{ service.title }}</a>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
+                <a href="#{{ service.slug }}" class="btn btn-sm btn-outline-dark">{{ service.title }}</a>
 </section>
 
 <section class="py-5" id="services">
