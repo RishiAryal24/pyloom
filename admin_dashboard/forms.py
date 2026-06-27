@@ -34,12 +34,27 @@ class SiteSettingsForm(forms.ModelForm):
 class SolutionForm(forms.ModelForm):
     class Meta:
         model = Solution
-        fields = ['title', 'description', 'category', 'image']
+        fields = [
+            'title',
+            'description',
+            'category',
+            'demo_url',
+            'canonical_url',
+            'meta_title',
+            'meta_description',
+            'image',
+            'og_image',
+        ]
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Solution Title'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Solution Description'}),
             'category': forms.Select(attrs={'class': 'form-select'}),
+            'demo_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'Demo URL'}),
+            'canonical_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'Canonical URL'}),
+            'meta_title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Meta Title'}),
+            'meta_description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Meta Description'}),
             'image': forms.ClearableFileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
+            'og_image': forms.ClearableFileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -50,7 +65,12 @@ class SolutionForm(forms.ModelForm):
             'title',
             'description',
             'category',
+            'demo_url',
+            'canonical_url',
+            'meta_title',
+            'meta_description',
             'image',
+            'og_image',
             Submit('submit', 'Save Solution', css_class='btn btn-primary')
         )
 

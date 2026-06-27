@@ -158,6 +158,10 @@ class Solution(models.Model):
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     slug = models.SlugField(max_length=200, blank=True)
     demo_url = models.URLField(blank=True, null=True)
+    canonical_url = models.URLField(max_length=200, blank=True, default='')
+    meta_description = models.TextField(blank=True, default='')
+    meta_title = models.CharField(max_length=70, blank=True, default='')
+    og_image = models.ImageField(upload_to='solutions/', blank=True, default='')
 
     class Meta:
         ordering = ['order', 'title']
