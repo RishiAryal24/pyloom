@@ -270,6 +270,31 @@ class EventForm(forms.ModelForm):
     def clean_agenda(self):
         return self.cleaned_data.get('agenda', '')
 
+class TrainingForm(forms.ModelForm):
+    class Meta:
+        model = Training
+        fields = [
+            'title', 'summary', 'course_overview', 'duration', 'who_can_attend',
+            'prerequisites', 'location', 'date', 'time', 'price', 'featured_image',
+            'registration_url', 'status', 'is_featured'
+        ]
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'summary': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'course_overview': TinyMCE(attrs={'cols': 80, 'rows': 10}),
+            'duration': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'E.g. 2 days, 6 weeks'}),
+            'who_can_attend': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Who should attend?'}),
+            'prerequisites': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Prerequisites or prior knowledge'}),
+            'location': forms.TextInput(attrs={'class': 'form-control'}),
+            'date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'time': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
+            'price': forms.TextInput(attrs={'class': 'form-control'}),
+            'featured_image': forms.ClearableFileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
+            'registration_url': forms.URLInput(attrs={'class': 'form-control'}),
+            'status': forms.Select(attrs={'class': 'form-select'}),
+            'is_featured': forms.CheckboxInput(),
+        }
+
 # Gallery Form
 class GalleryItemForm(forms.ModelForm):
     class Meta:

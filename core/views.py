@@ -12,7 +12,7 @@ import json
 import random
 from django.urls import reverse
 from django.core.paginator import Paginator
-from .forms import ClientLoginForm, ContactForm, FeedbackForm, NewsletterForm, ArticleForm ,EventForm, GalleryItemForm, ClientSignupForm
+from .forms import ClientLoginForm, ContactForm, FeedbackForm, NewsletterForm, ArticleForm, EventForm, TrainingForm, GalleryItemForm, ClientSignupForm
 from .models import *
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -159,9 +159,22 @@ def trainings(request):
     """Trainings page"""
     context = {
         'settings': SiteSettings.load(),
-        'upcoming_events': Event.objects.filter(status='upcoming').order_by('date', 'time')[:6],
+        'upcoming_trainings': Training.objects.filter(status='upcoming').order_by('date', 'time')[:6],
     }
     return render(request, 'frontend/trainings.html', context)
+
+
+def training_detail(request, slug):
+    """Training detail page"""
+    training = get_object_or_404(Training, slug=slug)
+    related_trainings = Training.objects.filter(status='upcoming').exclude(id=training.id)[:3]
+
+    context = {
+        'training': training,
+        'related_trainings': related_trainings,
+        'settings': SiteSettings.load(),
+    }
+    return render(request, 'frontend/training_detail.html', context)
 
 
 def solution_detail(request, solution_slug):

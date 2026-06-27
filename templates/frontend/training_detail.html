@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ training.title }} - {{ settings.site_name|default:"PyLoom" }}{% endblock %}
+{% block description %}{{ training.summary|truncatewords:30 }}{% endblock %}
+
+{% block content %}
+<section class="page-header-compact bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center mb-3 gap-3">
+                    <span class="badge-soft bg-primary text-white">Training</span>
+                    {% if training.date %}
+                        <span class="text-muted"><i class="bi bi-calendar me-1"></i>{{ training.date|date:"F j, Y" }}</span>
+                    {% endif %}
+                    {% if training.time %}
+                        <span class="text-muted"><i class="bi bi-clock me-1"></i>{{ training.time|time:"g:i A" }}</span>
+                    {% endif %}
+                </div>
+                <h1>{{ training.title }}</h1>
+                <p class="lead text-muted">{{ training.summary }}</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="{% url 'core:trainings' %}" class="btn btn-outline-dark">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Trainings
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-8">
+                {% if training.featured_image %}
+                    <div class="mb-4">
+                        <img src="{{ training.featured_image.url }}" class="img-fluid rounded" alt="{{ training.title }} image">
+                    </div>
+                {% endif %}
+
+                <div class="mb-5">
+                    <h3><i class="bi bi-bookmark-check text-brand me-2"></i>Course Overview</h3>
+                    <div class="content-rich">
+                        {{ training.course_overview|safe }}
+                    </div>
+                </div>
+
+                <div class="row gy-4 mb-5">
+                    <div class="col-md-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <h5>Who Can Attend</h5>
+                                <p class="text-muted">{{ training.who_can_attend|linebreaksbr }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <h5>Prerequisites</h5>
+                                <p class="text-muted">{{ training.prerequisites|default:"No prerequisites required."|linebreaksbr }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-5">
+                    <h3><i class="bi bi-info-circle text-brand me-2"></i>Training Summary</h3>
+                    <p>{{ training.summary }}</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card sticky-top shadow-sm">
+                    <div class="card-body">
+                        <h5 class="mb-3"><i class="bi bi-bar-chart-line text-brand me-2"></i>Training Details</h5>
+
+                        {% if training.location %}
+                        <div class="mb-3">
+                            <strong>Location</strong>
+                            <p class="mb-0 text-muted">{{ training.location }}</p>
+                        </div>
+                        {% endif %}
+
+                        {% if training.date %}
+                        <div class="mb-3">
+                            <strong>Date</strong>
+                            <p class="mb-0 text-muted">{{ training.date|date:"F j, Y" }}</p>
+                        </div>
+                        {% endif %}
+
+                        {% if training.time %}
+                        <div class="mb-3">
+                            <strong>Time</strong>
+                            <p class="mb-0 text-muted">{{ training.time|time:"g:i A" }}</p>
+                        </div>
+                        {% endif %}
+
+                        {% if training.duration %}
+                        <div class="mb-3">
+                            <strong>Duration</strong>
+                            <p class="mb-0 text-muted">{{ training.duration }}</p>
+                        </div>
+                        {% endif %}
+
+                        {% if training.price %}
+                        <div class="mb-3">
+                            <strong>Price</strong>
+                            <p class="mb-0 text-muted">{{ training.price }}</p>
+                        </div>
+                        {% endif %}
+
+                        <div class="d-grid gap-2 mt-4">
+                            {% if training.registration_url %}
+                            <a href="{{ training.registration_url }}" class="btn btn-primary btn-lg" target="_blank" rel="noopener">
+                                Register Now
+                            </a>
+                            {% else %}
+                            <a href="{% url 'core:contact' %}" class="btn btn-outline-primary btn-lg">
+                                Contact Us for Registration
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if related_trainings %}
+        <div class="mt-5">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h3>Related Trainings</h3>
+                    <p class="text-muted">Browse other upcoming training sessions.</p>
+                </div>
+            </div>
+            <div class="row g-4">
+                {% for related in related_trainings %}
+                <div class="col-md-6 col-lg-4">
+                    <a class="card h-100 shadow-sm border-0 text-decoration-none text-dark" href="{% url 'core:training_detail' related.slug %}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ related.title }}</h5>
+                            <p class="text-muted mb-2">{{ related.date|date:"M d, Y" }}{% if related.time %} at {{ related.time|time:"g:i A" }}{% endif %}</p>
+                            <p class="card-text small">{{ related.summary|truncatewords:18 }}</p>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
