@@ -3,11 +3,11 @@
 {% load crispy_forms_tags %}
 
 {% block title %}
-    {% if is_edit %}Edit{% else %}Add{% endif %} {{ content_type|title }} - Admin
+    {% if is_edit %}Edit{% else %}Add{% endif %} {{ display_name_singular }} - Admin
 {% endblock %}
 
 {% block page_title %}
-    {% if is_edit %}Edit{% else %}Add New{% endif %} {{ content_type|title }}
+    {% if is_edit %}Edit{% else %}Add New{% endif %} {{ display_name_singular }}
 {% endblock %}
 
 {% block content %}
@@ -88,7 +88,7 @@
 
                     <div class="d-flex gap-2 mt-4">
                         <button type="submit" class="btn btn-primary" color='green'>
-                            {% if is_edit %}Update{% else %}Create{% endif %} {{ content_type|title }}
+                            {% if is_edit %}Update{% else %}Create{% endif %} {{ display_name_singular }}
                         </button>
                         <a href="{% url 'content_list' content_type %}" class="btn btn-outline-secondary">Cancel</a>
                     </div>

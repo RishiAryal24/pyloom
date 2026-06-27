@@ -41,22 +41,75 @@ from core.forms import (
     TeamMemberForm,
     
 )
-# admin_dashboard/views.py
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate, login, logout
-from django.contrib import messages
-from django.http import JsonResponse, Http404
-from django.utils import timezone
-from django.urls import reverse
-from django.contrib.auth.forms import PasswordChangeForm, PasswordResetForm, SetPasswordForm
-from django.contrib.auth.tokens import default_token_generator
-from django.core.mail import send_mail
-from django.conf import settings
-from core.models import ActivityLog, ContactInquiry, Feedback, BlogPost, Event, Solution, CustomUser
-from django.core.paginator import Paginator
-from django.db.models import Q
-from datetime import timedelta
-from django.forms import inlineformset_factory, modelformset_factory
+
+# Content type mappings used throughout the admin dashboard
+CONTENT_MODEL_MAPPING = {
+    'inquiries': ContactInquiry,
+    'feedback': Feedback,
+    'blog': BlogPost,
+    'articles': Article,
+    'events': Event,
+    'gallery': GalleryItem,
+    'solutions': Solution,
+    'services': Solution,
+    'trainings': Event,
+    'users': CustomUser,
+    'team': TeamMember,
+    'projects': Project,
+    'about': AboutUs,
+    'site_settings': SiteSettings,
+}
+
+CONTENT_FORM_MAPPING = {
+    'solutions': SolutionForm,
+    'services': SolutionForm,
+    'blog': BlogPostForm,
+    'users': CustomUserCreationForm,
+    'events': EventForm,
+    'trainings': EventForm,
+    'gallery': GalleryItemForm,
+    'articles': ArticleForm,
+    'team': TeamMemberForm,
+    'projects': ProjectForm,
+    'about': AboutUsForm,
+    'site_settings': SiteSettingsForm,
+}
+
+DISPLAY_NAMES = {
+    'inquiries': 'Contact Inquiries',
+    'feedback': 'Feedback',
+    'blog': 'Blog Posts',
+    'articles': 'Articles',
+    'events': 'Events',
+    'gallery': 'Gallery',
+    'solutions': 'Solutions',
+    'services': 'Services',
+    'trainings': 'Trainings',
+    'users': 'Users',
+    'team': 'Team Members',
+    'projects': 'Projects',
+    'about': 'About Us',
+    'site_settings': 'Site Settings',
+    'newsletter': 'Newsletter Subscribers',
+}
+
+SINGULAR_DISPLAY_NAMES = {
+    'inquiries': 'Contact Inquiry',
+    'feedback': 'Feedback',
+    'blog': 'Blog Post',
+    'articles': 'Article',
+    'events': 'Event',
+    'gallery': 'Gallery Item',
+    'solutions': 'Solution',
+    'services': 'Service',
+    'trainings': 'Training',
+    'users': 'User',
+    'team': 'Team Member',
+    'projects': 'Project',
+    'about': 'About Us',
+    'site_settings': 'Site Setting',
+    'newsletter': 'Newsletter Subscriber',
+}
 
 
 def admin_login(request):
@@ -188,20 +241,7 @@ def admin_dashboard(request):
 def content_list(request, content_type):
     """Generic content listing view"""
     content_type = content_type.lower() 
-    model_mapping = {
-        'inquiries': ContactInquiry,
-        'feedback': Feedback,
-        'blog': BlogPost,
-        'articles': Article,
-        'events': Event,
-        'gallery': GalleryItem,
-        'solutions': Solution,
-        'users': CustomUser,
-        'newsletter': Newsletter,
-        'team': TeamMember,
-        'about': AboutUs,
-        'projects': Project,  
-    }
+    model_mapping = {**CONTENT_MODEL_MAPPING, 'newsletter': Newsletter}
 
     if content_type not in model_mapping:
         raise Http404("Content type not found")
@@ -219,9 +259,21 @@ def content_list(request, content_type):
         queryset = queryset.all()
 
     if search_query:
-        if content_type == 'projects':
+        if content_type in ['projects', 'solutions', 'services']:
             queryset = queryset.filter(
                 Q(title__icontains=search_query) | Q(description__icontains=search_query)
+            )
+        elif content_type in ['events', 'trainings']:
+            queryset = queryset.filter(
+                Q(title__icontains=search_query) | Q(description__icontains=search_query)
+            )
+        elif content_type in ['articles', 'blog']:
+            queryset = queryset.filter(
+                Q(title__icontains=search_query) | Q(content__icontains=search_query) | Q(excerpt__icontains=search_query)
+            )
+        elif content_type == 'users':
+            queryset = queryset.filter(
+                Q(username__icontains=search_query) | Q(email__icontains=search_query) | Q(first_name__icontains=search_query) | Q(last_name__icontains=search_query)
             )
         else:
             queryset = queryset.filter(name__icontains=search_query)
@@ -237,6 +289,8 @@ def content_list(request, content_type):
 
     context = {
         'content_type': content_type,
+        'display_name': DISPLAY_NAMES.get(content_type, content_type.title()),
+        'display_name_singular': SINGULAR_DISPLAY_NAMES.get(content_type, content_type[:-1].title()),
         'page_obj': page_obj,
         'search_query': search_query,
         'total_count': queryset.count(),
@@ -253,34 +307,11 @@ def content_list(request, content_type):
 def content_form(request, content_type, object_id=None):
     """
     Generic content form view for adding/editing content.
-    Supports: solutions, blog, users, events, gallery, articles, team, projects.
+    Supports: solutions, services, trainings, blog, users, events, gallery, articles, team, projects.
     """
     # --- Mapping content types to models and forms ---
-    model_mapping = {
-        'solutions': Solution,
-        'blog': BlogPost,
-        'users': CustomUser,
-        'events': Event,
-        'gallery': GalleryItem,
-        'articles': Article,
-        'team': TeamMember,
-        'projects': Project,  # Ensure this is present
-        'about': AboutUs,
-        'site_settings': SiteSettings,
-    }
-
-    form_mapping = {
-        'solutions': SolutionForm,
-        'blog': BlogPostForm,
-        'users': CustomUserCreationForm,
-        'events': EventForm,
-        'gallery': GalleryItemForm,
-        'articles': ArticleForm,
-        'team': TeamMemberForm,
-        'projects': ProjectForm,  # Ensure this is present
-        'about': AboutUsForm,
-        'site_settings': SiteSettingsForm,
-    }
+    model_mapping = CONTENT_MODEL_MAPPING
+    form_mapping = CONTENT_FORM_MAPPING
 
     if content_type not in model_mapping:
         raise Http404(f"Content type '{content_type}' not found.")
@@ -351,6 +382,8 @@ def content_form(request, content_type, object_id=None):
 
         context = {
             'content_type': content_type,
+            'display_name': DISPLAY_NAMES.get(content_type, content_type.title()),
+            'display_name_singular': SINGULAR_DISPLAY_NAMES.get(content_type, content_type[:-1].title()),
             'form': form,
             'is_edit': bool(instance),
         }
@@ -363,15 +396,8 @@ def content_form(request, content_type, object_id=None):
 def delete_content(request, content_type, object_id):
     """Delete content object"""
     model_mapping = {
-        'inquiries': ContactInquiry,
-        'feedback': Feedback,
-        'blog': BlogPost,
-        'articles': Article,
-        'events': Event,
-        'gallery': GalleryItem,
-        'solutions': Solution,
-        'users': CustomUser,
-        'team': TeamMember,
+        **CONTENT_MODEL_MAPPING,
+        'newsletter': Newsletter,
         'project': Project,
     }
     
@@ -404,19 +430,7 @@ def delete_content(request, content_type, object_id):
 @admin_required
 def export_csv(request, content_type):
     """Export content to CSV"""
-    model_mapping = {
-        'inquiries': ContactInquiry,
-        'feedback': Feedback,
-        'blog': BlogPost,
-        'articles': Article,
-        'events': Event,
-        'gallery': GalleryItem,
-        'solutions': Solution,
-        'users': CustomUser,
-        'newsletter': Newsletter,
-        'team': TeamMember,
-        'projects': Project,
-    }
+    model_mapping = {**CONTENT_MODEL_MAPPING, 'newsletter': Newsletter}
     
     if content_type not in model_mapping:
         raise Http404("Content type not found")
@@ -579,19 +593,7 @@ def bulk_action(request):
             content_type = data.get('content_type')
             object_ids = data.get('object_ids', [])
             
-            model_mapping = {
-                'inquiries': ContactInquiry,
-                'feedback': Feedback,
-                'blog': BlogPost,
-                'articles': Article,
-                'events': Event,
-                'gallery': GalleryItem,
-                'solutions': Solution,
-                'users': CustomUser,
-                'newsletter': Newsletter,
-                'team': TeamMember,
-                'projects': Project,
-            }
+            model_mapping = {**CONTENT_MODEL_MAPPING, 'newsletter': Newsletter}
             
             if content_type not in model_mapping:
                 return JsonResponse({'success': False, 'error': 'Invalid content type'})
