@@ -274,14 +274,19 @@ class TrainingForm(forms.ModelForm):
     class Meta:
         model = Training
         fields = [
-            'title', 'summary', 'course_overview', 'duration', 'who_can_attend',
-            'prerequisites', 'location', 'date', 'time', 'price', 'featured_image',
-            'registration_url', 'status', 'is_featured'
+            'title', 'summary', 'course_overview', 'learning_outcomes', 'duration', 'delivery_mode',
+            'class_schedule', 'level', 'who_can_attend', 'prerequisites', 'location', 'start_date', 'date', 'time',
+            'price', 'featured_image', 'registration_url', 'certificate', 'status', 'is_featured'
         ]
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'summary': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'course_overview': TinyMCE(attrs={'cols': 80, 'rows': 10}),
+            'learning_outcomes': TinyMCE(attrs={'cols': 80, 'rows': 8}),
+            'delivery_mode': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Live Online, In-person, Hybrid'}),
+            'class_schedule': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'E.g. 2 Hours per Day'}),
+            'level': forms.Select(attrs={'class': 'form-select'}),
+            'start_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'duration': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'E.g. 2 days, 6 weeks'}),
             'who_can_attend': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Who should attend?'}),
             'prerequisites': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Prerequisites or prior knowledge'}),
