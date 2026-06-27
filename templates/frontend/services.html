@@ -20,6 +20,10 @@
             <div class="d-flex flex-wrap gap-2">
                 {% for service in services %}
                 <a href="#{{ service.slug }}" class="btn btn-sm btn-outline-dark">{{ service.title }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 </section>
 
 <section class="py-5" id="services">
@@ -45,6 +49,23 @@
 
                         <h4 class="card-title fw-bold">{{ service.title }}</h4>
                         <p class="card-text text-muted flex-grow-1">{{ service.description }}</p>
+
+                        {% if service.detailed_content %}
+                        <div class="collapse service-details mt-3" id="serviceDetails{{ service.id }}">
+                            <div class="card card-body py-3">
+                                {{ service.detailed_content|safe }}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <div class="d-flex gap-2 mt-auto align-items-center">
+                            {% if service.detailed_content %}
+                            <button class="btn btn-sm btn-outline-primary toggle-details-btn" type="button" data-bs-toggle="collapse" data-bs-target="#serviceDetails{{ service.id }}" aria-expanded="false" aria-controls="serviceDetails{{ service.id }}">
+                                View Details
+                            </button>
+                            {% endif %}
+                            <a href="{% url 'core:contact' %}" class="btn btn-sm btn-primary">Contact Us</a>
+                        </div>
 
                         {% if service.image %}
                         <div class="card-footer bg-transparent border-0 p-0 mt-4">
@@ -93,6 +114,23 @@
                         <h4 class="card-title fw-bold">{{ service.title }}</h4>
                         <p class="card-text text-muted flex-grow-1">{{ service.description|truncatewords:24 }}</p>
 
+                        {% if service.detailed_content %}
+                        <div class="collapse service-details mt-3" id="featuredServiceDetails{{ service.id }}">
+                            <div class="card card-body py-3">
+                                {{ service.detailed_content|safe }}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <div class="d-flex gap-2 mt-auto align-items-center">
+                            {% if service.detailed_content %}
+                            <button class="btn btn-sm btn-outline-primary toggle-details-btn" type="button" data-bs-toggle="collapse" data-bs-target="#featuredServiceDetails{{ service.id }}" aria-expanded="false" aria-controls="featuredServiceDetails{{ service.id }}">
+                                View Details
+                            </button>
+                            {% endif %}
+                            <a href="{% url 'core:contact' %}" class="btn btn-sm btn-primary">Contact Us</a>
+                        </div>
+
                         {% if service.image %}
                         <div class="card-footer bg-transparent border-0 p-0 mt-4">
                             <img src="{{ service.image.url }}" class="img-fluid rounded-bottom"
@@ -107,4 +145,40 @@
     </div>
 </section>
 {% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .service-card {
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .service-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .service-details .card {
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        background: #f8f9fa;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.toggle-details-btn').forEach(button => {
+            const target = document.querySelector(button.dataset.bsTarget);
+            if (!target) return;
+
+            target.addEventListener('show.bs.collapse', function () {
+                button.textContent = 'Hide Details';
+            });
+            target.addEventListener('hide.bs.collapse', function () {
+                button.textContent = 'View Details';
+            });
+        });
+    });
+</script>
 {% endblock %}

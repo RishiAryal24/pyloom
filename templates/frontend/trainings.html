@@ -14,20 +14,86 @@
     </div>
 </section>
 
+<section class="py-4 bg-light border-bottom">
+    <div class="container">
+        <div class="overflow-auto">
+            <div class="d-flex flex-wrap gap-2">
+                {% for training in upcoming_trainings %}
+                <a href="#{{ training.slug }}" class="btn btn-sm btn-outline-dark">{{ training.title }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
 <section class="py-5" id="training-programs">
     <div class="container">
         {% if upcoming_trainings %}
         <div class="row g-4">
             {% for training in upcoming_trainings %}
             <div class="col-md-6 col-lg-4" id="{{ training.slug }}">
-                <a class="card h-100 shadow-sm border-0 text-decoration-none text-dark" href="{% url 'core:training_detail' training.slug %}">
-                    <div class="card-body">
-                        <h3 class="h5">{{ training.title }}</h3>
-                        <p class="text-muted mb-2">{% if training.start_date %}Start: {{ training.start_date|date:"M d, Y" }}{% else %}{{ training.date|date:"M d, Y" }}{% endif %}{% if training.time %} at {{ training.time|time:"g:i A" }}{% endif %}</p>
-                        <p class="text-muted small mb-1">Level: {{ training.get_level_display|default:training.level }} · Duration: {{ training.duration }}</p>
-                        <p class="text-muted mb-0">{{ training.summary|striptags|truncatewords:18 }}</p>
+                <div class="card h-100 shadow-sm border-0 training-card">
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <span class="badge bg-secondary">{{ training.get_level_display|default:training.level }}</span>
+                            </div>
+                            {% if training.is_featured %}
+                            <span class="badge bg-warning text-dark">Featured</span>
+                            {% endif %}
+                        </div>
+
+                        <h4 class="card-title fw-bold">{{ training.title }}</h4>
+                        <p class="card-text text-muted flex-grow-1">{{ training.summary|striptags|truncatewords:24 }}</p>
+
+                        {% if training.course_overview %}
+                        <div class="collapse training-details mt-3" id="trainingDetails{{ training.id }}">
+                            <div class="card card-body py-3">
+                                {{ training.course_overview|safe }}
+                                {% if training.learning_outcomes %}
+                                <div class="mt-3">
+                                    <h6 class="mb-2">Learning Outcomes</h6>
+                                    <div class="content-rich">{{ training.learning_outcomes|safe }}</div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <div class="mb-3">
+                            {% if training.start_date %}
+                            <small class="text-muted d-block">Start: {{ training.start_date|date:"M d, Y" }}</small>
+                            {% elif training.date %}
+                            <small class="text-muted d-block">Date: {{ training.date|date:"M d, Y" }}</small>
+                            {% endif %}
+                            {% if training.time %}
+                            <small class="text-muted d-block">Time: {{ training.time|time:"g:i A" }}</small>
+                            {% endif %}
+                            {% if training.duration %}
+                            <small class="text-muted d-block">Duration: {{ training.duration }}</small>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-flex gap-2 mt-auto align-items-center">
+                            {% if training.course_overview %}
+                            <button class="btn btn-sm btn-outline-primary toggle-training-details-btn" type="button" data-bs-toggle="collapse" data-bs-target="#trainingDetails{{ training.id }}" aria-expanded="false" aria-controls="trainingDetails{{ training.id }}">
+                                View Details
+                            </button>
+                            {% endif %}
+                            <a href="{% url 'core:training_detail' training.slug %}" class="btn btn-sm btn-primary">Full Page</a>
+                            {% if training.registration_url %}
+                            <a href="{{ training.registration_url }}" class="btn btn-sm btn-outline-primary" target="_blank" rel="noopener">Register</a>
+                            {% else %}
+                            <a href="{% url 'core:contact' %}" class="btn btn-sm btn-outline-primary">Contact</a>
+                            {% endif %}
+                        </div>
                     </div>
-                </a>
+                    {% if training.featured_image %}
+                    <div class="card-footer bg-transparent border-0 p-0 mt-4">
+                        <img src="{{ training.featured_image.url }}" class="img-fluid rounded-bottom" alt="{{ training.title }}" style="height: 200px; width: 100%; object-fit: cover;">
+                    </div>
+                    {% endif %}
+                </div>
             </div>
             {% endfor %}
         </div>
@@ -41,4 +107,49 @@
         {% endif %}
     </div>
 </section>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .training-card {
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .training-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .training-card .card-footer img {
+        transition: transform 0.3s ease;
+    }
+
+    .training-card:hover .card-footer img {
+        transform: scale(1.02);
+    }
+
+    .training-details .card {
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        background: #f8f9fa;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.toggle-training-details-btn').forEach(button => {
+            const target = document.querySelector(button.dataset.bsTarget);
+            if (!target) return;
+
+            target.addEventListener('show.bs.collapse', function () {
+                button.textContent = 'Hide Details';
+            });
+            target.addEventListener('hide.bs.collapse', function () {
+                button.textContent = 'View Details';
+            });
+        });
+    });
+</script>
 {% endblock %}
