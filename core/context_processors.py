@@ -2,8 +2,20 @@ from .models import SiteSettings, ContactInquiry, Feedback
 
 def site_settings(request):
     """Add site settings to all templates"""
+    settings_obj = SiteSettings.load()
+    if settings_obj:
+        return {'settings': settings_obj}
+
+    # Provide safe defaults when no SiteSettings instance exists to avoid template errors
     return {
-        'settings': SiteSettings.load()
+        'settings': {
+            'site_name': 'PyLoom',
+            'slogan': 'Weaving Innovation Beyond Expectations',
+            'contact_email': 'info@pyloomtech.com',
+            'contact_phone': '',
+            'logo': None,
+            'favicon': None,
+        }
     }
 
 def admin_notifications(request):
