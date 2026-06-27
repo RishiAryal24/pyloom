@@ -33,6 +33,7 @@ from core.forms import (
     ProjectForm,
     SiteSettingsForm,
     SolutionForm,
+    ServiceForm,
     BlogPostForm,
     EventForm,
     TrainingForm,
@@ -51,7 +52,7 @@ CONTENT_MODEL_MAPPING = {
     'events': Event,
     'gallery': GalleryItem,
     'solutions': Solution,
-    'services': Solution,
+    'services': Service,
     'trainings': Training,
     'users': CustomUser,
     'team': TeamMember,
@@ -62,7 +63,7 @@ CONTENT_MODEL_MAPPING = {
 
 CONTENT_FORM_MAPPING = {
     'solutions': SolutionForm,
-    'services': SolutionForm,
+    'services': ServiceForm,
     'blog': BlogPostForm,
     'users': CustomUserCreationForm,
     'events': EventForm,

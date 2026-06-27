@@ -36,18 +36,18 @@
             {% endif %}
         </div>
 
-        {% if featured_solutions %}
+        {% if featured_services %}
         <div class="mt-5">
-            <h2 class="h3 mb-4">Featured Solutions</h2>
+            <h2 class="h3 mb-4">Featured Services</h2>
             <div class="row g-4">
-                {% for solution in featured_solutions %}
+                {% for service in featured_services %}
                 <div class="col-md-6 col-lg-4">
-                    <a class="card h-100 shadow-sm border-0 text-decoration-none text-dark" href="{% url 'core:solution_detail' solution.slug %}">
+                    <div class="card h-100 shadow-sm border-0">
                         <div class="card-body">
-                            <h3 class="h5">{{ solution.title }}</h3>
-                            <p class="text-muted mb-0">{{ solution.description|truncatewords:22 }}</p>
+                            <h3 class="h5">{{ service.title }}</h3>
+                            <p class="text-muted mb-0">{{ service.description|truncatewords:22 }}</p>
                         </div>
-                    </a>
+                    </div>
                 </div>
                 {% endfor %}
             </div>

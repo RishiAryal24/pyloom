@@ -1,5 +1,5 @@
 from django import forms
-from core.models import Solution, BlogPost, CustomUser, Category
+from core.models import Service, Solution, BlogPost, CustomUser, Category
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Row, Column
 from crispy_forms.bootstrap import PrependedText, AppendedText
@@ -29,6 +29,36 @@ class SiteSettingsForm(forms.ModelForm):
             'youtube_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'YouTube URL'}),
         }
 
+
+class ServiceForm(forms.ModelForm):
+    class Meta:
+        model = Service
+        fields = ['title', 'description', 'detailed_content', 'icon', 'image', 'is_featured', 'is_active', 'order']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Service Title'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Service Description'}),
+            'detailed_content': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Service Details', 'rows': 6}),
+            'icon': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Service Icon'}),
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
+            'is_featured': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'order': forms.NumberInput(attrs={'class': 'form-control', 'min': 0}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            'title',
+            'description',
+            'detailed_content',
+            'icon',
+            'image',
+            'is_featured',
+            'is_active',
+            'order',
+            Submit('submit', 'Save Service', css_class='btn btn-primary')
+        )
 
 
 class SolutionForm(forms.ModelForm):
