@@ -358,11 +358,22 @@ class Training(models.Model):
     title = models.CharField(max_length=200)
     summary = models.TextField(blank=True)
     course_overview = HTMLField(blank=True)
+    learning_outcomes = HTMLField(blank=True)
+    delivery_mode = models.CharField(max_length=100, blank=True)
+    class_schedule = models.CharField(max_length=100, blank=True)
+    LEVEL_CHOICES = [
+        ('beginner', 'Beginner'),
+        ('intermediate', 'Intermediate'),
+        ('advanced', 'Advanced'),
+    ]
+    level = models.CharField(max_length=20, choices=LEVEL_CHOICES, blank=True)
     duration = models.CharField(max_length=100, blank=True)
     who_can_attend = models.TextField(blank=True)
     prerequisites = models.TextField(blank=True)
+    certificate = models.CharField(max_length=255, blank=True)
     location = models.CharField(max_length=200, blank=True)
     date = models.DateField(blank=True, null=True)
+    start_date = models.DateField(blank=True, null=True)
     time = models.TimeField(blank=True, null=True)
     price = models.CharField(max_length=50, default='Free', blank=True)
     featured_image = models.ImageField(upload_to='trainings/', blank=True, null=True)

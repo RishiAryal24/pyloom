@@ -11,7 +11,9 @@
             <div class="col-lg-8">
                 <div class="d-flex align-items-center mb-3 gap-3">
                     <span class="badge-soft bg-primary text-white">Training</span>
-                    {% if training.date %}
+                    {% if training.start_date %}
+                        <span class="text-muted"><i class="bi bi-calendar-event me-1"></i>Start: {{ training.start_date|date:"F j, Y" }}</span>
+                    {% elif training.date %}
                         <span class="text-muted"><i class="bi bi-calendar me-1"></i>{{ training.date|date:"F j, Y" }}</span>
                     {% endif %}
                     {% if training.time %}
@@ -45,6 +47,13 @@
                     <div class="content-rich">
                         {{ training.course_overview|safe }}
                     </div>
+
+                    {% if training.learning_outcomes %}
+                    <div class="mt-4">
+                        <h4>What You'll Learn</h4>
+                        <div class="content-rich">{{ training.learning_outcomes|safe }}</div>
+                    </div>
+                    {% endif %}
                 </div>
 
                 <div class="row gy-4 mb-5">
@@ -69,6 +78,26 @@
                 <div class="mb-5">
                     <h3><i class="bi bi-info-circle text-brand me-2"></i>Training Summary</h3>
                     <p>{{ training.summary }}</p>
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <strong>Delivery Mode</strong>
+                            <p class="text-muted">{{ training.delivery_mode|default:'Live Online Instructor-Led' }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Class Schedule</strong>
+                            <p class="text-muted">{{ training.class_schedule|default:'2 Hours per Day' }}</p>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <strong>Level</strong>
+                            <p class="text-muted">{{ training.get_level_display|default:training.level }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Certificate</strong>
+                            <p class="text-muted">{{ training.certificate|default:'Certificate of Completion from PyLoom Technologies' }}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 

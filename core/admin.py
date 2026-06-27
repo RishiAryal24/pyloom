@@ -156,7 +156,7 @@ class EventAdmin(admin.ModelAdmin):
 
 @admin.register(Training)
 class TrainingAdmin(admin.ModelAdmin):
-    list_display = ('title', 'date', 'time', 'location', 'status', 'duration', 'is_featured')
+    list_display = ('title', 'start_date', 'date', 'time', 'location', 'status', 'duration', 'level', 'is_featured')
     list_filter = ('status', 'is_featured', 'date')
     search_fields = ('title', 'summary', 'course_overview', 'who_can_attend')
     list_editable = ('status', 'is_featured')

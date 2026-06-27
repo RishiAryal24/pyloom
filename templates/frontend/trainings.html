@@ -52,7 +52,8 @@
                     <a class="card h-100 shadow-sm border-0 text-decoration-none text-dark" href="{% url 'core:training_detail' training.slug %}">
                         <div class="card-body">
                             <h3 class="h5">{{ training.title }}</h3>
-                            <p class="text-muted mb-2">{{ training.date|date:"M d, Y" }}{% if training.time %} at {{ training.time|time:"g:i A" }}{% endif %}</p>
+                            <p class="text-muted mb-2">{% if training.start_date %}Start: {{ training.start_date|date:"M d, Y" }}{% else %}{{ training.date|date:"M d, Y" }}{% endif %}{% if training.time %} at {{ training.time|time:"g:i A" }}{% endif %}</p>
+                            <p class="text-muted small mb-1">Level: {{ training.get_level_display|default:training.level }} · Duration: {{ training.duration }}</p>
                             <p class="text-muted mb-0">{{ training.summary|striptags|truncatewords:18 }}</p>
                         </div>
                     </a>
