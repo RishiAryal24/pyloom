@@ -2,11 +2,11 @@
 {% load static %}
 
 {% block title %}
-{{ content_type|title }} Management - Admin
+{{ display_name }} Management - Admin
 {% endblock %}
 
 {% block page_title %}
-{{ content_type|title }} Management
+{{ display_name }} Management
 {% endblock %}
 
 {% block content %}
@@ -168,15 +168,15 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
   <div>
     <h2 class="h4 mb-0">
-      {{ content_type|title }} ({{ page_obj.paginator.count }})
+      {{ display_name }} ({{ page_obj.paginator.count }})
     </h2>
-    <p class="text-muted">Manage your {{ content_type }} content</p>
+    <p class="text-muted">Manage your {{ display_name|lower }} content</p>
   </div>
 
   {% if content_type != 'newsletter' and content_type != 'inquiries' and content_type != 'feedback' %}
   <a href="{% url 'content_add' content_type %}" class="btn btn-brand">
     <i class="bi bi-plus me-1"></i>
-    Add {{ content_type|title|slice:"0:8" }}
+    Add {{ display_name_singular }}
   </a>
   {% endif %}
 </div>
