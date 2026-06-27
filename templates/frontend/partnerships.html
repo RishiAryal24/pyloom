@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Partnerships - {{ settings.site_name|default:'PyLoom' }}{% endblock %}
+
+{% block content %}
+<section class="page-header-compact bg-primary text-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-4 fw-bold mb-3">Partnerships</h1>
+                <p class="lead">Work with PyLoom to deliver smarter, faster, and more innovative solutions.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4 align-items-center">
+            <div class="col-lg-6">
+                <h2 class="display-5 fw-bold mb-4">Partner with Us</h2>
+                <p class="lead">We partner with technology providers, consultancies, and enterprise teams who want to build AI solutions that scale.</p>
+                <ul class="list-unstyled mb-4">
+                    <li class="mb-3"><i class="bi bi-building text-primary me-2"></i>Technology and integration partnerships</li>
+                    <li class="mb-3"><i class="bi bi-people text-primary me-2"></i>Strategic channel and referral partnerships</li>
+                    <li class="mb-3"><i class="bi bi-graph-up text-primary me-2"></i>Joint go-to-market collaborations</li>
+                </ul>
+                <a href="{% url 'core:contact' %}" class="btn btn-primary btn-lg">Start a Partnership</a>
+            </div>
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm p-4">
+                    <div class="card-body">
+                        <h3 class="fw-bold mb-3">What We Offer</h3>
+                        <p class="text-muted mb-4">From co-built product launches to customer-focused AI deployments, we help partners bring differentiated services to market.</p>
+                        <ul class="list-unstyled">
+                            <li class="mb-3"><strong>Co-delivery</strong> – Collaborate on client engagements and implementation.</li>
+                            <li class="mb-3"><strong>Technology alliances</strong> – Connect your stack with our AI and cloud expertise.</li>
+                            <li class="mb-3"><strong>Marketing support</strong> – Gain access to joint sales and promotional opportunities.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -115,6 +115,20 @@ def about(request):
     
     return render(request, 'frontend/about.html', context)
 
+
+def careers(request):
+    """Careers page"""
+    return render(request, 'frontend/careers.html', {
+        'settings': SiteSettings.load(),
+    })
+
+
+def partnerships(request):
+    """Partnerships page"""
+    return render(request, 'frontend/partnerships.html', {
+        'settings': SiteSettings.load(),
+    })
+
 def solutions(request):
     """Solutions page with filtering by category and complexity"""
     
