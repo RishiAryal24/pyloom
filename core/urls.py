@@ -11,6 +11,8 @@ urlpatterns = [
     # Main Pages
     path('', views.home, name='home'),
     path('about/', views.about, name='about'),
+    path('careers/', views.careers, name='careers'),
+    path('partnerships/', views.partnerships, name='partnerships'),
     path('solutions/', views.solutions, name='solutions'),
     path('solutions/<slug:solution_slug>/', views.solution_detail, name='solution_detail'),
     path('services/', views.services, name='services'),
