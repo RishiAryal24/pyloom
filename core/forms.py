@@ -130,8 +130,12 @@ class SolutionForm(forms.ModelForm):
             'benefits',
             'use_cases',
             'faqs',
-            'demo_url',  # Added this field
+            'demo_url',
+            'canonical_url',
+            'meta_title',
+            'meta_description',
             'image',
+            'og_image',
         ]
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Solution Title'}),
@@ -143,8 +147,12 @@ class SolutionForm(forms.ModelForm):
             'benefits': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Enter benefits as JSON list'}),
             'use_cases': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Enter use cases as JSON list'}),
             'faqs': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Enter FAQs as JSON list of dicts'}),
-            'demo_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'Demo URL'}),  # Widget for demo_url
+            'demo_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'Demo URL'}),
+            'canonical_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'Canonical URL'}),
+            'meta_title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Meta Title'}),
+            'meta_description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Meta Description'}),
             'image': forms.ClearableFileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
+            'og_image': forms.ClearableFileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -162,8 +170,12 @@ class SolutionForm(forms.ModelForm):
             'benefits',
             'use_cases',
             'faqs',
-            'demo_url',  # Ensure demo_url is in the layout
+            'demo_url',
+            'canonical_url',
+            'meta_title',
+            'meta_description',
             'image',
+            'og_image',
             Submit('submit', 'Save Solution', css_class='btn btn-primary')
         )
 
