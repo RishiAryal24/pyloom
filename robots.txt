@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /static/admin/
+Disallow: /media/
+
+# Crawl delay for bots
+Crawl-delay: 1
+
+# Sitemaps
+Sitemap: https://www.pyloomtech.com/sitemap.xml
+Sitemap: https://www.pyloomtech.com/sitemap-articles.xml
+Sitemap: https://www.pyloomtech.com/sitemap-solutions.xml
+Sitemap: https://www.pyloomtech.com/sitemap-events.xml

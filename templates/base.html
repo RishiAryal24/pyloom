@@ -4,8 +4,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>{% block title %}PyLoom - Weaving Innovation Beyond Expectations{% endblock %}</title>
     <meta name="description" content="{% block description %}At PyLoom, we provide advanced technology solutions powered by Artificial Intelligence, automation, and modern digital tools that help businesses streamline operations, increase productivity, and achieve their goals efficiently.{% endblock %}">
+    <meta name="keywords" content="{% block keywords %}AI solutions, automation, digital transformation, technology consulting, PyLoom{% endblock %}">
+    <meta name="author" content="PyLoom Technologies">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{% block canonical %}https://www.pyloomtech.com{% endblock %}">
+    
+    <!-- Open Graph Tags (Social Media) -->
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:title" content="{% block og_title %}PyLoom - Weaving Innovation Beyond Expectations{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Advanced AI-powered technology solutions for modern businesses{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}https://www.pyloomtech.com/static/core/img/pyloom-logo.png{% endblock %}">
+    <meta property="og:url" content="{% block og_url %}https://www.pyloomtech.com{% endblock %}">
+    <meta property="og:site_name" content="PyLoom Technologies">
+    
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block twitter_title %}PyLoom - Weaving Innovation Beyond Expectations{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}Advanced AI-powered technology solutions{% endblock %}">
+    <meta name="twitter:image" content="{% block twitter_image %}https://www.pyloomtech.com/static/core/img/pyloom-logo.png{% endblock %}">
+    
+    <!-- Security Headers -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -24,6 +49,36 @@
       gtag('js', new Date());
 
       gtag('config', 'G-Q9R2Z25KP6');
+    </script>
+    
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "PyLoom Technologies",
+      "url": "https://www.pyloomtech.com",
+      "logo": "https://www.pyloomtech.com/static/core/img/pyloom-logo.png",
+      "description": "Advanced AI-powered technology solutions for modern businesses",
+      "sameAs": [
+        "https://www.linkedin.com/company/pyloom",
+        "https://twitter.com/pyloomtech",
+        "https://facebook.com/pyloomtech"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "Customer Service",
+        "email": "contact@pyloomtech.com"
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Your Street Address",
+        "addressLocality": "Your City",
+        "addressRegion": "Your State",
+        "postalCode": "Your Zip",
+        "addressCountry": "Your Country"
+      }
+    }
     </script>
     <style>
   /* PyLoom TECHNOLOGIES custom colors */
