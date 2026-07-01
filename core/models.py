@@ -435,6 +435,37 @@ class Training(models.Model):
     def __str__(self):
         return self.title
 
+class CareerVacancy(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    application_url = models.URLField(blank=True)
+    deadline = models.DateField(blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    order = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
+    slug = models.SlugField(max_length=200, blank=True, unique=True)
+
+    class Meta:
+        ordering = ['order', 'deadline', 'title']
+        verbose_name = 'Career Vacancy'
+        verbose_name_plural = 'Career Vacancies'
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(self.title)
+            slug = base_slug
+            counter = 1
+            while CareerVacancy.objects.filter(slug=slug).exclude(id=self.id).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.title
+
 class EventRegistration(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='registrations')
     name = models.CharField(max_length=100)

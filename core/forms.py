@@ -344,6 +344,19 @@ class TrainingForm(forms.ModelForm):
             'is_featured': forms.CheckboxInput(),
         }
 
+class CareerVacancyForm(forms.ModelForm):
+    class Meta:
+        model = CareerVacancy
+        fields = ['title', 'description', 'application_url', 'deadline', 'is_active', 'order']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+            'application_url': forms.URLInput(attrs={'class': 'form-control'}),
+            'deadline': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'is_active': forms.CheckboxInput(),
+            'order': forms.NumberInput(attrs={'class': 'form-control', 'min': 0}),
+        }
+
 # Gallery Form
 class GalleryItemForm(forms.ModelForm):
     class Meta:
