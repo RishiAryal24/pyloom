@@ -1,5 +1,5 @@
 from django.contrib.sitemaps import Sitemap
-from core.models import Article, Solution, Event, Project, Training
+from core.models import Article, Solution, Event, Project, Training, SiteSettings
 
 
 class ArticleSitemap(Sitemap):
