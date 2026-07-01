@@ -16,17 +16,17 @@
     
     <!-- Open Graph Tags (Social Media) -->
     <meta property="og:type" content="{% block og_type %}website{% endblock %}">
-    <meta property="og:title" content="{% block og_title %}PyLoom - Weaving Innovation Beyond Expectations{% endblock %}">
+    <meta property="og:title" content="{% block og_title %}{{ settings.site_name|default:'PyLoom' }} - {{ settings.slogan|default:'Weaving Innovation Beyond Expectations' }}{% endblock %}">
     <meta property="og:description" content="{% block og_description %}Advanced AI-powered technology solutions for modern businesses{% endblock %}">
-    <meta property="og:image" content="{% block og_image %}https://www.pyloomtech.com/static/core/img/pyloom-logo.png{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{{ settings.logo.url|default:'https://www.pyloomtech.com/static/core/img/pyloom-logo.png' }}{% endblock %}">
     <meta property="og:url" content="{% block og_url %}https://www.pyloomtech.com{% endblock %}">
-    <meta property="og:site_name" content="PyLoom Technologies">
+    <meta property="og:site_name" content="{{ settings.site_name|default:'PyLoom' }}">
     
     <!-- Twitter Card Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{% block twitter_title %}PyLoom - Weaving Innovation Beyond Expectations{% endblock %}">
+    <meta name="twitter:title" content="{% block twitter_title %}{{ settings.site_name|default:'PyLoom' }}{% endblock %}">
     <meta name="twitter:description" content="{% block twitter_description %}Advanced AI-powered technology solutions{% endblock %}">
-    <meta name="twitter:image" content="{% block twitter_image %}https://www.pyloomtech.com/static/core/img/pyloom-logo.png{% endblock %}">
+    <meta name="twitter:image" content="{% block twitter_image %}{{ settings.logo.url|default:'https://www.pyloomtech.com/static/core/img/pyloom-logo.png' }}{% endblock %}">
     
     <!-- Security Headers -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -56,27 +56,25 @@
     {
       "@context": "https://schema.org",
       "@type": "Organization",
-      "name": "PyLoom Technologies",
+      "name": "{{ settings.site_name|default:'PyLoom Technologies' }}",
       "url": "https://www.pyloomtech.com",
-      "logo": "https://www.pyloomtech.com/static/core/img/pyloom-logo.png",
+      "logo": "{{ settings.logo.url|default:'https://www.pyloomtech.com/static/core/img/pyloom-logo.png' }}",
       "description": "Advanced AI-powered technology solutions for modern businesses",
       "sameAs": [
-        "https://www.linkedin.com/company/pyloom",
-        "https://twitter.com/pyloomtech",
-        "https://facebook.com/pyloomtech"
+        "{{ settings.linkedin_url|default:'https://www.linkedin.com/company/pyloom' }}",
+        "{{ settings.twitter_url|default:'https://twitter.com/pyloomtech' }}",
+        "{{ settings.facebook_url|default:'https://facebook.com/pyloomtech' }}"
       ],
       "contactPoint": {
         "@type": "ContactPoint",
         "contactType": "Customer Service",
-        "email": "contact@pyloomtech.com"
+        "email": "{{ settings.contact_email|default:'contact@pyloomtech.com' }}",
+        "telephone": "{{ settings.contact_phone|default:'' }}"
       },
       "address": {
         "@type": "PostalAddress",
-        "streetAddress": "Your Street Address",
-        "addressLocality": "Your City",
-        "addressRegion": "Your State",
-        "postalCode": "Your Zip",
-        "addressCountry": "Your Country"
+        "streetAddress": "{{ settings.address|striptags|default:'PyLoom Technologies' }}",
+        "addressCountry": "US"
       }
     }
     </script>
