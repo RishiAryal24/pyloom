@@ -18,7 +18,7 @@
     <meta property="og:type" content="{% block og_type %}website{% endblock %}">
     <meta property="og:title" content="{% block og_title %}{{ settings.site_name|default:'PyLoom' }} - {{ settings.slogan|default:'Weaving Innovation Beyond Expectations' }}{% endblock %}">
     <meta property="og:description" content="{% block og_description %}Advanced AI-powered technology solutions for modern businesses{% endblock %}">
-    <meta property="og:image" content="{% block og_image %}{{ settings.logo.url|default:'https://www.pyloomtech.com/static/core/img/pyloom-logo.png' }}{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{% if settings.logo %}{{ settings.logo.url }}{% else %}https://www.pyloomtech.com/static/core/img/pyloom-logo.png{% endif %}{% endblock %}">
     <meta property="og:url" content="{% block og_url %}https://www.pyloomtech.com{% endblock %}">
     <meta property="og:site_name" content="{{ settings.site_name|default:'PyLoom' }}">
     
@@ -26,7 +26,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{% block twitter_title %}{{ settings.site_name|default:'PyLoom' }}{% endblock %}">
     <meta name="twitter:description" content="{% block twitter_description %}Advanced AI-powered technology solutions{% endblock %}">
-    <meta name="twitter:image" content="{% block twitter_image %}{{ settings.logo.url|default:'https://www.pyloomtech.com/static/core/img/pyloom-logo.png' }}{% endblock %}">
+    <meta name="twitter:image" content="{% block twitter_image %}{% if settings.logo %}{{ settings.logo.url }}{% else %}https://www.pyloomtech.com/static/core/img/pyloom-logo.png{% endif %}{% endblock %}">
     
     <!-- Security Headers -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -58,7 +58,7 @@
       "@type": "Organization",
       "name": "{{ settings.site_name|default:'PyLoom Technologies' }}",
       "url": "https://www.pyloomtech.com",
-      "logo": "{{ settings.logo.url|default:'https://www.pyloomtech.com/static/core/img/pyloom-logo.png' }}",
+      "logo": "{% if settings.logo %}{{ settings.logo.url }}{% else %}https://www.pyloomtech.com/static/core/img/pyloom-logo.png{% endif %}",
       "description": "Advanced AI-powered technology solutions for modern businesses",
       "sameAs": [
         "{{ settings.linkedin_url|default:'https://www.linkedin.com/company/pyloom' }}",
