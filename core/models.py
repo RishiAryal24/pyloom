@@ -374,7 +374,9 @@ class Event(models.Model):
     is_promoted = models.BooleanField(default=False)
     registration_url = models.URLField(blank=True)
     canonical_url = models.URLField(max_length=200, blank=True, default='')
+    meta_title = models.CharField(max_length=70, blank=True, default='')
     meta_description = models.TextField(blank=True, default='')
+    og_image = models.ImageField(upload_to='events/', blank=True, default='')
     slug = models.SlugField(max_length=200, blank=True, unique=True)  # Ensure unique slug
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
