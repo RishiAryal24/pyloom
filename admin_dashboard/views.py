@@ -376,6 +376,10 @@ def content_form(request, content_type, object_id=None):
             form = FormClass(request.POST, request.FILES, instance=instance)
             if form.is_valid():
                 obj = form.save(commit=False)
+                if content_type == 'events':
+                    for image_field in ('featured_image', 'og_image'):
+                        if image_field in request.FILES:
+                            setattr(obj, image_field, request.FILES[image_field])
                 # Auto-assign user fields
                 if content_type in ['events', 'trainings'] and not getattr(obj, 'created_by', None):
                     obj.created_by = request.user
