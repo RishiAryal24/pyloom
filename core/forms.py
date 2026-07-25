@@ -288,7 +288,8 @@ class EventForm(forms.ModelForm):
         fields = [
             'title', 'description', 'event_type', 'date', 'time', 'location',
             'capacity', 'price', 'featured_image', 'speakers', 'agenda',
-            'status', 'is_featured', 'registration_url', 'canonical_url', 'is_promoted'
+            'status', 'is_featured', 'registration_url', 'canonical_url',
+            'meta_description', 'is_promoted'
         ]
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
@@ -307,6 +308,7 @@ class EventForm(forms.ModelForm):
             'is_promoted': forms.CheckboxInput(),
             'registration_url': forms.URLInput(attrs={'class': 'form-control'}),
             'canonical_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'Canonical URL'}),
+            'meta_description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Meta Description'}),
         }
 
     def clean_speakers(self):
