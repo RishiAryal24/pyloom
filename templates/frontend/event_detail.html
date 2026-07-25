@@ -56,8 +56,17 @@
                         <div class="col-md-6">
                             <h6>Speakers</h6>
                             <ul class="list-unstyled">
-                                {% for speaker in event.speakers %}
-                                    <li class="mb-2"><i class="bi bi-person-circle text-success me-2"></i>{{ speaker }}</li>
+                                {% for speaker in event.normalized_speakers %}
+                                    <li class="mb-3">
+                                        <i class="bi bi-person-circle text-success me-2"></i>
+                                        <strong>{{ speaker.name }}</strong>
+                                        {% if speaker.designation %}
+                                            <div class="text-muted small ms-4">{{ speaker.designation }}</div>
+                                        {% endif %}
+                                        {% if speaker.bio %}
+                                            <div class="small ms-4">{{ speaker.bio }}</div>
+                                        {% endif %}
+                                    </li>
                                 {% empty %}
                                     <li class="text-muted">No speakers listed.</li>
                                 {% endfor %}
@@ -66,8 +75,17 @@
                         <div class="col-md-6">
                             <h6>Agenda</h6>
                             <ul class="list-unstyled">
-                                {% for item in event.agenda %}
-                                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>{{ item }}</li>
+                                {% for item in event.normalized_agenda %}
+                                    <li class="mb-3">
+                                        <i class="bi bi-check-circle text-success me-2"></i>
+                                        {% if item.time %}
+                                            <span class="text-muted small">{{ item.time }}</span>
+                                        {% endif %}
+                                        <strong>{{ item.title }}</strong>
+                                        {% if item.description %}
+                                            <div class="small ms-4">{{ item.description }}</div>
+                                        {% endif %}
+                                    </li>
                                 {% empty %}
                                     <li class="text-muted">No agenda items listed.</li>
                                 {% endfor %}

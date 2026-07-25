@@ -18,6 +18,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.text import slugify
 from django.urls import reverse
 from django.templatetags.static import static
+from django.core.files.storage import default_storage
 
 # ----------------------------
 # Custom Admin User
@@ -403,10 +404,47 @@ class Event(models.Model):
     def featured_image_url(self):
         try:
             if self.featured_image and self.featured_image.name:
-                return self.featured_image.url
+                if default_storage.exists(self.featured_image.name):
+                    return self.featured_image.url
         except ValueError:
             pass
         return static('core/img/placeholder-16x9.svg')
+
+    @property
+    def normalized_speakers(self):
+        speakers = self.speakers or []
+        normalized = []
+        for speaker in speakers:
+            if isinstance(speaker, dict):
+                normalized.append({
+                    'name': speaker.get('name') or speaker.get('title') or '',
+                    'designation': speaker.get('designation') or speaker.get('role') or '',
+                    'bio': speaker.get('bio') or speaker.get('description') or '',
+                })
+            else:
+                normalized.append({'name': str(speaker), 'designation': '', 'bio': ''})
+        return normalized
+
+    @property
+    def normalized_agenda(self):
+        agenda = self.agenda or []
+        normalized = []
+        for item in agenda:
+            if isinstance(item, dict):
+                normalized.append({
+                    'time': item.get('time') or item.get('start_time') or '',
+                    'title': (
+                        item.get('title')
+                        or item.get('name')
+                        or item.get('topic')
+                        or item.get('objective')
+                        or ''
+                    ),
+                    'description': item.get('description') or item.get('details') or item.get('body') or '',
+                })
+            else:
+                normalized.append({'time': '', 'title': str(item), 'description': ''})
+        return normalized
     
     def __str__(self):
         return f"{self.title} - {self.date}"
