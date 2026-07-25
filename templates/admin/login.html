@@ -52,11 +52,7 @@
         <!-- Header -->
         <div class="text-center mb-4">
           <div class="d-inline-flex align-items-center gap-2">
-            {% if settings.logo %}
-              <img src="{{ settings.logo.url }}" alt="PyLoom Logo" width="60" height="60" loading="lazy" />
-            {% else %}
-              <img src="{% static 'img/logo.svg' %}" alt="PyLoom Logo" width="60" height="60" loading="lazy" />
-            {% endif %}
+            <img src="{{ settings.logo_url|default:'/static/img/logo.svg' }}" alt="PyLoom Logo" width="60" height="60" loading="lazy" />
             <div class="text-start">
               <span class="brand fs-4">
                 <span class="pyloom-p">P</span><span class="pyloom-y">y</span><span class="pyloom-loom">Loom</span>

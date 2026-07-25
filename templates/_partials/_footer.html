@@ -6,11 +6,7 @@
       <!-- Company Info -->
       <div class="col-lg-4 mb-4">
         <div class="d-flex align-items-center mb-3">
-                {% if settings.logo %}
-                    <img src="{{ settings.logo.url }}" alt="PyLoom Logo" width="70" height="70" class="me-3" loading="lazy">
-                {% else %}
-                    <img src="{% static 'img/logo.svg' %}" alt="PyLoom Logo" width="70" height="70" class="me-3" loading="lazy">
-                {% endif %}
+                <img src="{{ settings.logo_url|default:'/static/img/logo.svg' }}" alt="PyLoom Logo" width="70" height="70" class="me-3" loading="lazy">
                 <h5 class="mb-0 fw-bold">
                     <span class="pyloom-p">P</span><span class="pyloom-y">y</span><span class="pyloom-loom">Loom</span>
                     <br>
