@@ -378,6 +378,10 @@ def events(request):
         form = EventForm(request.POST, request.FILES)
         if form.is_valid():
             event = form.save(commit=False)
+            if 'featured_image' in request.FILES:
+                event.featured_image = request.FILES['featured_image']
+            if 'og_image' in request.FILES:
+                event.og_image = request.FILES['og_image']
             event.created_by = request.user  # optional: track creator
             # Ensure new events default to upcoming if status is empty
             if not event.status:
@@ -612,6 +616,10 @@ def add_event(request):
         form = EventForm(request.POST, request.FILES)
         if form.is_valid():
             event = form.save(commit=False)
+            if 'featured_image' in request.FILES:
+                event.featured_image = request.FILES['featured_image']
+            if 'og_image' in request.FILES:
+                event.og_image = request.FILES['og_image']
             event.created_by = request.user  # Set the current user as the creator
             event.save()
             messages.success(request, 'Event added successfully.')

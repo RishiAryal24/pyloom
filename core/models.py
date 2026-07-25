@@ -398,6 +398,15 @@ class Event(models.Model):
                 counter += 1
             self.slug = slug
         super().save(*args, **kwargs)
+
+    @property
+    def featured_image_url(self):
+        try:
+            if self.featured_image and self.featured_image.name:
+                return self.featured_image.url
+        except ValueError:
+            pass
+        return static('core/img/placeholder-16x9.svg')
     
     def __str__(self):
         return f"{self.title} - {self.date}"
