@@ -4,7 +4,6 @@ from core import views  # Import views from the correct app
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.static import serve
-from django.views.generic import RedirectView
 from django.contrib.sitemaps.views import sitemap
 from core.sitemaps import (
     ArticleSitemap,
@@ -27,7 +26,7 @@ sitemaps = {
 
 urlpatterns = [
     path('health/', views.health_check, name='health_check'),
-    path('favicon.ico', RedirectView.as_view(url=f'{settings.STATIC_URL}img/logo.svg', permanent=True)),
+    path('favicon.ico', views.favicon, name='favicon'),
     path('django-admin/', admin.site.urls),  # Custom admin URL (if necessary)
     path('admin/', include('admin_dashboard.urls')),  # Custom admin URLs
     path('', views.home, name='home'),  # Home page URL for 'Back to site'

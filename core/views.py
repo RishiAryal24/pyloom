@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import JsonResponse, HttpResponse, Http404
+from django.http import FileResponse, JsonResponse, HttpResponse, Http404
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -27,6 +27,14 @@ def health_check(request):
         cursor.fetchone()
 
     return JsonResponse({"status": "ok"})
+
+
+def favicon(request):
+    """Serve the bundled favicon without rendering templates or querying models."""
+    favicon_path = settings.BASE_DIR / 'core' / 'static' / 'img' / 'logo.svg'
+    if favicon_path.exists():
+        return FileResponse(favicon_path.open('rb'), content_type='image/svg+xml')
+    return HttpResponse(status=204)
 
 
 
@@ -64,31 +72,52 @@ def client_logout(request):
 
 def home(request):
     """Homepage view"""
-    site_settings = SiteSettings.load() or {
-        'site_name': 'Default Site Name',
-        'contact_email': 'info@default.com',
-        'contact_phone': '+1234567890'
+    try:
+        site_settings = SiteSettings.load()
+    except Exception:
+        site_settings = None
+
+    site_settings = site_settings or {
+        'site_name': 'PyLoom',
+        'slogan': 'Weaving Innovation Beyond Expectations',
+        'contact_email': 'info@pyloomtech.com',
+        'contact_phone': '',
+        'logo_url': '/static/img/logo.svg',
+        'favicon_url': '/static/img/logo.svg',
     }
     
-    about_us = AboutUs.objects.first() or {
+    try:
+        about_us = AboutUs.objects.first()
+    except Exception:
+        about_us = None
+
+    about_us = about_us or {
         'title': 'About Us',
         'company_background': 'No company background available.',
         'mission': 'No mission statement available.',
         'vision': 'No vision statement available.',
         'values': 'No values available.'
     }
-    # Get Latest 3 Solutions
-    latest_solutions = Solution.objects.filter(is_active=True).order_by('-created_at')[:3]
 
-    # Get latest 3 projects
-    latest_projects = Project.objects.order_by('-completed_on')[:3]
+    try:
+        latest_solutions = Solution.objects.filter(is_active=True).order_by('-created_at')[:3]
+    except Exception:
+        latest_solutions = []
 
+    try:
+        latest_projects = Project.objects.order_by('-completed_on')[:3]
+    except Exception:
+        latest_projects = []
 
-    # Get latest 3 articles
-    latest_articles = Article.objects.filter(status='published').order_by('-published_at')[:3]
+    try:
+        latest_articles = Article.objects.filter(status='published').order_by('-published_at')[:3]
+    except Exception:
+        latest_articles = []
 
-    # Get all featured Feedbacks
-    feedbacks = Feedback.objects.all()[:5]
+    try:
+        feedbacks = Feedback.objects.all()[:5]
+    except Exception:
+        feedbacks = []
     
 
     context = {
