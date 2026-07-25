@@ -711,11 +711,59 @@ def _chatbot_intent_kind(terms):
     return None
 
 
+def _chatbot_kind_label(kind):
+    labels = {
+        'Site information': 'PyLoom information',
+        'About PyLoom': 'About PyLoom',
+        'Service': 'service',
+        'Solution': 'solution',
+        'Training': 'training program',
+        'Event': 'event',
+        'Article': 'article',
+        'Project': 'project',
+        'Career vacancy': 'career opening',
+    }
+    return labels.get(kind, kind.lower())
+
+
+def _chatbot_response_heading(intent_kind):
+    headings = {
+        'Site information': 'You can reach PyLoom through the following contact details:',
+        'About PyLoom': 'PyLoom is focused on practical technology, AI, and automation solutions that help organizations grow with confidence.',
+        'Service': 'At PyLoom, our services are designed to solve real business problems with reliable technology and intelligent automation.',
+        'Solution': 'At PyLoom, our solutions combine AI, automation, data, and modern software engineering to create measurable business value.',
+        'Training': 'At PyLoom, our training programs are practical, hands-on, and built to help learners apply technology with confidence.',
+        'Event': 'Here are the PyLoom events and activities that match your question:',
+        'Article': 'Here are PyLoom insights that match your question:',
+        'Project': 'Here are PyLoom projects that match your question:',
+        'Career vacancy': 'Here are the current PyLoom career opportunities that match your question:',
+    }
+    return headings.get(
+        intent_kind,
+        'At PyLoom, I can help you with our services, solutions, trainings, events, projects, articles, careers, and contact details.',
+    )
+
+
+def _chatbot_match_line(doc):
+    body = doc['body'] or doc['extra']
+    if len(body) > 420:
+        body = body[:417].rsplit(' ', 1)[0] + '...'
+
+    label = _chatbot_kind_label(doc['kind'])
+    title = doc['title']
+
+    if doc['kind'] == 'Site information':
+        return doc['extra'] or body
+    if doc['kind'] == 'About PyLoom':
+        return body
+    return f"{title} — {body}" if body else f"{title} — this {label} is available through PyLoom."
+
+
 def get_live_chatbot_response(query):
     terms = _chatbot_terms(query)
     casual = {'hello', 'hi', 'hey', 'thanks', 'thank', 'bye'}
     if terms and terms.issubset(casual):
-        return "Hello! I can help you with PyLoom services, solutions, trainings, events, articles, projects, careers, and contact information."
+        return "Hello! I am PyLoom's assistant. I can help you with our services, solutions, trainings, events, articles, projects, careers, and contact details."
 
     docs = _chatbot_live_documents()
     intent_kind = _chatbot_intent_kind(terms)
@@ -730,27 +778,36 @@ def get_live_chatbot_response(query):
         key=lambda item: item[1],
         reverse=True,
     )
-    matches = [doc for doc, score in ranked if score > 0][:4]
+    if intent_kind:
+        intent_matches = [doc for doc, score in ranked if score > 0 and doc['kind'] == intent_kind][:4]
+        intent_docs_exist = any(doc['kind'] == intent_kind for doc in docs)
+        if intent_matches:
+            matches = intent_matches
+        elif intent_docs_exist:
+            matches = [doc for doc in docs if doc['kind'] == intent_kind][:4]
+        else:
+            matches = []
+    else:
+        matches = [doc for doc, score in ranked if score > 0][:4]
 
     if not matches:
-        counts = {}
-        for doc in docs:
-            counts[doc['kind']] = counts.get(doc['kind'], 0) + 1
-        available = ', '.join(f"{count} {kind.lower()}" for kind, count in sorted(counts.items()))
+        if intent_kind:
+            return (
+                f"At PyLoom, I do not have any current {_chatbot_kind_label(intent_kind)} entries to share right now. "
+                "I can still help you with our services, solutions, trainings, articles, projects, careers, and contact details."
+            )
         return (
-            "I could not find an exact match in the current website content. "
-            f"I can answer from the uploaded website data, including {available}. "
-            "Try asking about a specific service, solution, event, training, article, project, or contact detail."
+            "I am PyLoom's assistant, and I can help with our services, solutions, trainings, events, projects, articles, careers, and contact details. "
+            "Please ask me the topic a little more specifically, for example: our AI services, upcoming trainings, recent events, contact details, or project work."
         )
 
-    lines = ["Here is what I found from the current website content:"]
+    lines = [_chatbot_response_heading(intent_kind or matches[0]['kind'])]
     for doc in matches:
-        body = doc['body'] or doc['extra']
-        if len(body) > 420:
-            body = body[:417].rsplit(' ', 1)[0] + '...'
-        lines.append(f"{doc['kind']}: {doc['title']}. {body}")
+        line = _chatbot_match_line(doc)
+        if line:
+            lines.append(f"- {line}")
 
-    lines.append("Would you like details on one of these items?")
+    lines.append("Tell me which one you want to explore, and I will guide you further.")
     return "\n".join(lines)
 
 
