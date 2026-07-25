@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI Solutions Chatbot</title>
+    <title>PyLoom Conversation</title>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -114,6 +114,13 @@
       const input = document.getElementById("input");
       const sendBtn = document.getElementById("send");
       const resetBtn = document.getElementById("reset");
+      const chatAgentNames = ["Ritika", "Upasana", "Ritik", "Aayush", "Sneha"];
+      let chatAgentName = localStorage.getItem("pyloomChatAgent");
+
+      if (!chatAgentName) {
+        chatAgentName = chatAgentNames[Math.floor(Math.random() * chatAgentNames.length)];
+        localStorage.setItem("pyloomChatAgent", chatAgentName);
+      }
 
       function scrollToBottom() {
         chatBox.scrollTop = chatBox.scrollHeight;
@@ -133,7 +140,7 @@
           label.innerText = "You";
           msg.innerText = message;
         } else {
-          label.innerText = "AI Assistant";
+          label.innerText = chatAgentName;
           typeMessage(msg, message);
         }
 
@@ -167,7 +174,7 @@
               "Content-Type": "application/json",
               "X-CSRFToken": "{{ csrf_token }}",
             },
-            body: JSON.stringify({ query }),
+            body: JSON.stringify({ query, agent_name: chatAgentName }),
           });
 
           const data = await response.json();
@@ -191,12 +198,11 @@
       });
 
       // -------------------------------
-      // Starting greeting from AI
+      // Starting greeting
       // -------------------------------
       window.onload = () => {
-        const greeting =
-          "👋 Hello! I'm your AI Solutions specialist. How may I assist you today?";
-        addMessage(greeting, "bot");
+        const naturalGreeting = `Hi, this is ${chatAgentName} from PyLoom. How can I help you today?`;
+        addMessage(naturalGreeting, "bot");
       };
     </script>
   </body>

@@ -401,7 +401,7 @@
 <!-- Chatbot Section HTML -->
 <div id="chatbot-section" class="chatbot-section">
   <div class="chatbot-header">
-    <h3>AI Assistant</h3>
+    <h3 id="chat-agent-heading">PyLoom Team</h3>
     <button class="chatbot-close" id="chatbot-close">×</button>
   </div>
   <div class="chatbot-body">
@@ -422,6 +422,16 @@
   const toggleBtn = document.getElementById("chat-widget-toggle");
   const chatbotSection = document.getElementById("chatbot-section");
   const closeBtn = document.getElementById("chatbot-close");
+  const chatAgentHeading = document.getElementById("chat-agent-heading");
+  const chatAgentNames = ["Ritika", "Upasana", "Ritik", "Aayush", "Sneha"];
+  let chatAgentName = localStorage.getItem("pyloomChatAgent");
+
+  if (!chatAgentName) {
+    chatAgentName = chatAgentNames[Math.floor(Math.random() * chatAgentNames.length)];
+    localStorage.setItem("pyloomChatAgent", chatAgentName);
+  }
+
+  chatAgentHeading.innerText = chatAgentName;
 
   // Toggle chatbot visibility
   toggleBtn.addEventListener("click", () => {
@@ -457,7 +467,7 @@
       chatBox.appendChild(wrapper);
       scrollToBottom();
     } else {
-      label.innerText = "AI Assistant";
+      label.innerText = chatAgentName;
       wrapper.appendChild(label);
       wrapper.appendChild(msg);
       chatBox.appendChild(wrapper);
@@ -487,7 +497,7 @@
           "Content-Type": "application/json",
           "X-CSRFToken": "{{ csrf_token }}",
         },
-        body: JSON.stringify({ query }),
+        body: JSON.stringify({ query, agent_name: chatAgentName }),
       });
 
       const data = await response.json();
@@ -514,12 +524,12 @@
     }
   });
 
-  // Starting greeting from AI (only when chatbot is opened for the first time)
+  // Starting greeting when the chat is opened for the first time
   let greetingShown = false;
   toggleBtn.addEventListener("click", () => {
     if (!greetingShown && chatbotSection.classList.contains("show")) {
-      const greeting = "👋 Hello! I'm your PyLoom assistant. How may I assist you today?";
-      addMessage(greeting, "bot");
+      const naturalGreeting = `Hi, this is ${chatAgentName} from PyLoom. How can I help you today?`;
+      addMessage(naturalGreeting, "bot");
       greetingShown = true;
     }
   });
