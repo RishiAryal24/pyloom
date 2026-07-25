@@ -16,6 +16,8 @@ def site_settings(request):
             'contact_phone': '',
             'logo': None,
             'favicon': None,
+            'logo_url': '/static/img/logo.svg',
+            'favicon_url': '/static/img/logo.svg',
         }
     }
 
@@ -51,7 +53,7 @@ def schema_org_data(request):
         settings_obj = SiteSettings.objects.first()
     
     if settings_obj:
-        logo_url = settings_obj.logo.url if settings_obj.logo else 'https://www.pyloomtech.com/static/core/img/pyloom-logo.png'
+        logo_url = settings_obj.logo_url
         address_parts = settings_obj.address.replace('<p>', '').replace('</p>', '').split(',') if settings_obj.address else []
         
         schema_data = {

@@ -17,6 +17,7 @@ from django.conf import settings
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.text import slugify
 from django.urls import reverse
+from django.templatetags.static import static
 
 # ----------------------------
 # Custom Admin User
@@ -65,6 +66,24 @@ class SiteSettings(models.Model):
 
     def __str__(self):
         return self.site_name
+
+    @property
+    def logo_url(self):
+        try:
+            if self.logo and self.logo.name:
+                return self.logo.url
+        except ValueError:
+            pass
+        return static('img/logo.svg')
+
+    @property
+    def favicon_url(self):
+        try:
+            if self.favicon and self.favicon.name:
+                return self.favicon.url
+        except ValueError:
+            pass
+        return static('img/logo.svg')
 
     def save(self, *args, **kwargs):
         if not self.pk and SiteSettings.objects.exists():

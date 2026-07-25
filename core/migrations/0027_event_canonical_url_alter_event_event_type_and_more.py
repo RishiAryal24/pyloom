@@ -3,6 +3,28 @@
 from django.db import migrations, models
 
 
+def add_event_canonical_url_if_missing(apps, schema_editor):
+    Event = apps.get_model('core', 'Event')
+    table_name = Event._meta.db_table
+    column_name = 'canonical_url'
+
+    with schema_editor.connection.cursor() as cursor:
+        existing_columns = {
+            column.name
+            for column in schema_editor.connection.introspection.get_table_description(
+                cursor,
+                table_name,
+            )
+        }
+
+    if column_name in existing_columns:
+        return
+
+    field = models.URLField(blank=True, default='', null=True)
+    field.set_attributes_from_name(column_name)
+    schema_editor.add_field(Event, field)
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -10,10 +32,20 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='event',
-            name='canonical_url',
-            field=models.URLField(blank=True, default='', null=True),
+        migrations.SeparateDatabaseAndState(
+            database_operations=[
+                migrations.RunPython(
+                    add_event_canonical_url_if_missing,
+                    migrations.RunPython.noop,
+                ),
+            ],
+            state_operations=[
+                migrations.AddField(
+                    model_name='event',
+                    name='canonical_url',
+                    field=models.URLField(blank=True, default='', null=True),
+                ),
+            ],
         ),
         migrations.AlterField(
             model_name='event',
