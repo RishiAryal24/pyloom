@@ -158,7 +158,7 @@ class Solution(models.Model):
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     slug = models.SlugField(max_length=200, blank=True)
     demo_url = models.URLField(blank=True, null=True)
-    canonical_url = models.URLField(max_length=200, blank=True, default='')
+    canonical_url = models.URLField(max_length=200, blank=True, null=True, default='')
     meta_description = models.TextField(blank=True, default='')
     meta_title = models.CharField(max_length=70, blank=True, default='')
     og_image = models.ImageField(upload_to='solutions/', blank=True, default='')
@@ -329,6 +329,7 @@ class Event(models.Model):
         ('webinar', 'Webinar'),
         ('showcase', 'Showcase'),
         ('symposium', 'Symposium'),
+        ('training', 'Training'),
     ]
     
     STATUS_CHOICES = [
@@ -353,6 +354,7 @@ class Event(models.Model):
     is_featured = models.BooleanField(default=False)
     is_promoted = models.BooleanField(default=False)
     registration_url = models.URLField(blank=True)
+    canonical_url = models.URLField(max_length=200, blank=True, null=True, default='')
     slug = models.SlugField(max_length=200, blank=True, unique=True)  # Ensure unique slug
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
