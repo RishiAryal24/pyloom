@@ -10,8 +10,10 @@ from django.db import connection
 from django.utils import timezone
 import json
 import random
+import re
 from django.urls import reverse
 from django.core.paginator import Paginator
+from django.utils.html import strip_tags
 from .forms import ClientLoginForm, ContactForm, FeedbackForm, NewsletterForm, ArticleForm, EventForm, TrainingForm, GalleryItemForm, ClientSignupForm
 from .models import *
 from django.contrib.auth import authenticate, login, logout
@@ -517,6 +519,241 @@ def newsletter_signup(request):
 def chatbot(request):
     return render(request, 'frontend/chatbot.html')
 
+
+def _chatbot_clean(value):
+    if value is None:
+        return ''
+    if isinstance(value, (list, tuple)):
+        return ', '.join(_chatbot_clean(item) for item in value if item)
+    if isinstance(value, dict):
+        parts = []
+        for key, item in value.items():
+            cleaned = _chatbot_clean(item)
+            if cleaned:
+                parts.append(f"{key}: {cleaned}")
+        return ', '.join(parts)
+    return re.sub(r'\s+', ' ', strip_tags(str(value))).strip()
+
+
+def _chatbot_terms(query):
+    return {
+        term
+        for term in re.findall(r'[a-zA-Z0-9]+', (query or '').lower())
+        if len(term) > 2 and term not in {'what', 'tell', 'about', 'available', 'does', 'from', 'with', 'give', 'show', 'have', 'having', 'info', 'information'}
+    }
+
+
+def _chatbot_doc(kind, title, body, extra=''):
+    text = _chatbot_clean(' '.join([title or '', body or '', extra or '']))
+    return {
+        'kind': kind,
+        'title': _chatbot_clean(title),
+        'body': _chatbot_clean(body),
+        'extra': _chatbot_clean(extra),
+        'text': text,
+    }
+
+
+def _chatbot_live_documents():
+    docs = []
+
+    try:
+        settings_obj = SiteSettings.load()
+        if settings_obj:
+            docs.append(_chatbot_doc(
+                'Site information',
+                settings_obj.site_name,
+                settings_obj.slogan,
+                f"Email: {settings_obj.contact_email}. Phone: {settings_obj.contact_phone}. Address: {settings_obj.address}",
+            ))
+    except Exception:
+        pass
+
+    try:
+        about = AboutUs.objects.first()
+        if about:
+            docs.append(_chatbot_doc(
+                'About PyLoom',
+                about.title,
+                about.company_background,
+                f"Mission: {about.mission}. Vision: {about.vision}. Values: {about.values}",
+            ))
+    except Exception:
+        pass
+
+    try:
+        for service in Service.objects.filter(is_active=True).order_by('order', 'title')[:30]:
+            docs.append(_chatbot_doc('Service', service.title, service.description, service.detailed_content))
+    except Exception:
+        pass
+
+    try:
+        for solution in Solution.objects.filter(is_active=True).select_related('category').order_by('order', 'title')[:30]:
+            docs.append(_chatbot_doc(
+                'Solution',
+                solution.title,
+                solution.description,
+                f"Category: {solution.get_category_display()}. Details: {solution.detailed_content}. Features: {solution.features}. Benefits: {solution.benefits}. Use cases: {solution.use_cases}. FAQs: {solution.faqs}",
+            ))
+    except Exception:
+        pass
+
+    try:
+        for training in Training.objects.all().order_by('-is_featured', 'date', 'time')[:30]:
+            docs.append(_chatbot_doc(
+                'Training',
+                training.title,
+                training.summary,
+                f"Status: {training.get_status_display()}. Overview: {training.course_overview}. Outcomes: {training.learning_outcomes}. Duration: {training.duration}. Schedule: {training.class_schedule}. Level: {training.level}. Location: {training.location}. Start date: {training.start_date or training.date}. Time: {training.time}. Price: {training.price}. Who can attend: {training.who_can_attend}. Prerequisites: {training.prerequisites}. Certificate: {training.certificate}",
+            ))
+    except Exception:
+        pass
+
+    try:
+        for event in Event.objects.all().order_by('-is_promoted', 'date', 'time')[:30]:
+            docs.append(_chatbot_doc(
+                'Event',
+                event.title,
+                event.description,
+                f"Type: {event.get_event_type_display()}. Status: {event.get_status_display()}. Date: {event.date}. Time: {event.time}. Location: {event.location}. Capacity: {event.capacity}. Price: {event.price}. Speakers: {event.normalized_speakers}. Agenda: {event.normalized_agenda}",
+            ))
+    except Exception:
+        pass
+
+    try:
+        for article in Article.objects.filter(status='published').order_by('-published_at')[:30]:
+            docs.append(_chatbot_doc(
+                'Article',
+                article.title,
+                article.excerpt,
+                f"Type: {article.get_article_type_display()}. Category: {article.category}. Content: {article.content}",
+            ))
+    except Exception:
+        pass
+
+    try:
+        for project in Project.objects.all().order_by('-completed_on')[:30]:
+            docs.append(_chatbot_doc(
+                'Project',
+                project.title,
+                project.summary,
+                f"Completed on: {project.completed_on}. Description: {project.description}",
+            ))
+    except Exception:
+        pass
+
+    try:
+        for vacancy in CareerVacancy.objects.filter(is_active=True).order_by('order', 'deadline', 'title')[:20]:
+            docs.append(_chatbot_doc(
+                'Career vacancy',
+                vacancy.title,
+                vacancy.description,
+                f"Deadline: {vacancy.deadline}. Application URL: {vacancy.application_url}",
+            ))
+    except Exception:
+        pass
+
+    return docs
+
+
+def _chatbot_score(doc, terms):
+    if not terms:
+        return 0
+    text = doc['text'].lower()
+    title = doc['title'].lower()
+    kind = doc['kind'].lower()
+    score = 0
+    for term in terms:
+        singular = term[:-1] if term.endswith('s') else term
+        if term in title:
+            score += 6
+        elif singular and singular in title:
+            score += 5
+        if term in kind:
+            score += 4
+        elif singular and singular in kind:
+            score += 4
+        score += min(text.count(term), 4)
+        if singular and singular != term:
+            score += min(text.count(singular), 3)
+    return score
+
+
+def _chatbot_intent_kind(terms):
+    intents = {
+        'event': 'Event',
+        'events': 'Event',
+        'training': 'Training',
+        'trainings': 'Training',
+        'course': 'Training',
+        'courses': 'Training',
+        'service': 'Service',
+        'services': 'Service',
+        'solution': 'Solution',
+        'solutions': 'Solution',
+        'article': 'Article',
+        'articles': 'Article',
+        'blog': 'Article',
+        'project': 'Project',
+        'projects': 'Project',
+        'career': 'Career vacancy',
+        'careers': 'Career vacancy',
+        'job': 'Career vacancy',
+        'jobs': 'Career vacancy',
+        'contact': 'Site information',
+        'address': 'Site information',
+        'email': 'Site information',
+        'phone': 'Site information',
+    }
+    for term in terms:
+        if term in intents:
+            return intents[term]
+    return None
+
+
+def get_live_chatbot_response(query):
+    terms = _chatbot_terms(query)
+    casual = {'hello', 'hi', 'hey', 'thanks', 'thank', 'bye'}
+    if terms and terms.issubset(casual):
+        return "Hello! I can help you with PyLoom services, solutions, trainings, events, articles, projects, careers, and contact information."
+
+    docs = _chatbot_live_documents()
+    intent_kind = _chatbot_intent_kind(terms)
+    ranked = sorted(
+        (
+            (
+                doc,
+                _chatbot_score(doc, terms) + (20 if intent_kind and doc['kind'] == intent_kind else 0),
+            )
+            for doc in docs
+        ),
+        key=lambda item: item[1],
+        reverse=True,
+    )
+    matches = [doc for doc, score in ranked if score > 0][:4]
+
+    if not matches:
+        counts = {}
+        for doc in docs:
+            counts[doc['kind']] = counts.get(doc['kind'], 0) + 1
+        available = ', '.join(f"{count} {kind.lower()}" for kind, count in sorted(counts.items()))
+        return (
+            "I could not find an exact match in the current website content. "
+            f"I can answer from the uploaded website data, including {available}. "
+            "Try asking about a specific service, solution, event, training, article, project, or contact detail."
+        )
+
+    lines = ["Here is what I found from the current website content:"]
+    for doc in matches:
+        body = doc['body'] or doc['extra']
+        if len(body) > 420:
+            body = body[:417].rsplit(' ', 1)[0] + '...'
+        lines.append(f"{doc['kind']}: {doc['title']}. {body}")
+
+    lines.append("Would you like details on one of these items?")
+    return "\n".join(lines)
+
+
 def get_local_chatbot_response(message):
     message = (message or '').lower()
     responses = {
@@ -550,15 +787,10 @@ def chatbot_proxy(request):
                 query = None
         if not query:
             return JsonResponse({"error": "No query provided"}, status=400)
-        try:
-            response = requests.post("http://127.0.0.1:8001/chat", json={"query": query}, timeout=5)
-            response.raise_for_status()  # Raise an exception for bad status codes
-            return JsonResponse(response.json())
-        except requests.RequestException as e:
-            return JsonResponse({
-                "response": get_local_chatbot_response(query),
-                "fallback": True,
-            })
+        return JsonResponse({
+            "response": get_live_chatbot_response(query),
+            "source": "live_database",
+        })
     return JsonResponse({"error": "Invalid request"}, status=400)
 
 @csrf_exempt
