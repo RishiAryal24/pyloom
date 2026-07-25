@@ -289,7 +289,7 @@ class EventForm(forms.ModelForm):
             'title', 'description', 'event_type', 'date', 'time', 'location',
             'capacity', 'price', 'featured_image', 'speakers', 'agenda',
             'status', 'is_featured', 'registration_url', 'canonical_url',
-            'meta_description', 'is_promoted'
+            'meta_title', 'meta_description', 'og_image', 'is_promoted'
         ]
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
@@ -308,7 +308,9 @@ class EventForm(forms.ModelForm):
             'is_promoted': forms.CheckboxInput(),
             'registration_url': forms.URLInput(attrs={'class': 'form-control'}),
             'canonical_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'Canonical URL'}),
+            'meta_title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Meta Title'}),
             'meta_description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Meta Description'}),
+            'og_image': forms.ClearableFileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
         }
 
     def clean_speakers(self):
@@ -319,6 +321,9 @@ class EventForm(forms.ModelForm):
 
     def clean_canonical_url(self):
         return self.cleaned_data.get('canonical_url') or ''
+
+    def clean_meta_title(self):
+        return self.cleaned_data.get('meta_title') or ''
 
     def clean_meta_description(self):
         return self.cleaned_data.get('meta_description') or ''
