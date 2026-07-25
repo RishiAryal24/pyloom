@@ -759,11 +759,11 @@ def _chatbot_match_line(doc):
     return f"{title} — {body}" if body else f"{title} — this {label} is available through PyLoom."
 
 
-def get_live_chatbot_response(query):
+def get_live_chatbot_response(query, agent_name='Ritika'):
     terms = _chatbot_terms(query)
     casual = {'hello', 'hi', 'hey', 'thanks', 'thank', 'bye'}
     if terms and terms.issubset(casual):
-        return "Hello! I am PyLoom's assistant. I can help you with our services, solutions, trainings, events, articles, projects, careers, and contact details."
+        return f"Hi, this is {agent_name} from PyLoom. I can help you with our services, solutions, trainings, events, articles, projects, careers, and contact details."
 
     docs = _chatbot_live_documents()
     intent_kind = _chatbot_intent_kind(terms)
@@ -793,11 +793,11 @@ def get_live_chatbot_response(query):
     if not matches:
         if intent_kind:
             return (
-                f"At PyLoom, I do not have any current {_chatbot_kind_label(intent_kind)} entries to share right now. "
+                f"This is {agent_name} from PyLoom. We do not have any current {_chatbot_kind_label(intent_kind)} entries to share right now. "
                 "I can still help you with our services, solutions, trainings, articles, projects, careers, and contact details."
             )
         return (
-            "I am PyLoom's assistant, and I can help with our services, solutions, trainings, events, projects, articles, careers, and contact details. "
+            f"This is {agent_name} from PyLoom. I can help with our services, solutions, trainings, events, projects, articles, careers, and contact details. "
             "Please ask me the topic a little more specifically, for example: our AI services, upcoming trainings, recent events, contact details, or project work."
         )
 
@@ -814,8 +814,8 @@ def get_live_chatbot_response(query):
 def get_local_chatbot_response(message):
     message = (message or '').lower()
     responses = {
-        'hello': "Hello! How can I help you today?",
-        'hi': "Hi there! What would you like to know about PyLoom?",
+        'hello': "Hi, this is Ritika from PyLoom. How can I help you today?",
+        'hi': "Hi, this is Ritika from PyLoom. What would you like to know about PyLoom?",
         'services': "We offer AI-powered solutions for healthcare, finance, education, automation, and modern web systems. Which area interests you?",
         'healthcare': "Our healthcare AI solutions can support diagnostics, patient management, and predictive analytics.",
         'finance': "Our finance AI solutions can help with fraud detection, risk assessment, automation, and analytics.",
@@ -839,13 +839,18 @@ def chatbot_proxy(request):
         query = request.POST.get("query")
         if not query and request.body:
             try:
-                query = json.loads(request.body.decode("utf-8")).get("query")
+                payload = json.loads(request.body.decode("utf-8"))
+                query = payload.get("query")
+                agent_name = payload.get("agent_name", "Ritika")
             except (json.JSONDecodeError, UnicodeDecodeError):
                 query = None
+                agent_name = "Ritika"
+        else:
+            agent_name = request.POST.get("agent_name", "Ritika")
         if not query:
             return JsonResponse({"error": "No query provided"}, status=400)
         return JsonResponse({
-            "response": get_live_chatbot_response(query),
+            "response": get_live_chatbot_response(query, agent_name=agent_name),
             "source": "live_database",
         })
     return JsonResponse({"error": "Invalid request"}, status=400)
