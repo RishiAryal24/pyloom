@@ -314,10 +314,10 @@ class EventForm(forms.ModelForm):
         }
 
     def clean_speakers(self):
-        return self.cleaned_data.get('speakers', '')
+        return self.cleaned_data.get('speakers') or []
 
     def clean_agenda(self):
-        return self.cleaned_data.get('agenda', '')
+        return self.cleaned_data.get('agenda') or []
 
     def clean_canonical_url(self):
         return self.cleaned_data.get('canonical_url') or ''

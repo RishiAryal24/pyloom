@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block title %}{{ event.title }} - AI-Solutions Events{% endblock %}
-{% block description %}{{ event.summary }}{% endblock %}
+{% block description %}{{ event.meta_description|default:event.description|striptags|truncatewords:24 }}{% endblock %}
 
 {% block content %}
 <!-- Event Header -->
@@ -19,7 +19,7 @@
                     </span>
                 </div>
                 <h1>{{ event.title }}</h1>
-                <h4 class="text-muted mb-3">{{ event.event_name }}</h4>
+                <h4 class="text-muted mb-3">{{ event.get_event_type_display }} · {{ event.status|title }}</h4>
                 <p class="lead">
                     <i class="bi bi-geo-alt text-brand me-2"></i>{{ event.location }}
                 </p>
@@ -47,59 +47,31 @@
                 <!-- Event Description -->
                 <div class="mb-5">
                     <h3><i class="bi bi-info-circle text-brand me-2"></i>About This Event</h3>
-                    <p>{{ event.summary }}</p>
+                    <div class="event-description">
+                        {{ event.description|safe }}
+                    </div>
                     
                     <!-- Event Highlights -->
                     <div class="row mt-4">
                         <div class="col-md-6">
-                            <h6>Event Highlights</h6>
+                            <h6>Speakers</h6>
                             <ul class="list-unstyled">
-                                <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Industry networking opportunities</li>
-                                <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Latest AI technology demonstrations</li>
-                                <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Expert panel discussions</li>
+                                {% for speaker in event.speakers %}
+                                    <li class="mb-2"><i class="bi bi-person-circle text-success me-2"></i>{{ speaker }}</li>
+                                {% empty %}
+                                    <li class="text-muted">No speakers listed.</li>
+                                {% endfor %}
                             </ul>
                         </div>
                         <div class="col-md-6">
-                            <h6>Our Participation</h6>
+                            <h6>Agenda</h6>
                             <ul class="list-unstyled">
-                                <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Technology showcase booth</li>
-                                <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Product demonstrations</li>
-                                <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Speaking sessions</li>
+                                {% for item in event.agenda %}
+                                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>{{ item }}</li>
+                                {% empty %}
+                                    <li class="text-muted">No agenda items listed.</li>
+                                {% endfor %}
                             </ul>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Key Takeaways -->
-                <div class="mb-5">
-                    <h3><i class="bi bi-lightbulb text-brand me-2"></i>Key Takeaways</h3>
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <div class="card border-0 bg-light h-100">
-                                <div class="card-body text-center">
-                                    <i class="bi bi-people display-4 text-primary mb-3"></i>
-                                    <h6>Networking</h6>
-                                    <p class="text-muted small mb-0">Connected with industry leaders and potential partners</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <div class="card border-0 bg-light h-100">
-                                <div class="card-body text-center">
-                                    <i class="bi bi-eye display-4 text-success mb-3"></i>
-                                    <h6>Visibility</h6>
-                                    <p class="text-muted small mb-0">Showcased our latest AI solutions to a wider audience</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <div class="card border-0 bg-light h-100">
-                                <div class="card-body text-center">
-                                    <i class="bi bi-graph-up display-4 text-warning mb-3"></i>
-                                    <h6>Growth</h6>
-                                    <p class="text-muted small mb-0">Gained valuable insights for future development</p>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -114,7 +86,7 @@
                         <hr>
                         <div class="mb-3">
                             <strong>Event Name:</strong><br>
-                            <span class="text-muted">{{ event.event_name }}</span>
+                            <span class="text-muted">{{ event.title }}</span>
                         </div>
                         <div class="mb-3">
                             <strong>Type:</strong><br>
@@ -125,13 +97,31 @@
                             <span class="text-muted">{{ event.date|date:"F j, Y" }}</span>
                         </div>
                         <div class="mb-3">
+                            <strong>Time:</strong><br>
+                            <span class="text-muted">{{ event.time|time:"g:i A" }}</span>
+                        </div>
+                        <div class="mb-3">
                             <strong>Location:</strong><br>
                             <span class="text-muted">{{ event.location }}</span>
                         </div>
+                        <div class="mb-3">
+                            <strong>Capacity:</strong><br>
+                            <span class="text-muted">{{ event.capacity }}</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Price:</strong><br>
+                            <span class="text-muted">{{ event.price }}</span>
+                        </div>
                         <hr>
-                        <a href="{% url 'core:contact' %}" class="btn btn-brand w-100 mb-2">
-                            <i class="bi bi-chat-dots me-2"></i>Discuss Our Participation
-                        </a>
+                        {% if event.registration_url %}
+                            <a href="{{ event.registration_url }}" class="btn btn-brand w-100 mb-2" target="_blank" rel="noopener">
+                                <i class="bi bi-box-arrow-up-right me-2"></i>Register
+                            </a>
+                        {% else %}
+                            <a href="{% url 'core:contact' %}" class="btn btn-brand w-100 mb-2">
+                                <i class="bi bi-chat-dots me-2"></i>Contact Us
+                            </a>
+                        {% endif %}
                         <a href="{% url 'core:events' %}" class="btn btn-outline-secondary w-100">
                             <i class="bi bi-calendar-event me-2"></i>View More Events
                         </a>
