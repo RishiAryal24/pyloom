@@ -20,7 +20,7 @@ def add_event_canonical_url_if_missing(apps, schema_editor):
     if column_name in existing_columns:
         return
 
-    field = models.URLField(blank=True, default='', null=True)
+    field = models.URLField(blank=True, default='')
     field.set_attributes_from_name(column_name)
     schema_editor.add_field(Event, field)
 
@@ -43,7 +43,7 @@ class Migration(migrations.Migration):
                 migrations.AddField(
                     model_name='event',
                     name='canonical_url',
-                    field=models.URLField(blank=True, default='', null=True),
+                    field=models.URLField(blank=True, default=''),
                 ),
             ],
         ),

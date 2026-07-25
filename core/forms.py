@@ -317,6 +317,12 @@ class EventForm(forms.ModelForm):
     def clean_agenda(self):
         return self.cleaned_data.get('agenda', '')
 
+    def clean_canonical_url(self):
+        return self.cleaned_data.get('canonical_url') or ''
+
+    def clean_meta_description(self):
+        return self.cleaned_data.get('meta_description') or ''
+
 class TrainingForm(forms.ModelForm):
     class Meta:
         model = Training
