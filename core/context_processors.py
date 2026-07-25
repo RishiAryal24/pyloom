@@ -1,31 +1,42 @@
 from .models import SiteSettings, ContactInquiry, Feedback, Solution, Service, Training
 import json
 
+
+def default_site_settings():
+    return {
+        'site_name': 'PyLoom',
+        'slogan': 'Weaving Innovation Beyond Expectations',
+        'contact_email': 'info@pyloomtech.com',
+        'contact_phone': '',
+        'logo': None,
+        'favicon': None,
+        'logo_url': '/static/img/logo.svg',
+        'favicon_url': '/static/img/logo.svg',
+    }
+
+
 def site_settings(request):
     """Add site settings to all templates"""
-    settings_obj = SiteSettings.load()
+    try:
+        settings_obj = SiteSettings.load()
+    except Exception:
+        settings_obj = None
+
     if settings_obj:
         return {'settings': settings_obj}
 
     # Provide safe defaults when no SiteSettings instance exists to avoid template errors
-    return {
-        'settings': {
-            'site_name': 'PyLoom',
-            'slogan': 'Weaving Innovation Beyond Expectations',
-            'contact_email': 'info@pyloomtech.com',
-            'contact_phone': '',
-            'logo': None,
-            'favicon': None,
-            'logo_url': '/static/img/logo.svg',
-            'favicon_url': '/static/img/logo.svg',
-        }
-    }
+    return {'settings': default_site_settings()}
 
 
 def navigation_items(request):
     """Add dynamic navigation items for services and trainings."""
-    nav_services = Service.objects.filter(is_active=True).order_by('order', 'title')[:10]
-    nav_trainings = Training.objects.filter(status='upcoming').order_by('date', 'time')[:10]
+    try:
+        nav_services = Service.objects.filter(is_active=True).order_by('order', 'title')[:10]
+        nav_trainings = Training.objects.filter(status='upcoming').order_by('date', 'time')[:10]
+    except Exception:
+        nav_services = []
+        nav_trainings = []
 
     return {
         'nav_services': nav_services,
@@ -36,21 +47,26 @@ def navigation_items(request):
 def admin_notifications(request):
     """Add admin notifications to templates"""
     if request.user.is_authenticated and hasattr(request.user, 'has_admin_access') and request.user.has_admin_access():
-        return {
-            'stats': {
-                'unread_inquiries': ContactInquiry.objects.filter(is_read=False).count(),
-                'pending_feedback': Feedback.objects.filter(is_approved=False).count(),
+        try:
+            return {
+                'stats': {
+                    'unread_inquiries': ContactInquiry.objects.filter(is_read=False).count(),
+                    'pending_feedback': Feedback.objects.filter(is_approved=False).count(),
+                }
             }
-        }
+        except Exception:
+            return {'stats': {'unread_inquiries': 0, 'pending_feedback': 0}}
     return {}
 
 
 def schema_org_data(request):
     """Generate dynamic Schema.org JSON-LD structured data for SEO"""
-    settings_obj = SiteSettings.load()
-    
-    if not settings_obj:
-        settings_obj = SiteSettings.objects.first()
+    try:
+        settings_obj = SiteSettings.load()
+        if not settings_obj:
+            settings_obj = SiteSettings.objects.first()
+    except Exception:
+        settings_obj = None
     
     if settings_obj:
         logo_url = settings_obj.logo_url
