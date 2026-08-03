@@ -325,6 +325,7 @@ class Article(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
     article_type = models.CharField(max_length=50, choices=ARTICLE_TYPE_CHOICES, default='industry_report')
     author = models.CharField(max_length=100, blank=True)  # Can be changed to ForeignKey if needed
+    canonical_url = models.URLField(max_length=200, blank=True, default='')
     featured_image = models.ImageField(upload_to='articles/', blank=True, null=True)
     published_at = models.DateTimeField(default=timezone.now, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
