@@ -59,7 +59,7 @@ def client_login(request):
 
 def client_signup(request):
     if request.method == "POST":
-        form = ClientSignupForm(request.POST)
+        form = ClientSignupForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save()
             login(request, user)
@@ -137,10 +137,12 @@ def about(request):
     """About us page"""
     about_us = AboutUs.objects.first()
     team_members = TeamMember.objects.filter(is_active=True)
+    clients = ClientPartner.objects.filter(is_active=True).order_by('order', 'name')
     
     context = {
         'about_us': about_us,
         'team_members': team_members,
+        'clients': clients,
         'settings': SiteSettings.load(),
     }
     
@@ -1047,10 +1049,12 @@ def about(request):
     """About us page"""
     about_us = AboutUs.objects.first()
     team_members = TeamMember.objects.filter(is_active=True)
+    clients = ClientPartner.objects.filter(is_active=True).order_by('order', 'name')
     
     context = {
         'about_us': about_us,
         'team_members': team_members,
+        'clients': clients,
         'settings': SiteSettings.load(),
     }
     

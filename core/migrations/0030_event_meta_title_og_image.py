@@ -19,16 +19,28 @@ def add_event_seo_fields_if_missing(apps, schema_editor):
     table_name = Event._meta.db_table
     existing_columns = existing_column_names(schema_editor, table_name)
 
-    fields = [
-        ('meta_title', models.CharField(max_length=70, blank=True, default='')),
-        ('og_image', models.ImageField(upload_to='events/', blank=True, default='')),
-    ]
+    missing_columns = []
+    if 'meta_title' not in existing_columns:
+        missing_columns.append(
+            "ALTER TABLE %(table)s ADD COLUMN %(column)s varchar(70) NOT NULL DEFAULT ''"
+            % {
+                'table': schema_editor.quote_name(table_name),
+                'column': schema_editor.quote_name('meta_title'),
+            }
+        )
+    if 'og_image' not in existing_columns:
+        missing_columns.append(
+            "ALTER TABLE %(table)s ADD COLUMN %(column)s varchar(100) NOT NULL DEFAULT ''"
+            % {
+                'table': schema_editor.quote_name(table_name),
+                'column': schema_editor.quote_name('og_image'),
+            }
+        )
 
-    for column_name, field in fields:
-        if column_name in existing_columns:
-            continue
-        field.set_attributes_from_name(column_name)
-        schema_editor.add_field(Event, field)
+    if missing_columns:
+        with schema_editor.connection.cursor() as cursor:
+            for sql in missing_columns:
+                cursor.execute(sql)
 
 
 def backfill_event_seo_fields(apps, schema_editor):
@@ -38,8 +50,8 @@ def backfill_event_seo_fields(apps, schema_editor):
     og_image = schema_editor.quote_name('og_image')
 
     with schema_editor.connection.cursor() as cursor:
-        cursor.execute(f'UPDATE {table_name} SET {meta_title} = %s WHERE {meta_title} IS NULL', [''])
-        cursor.execute(f'UPDATE {table_name} SET {og_image} = %s WHERE {og_image} IS NULL', [''])
+        cursor.execute(f"UPDATE {table_name} SET {meta_title} = '' WHERE {meta_title} IS NULL")
+        cursor.execute(f"UPDATE {table_name} SET {og_image} = '' WHERE {og_image} IS NULL")
 
 
 class Migration(migrations.Migration):

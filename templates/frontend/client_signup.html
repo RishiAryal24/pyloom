@@ -10,7 +10,7 @@
       <div class="col-md-6">
         <div class="card shadow">
           <div class="card-body">
-            <h3 class="mb-4 text-center">Client Signup</h3>
+            <h3 class="mb-4 text-center">Company Client Signup</h3>
 
             {% if messages %}
               {% for message in messages %}
@@ -18,26 +18,26 @@
               {% endfor %}
             {% endif %}
 
-            <form method="post" action="">
+            <form method="post" action="" enctype="multipart/form-data">
               {% csrf_token %}
               {{ form.non_field_errors }}
 
               <div class="mb-3">
-                {{ form.first_name.label_tag }}
-                {{ form.first_name }}
-                {{ form.first_name.errors }}
-              </div>
-
-              <div class="mb-3">
-                {{ form.last_name.label_tag }}
-                {{ form.last_name }}
-                {{ form.last_name.errors }}
+                {{ form.company_name.label_tag }}
+                {{ form.company_name }}
+                {{ form.company_name.errors }}
               </div>
 
               <div class="mb-3">
                 {{ form.email.label_tag }}
                 {{ form.email }}
                 {{ form.email.errors }}
+              </div>
+
+              <div class="mb-3">
+                {{ form.company_logo.label_tag }}
+                {{ form.company_logo }}
+                {{ form.company_logo.errors }}
               </div>
 
               <div class="mb-3">

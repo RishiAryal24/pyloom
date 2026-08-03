@@ -469,6 +469,13 @@
                 </li>
 
                 <li class="nav-item">
+                    <a class="nav-link {% if 'clients' in request.path %}active{% endif %}"
+                        href="{% url 'content_list' 'clients' %}">
+                        <i class="bi bi-briefcase"></i>Clients
+                    </a>
+                </li>
+
+                <li class="nav-item">
                     <a class="nav-link {% if 'team' in request.path %}active{% endif %}"
                         href="{% url 'content_list' 'team' %}">
                         <i class="bi bi-person-workspace"></i>Team Members

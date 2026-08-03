@@ -28,19 +28,34 @@ class CustomUser(AbstractUser):
         ('admin', 'Admin'),
         ('editor', 'Editor'),
         ('viewer', 'Viewer'),
+        ('client', 'Client'),
     ]
     
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='viewer')
     phone = models.CharField(max_length=20, blank=True)
+    company_name = models.CharField(max_length=200, blank=True)
+    company_logo = models.ImageField(upload_to='client_logos/', blank=True, null=True)
     profile_image = models.ImageField(upload_to='profiles/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
+        if self.role == 'client' and self.company_name:
+            return f"{self.company_name} ({self.get_role_display()})"
         return f"{self.username} ({self.get_role_display()})"
     
     def has_admin_access(self):
         return self.role in ['admin', 'editor'] or self.is_superuser
+
+
+class Client(CustomUser):
+    """Proxy model for clients handled through the custom admin."""
+    class Meta:
+        proxy = True
+        verbose_name = 'Client'
+        verbose_name_plural = 'Clients'
+
+
 # ----------------------------
 # Site Settings
 # ----------------------------
@@ -756,9 +771,25 @@ class TeamMember(models.Model):
     
     def __str__(self):
         return f"{self.name} - {self.get_role_display()}"
-    
-# Link clients to the main User model
+
+
+class ClientPartner(models.Model):
+    name = models.CharField(max_length=200)
+    location = models.CharField(max_length=200, blank=True)
+    description = models.TextField(blank=True)
+    logo = models.ImageField(upload_to='client_logos/', blank=True, null=True)
+    website = models.URLField(blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    order = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['order', 'name']
+        verbose_name = 'Client Partner'
+        verbose_name_plural = 'Client Partners'
+
     def __str__(self):
-        return self.user.get_full_name() or self.user.username
+        return self.name
 
 
