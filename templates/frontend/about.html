@@ -206,31 +206,85 @@
 </section>
 {% endif %}
 
-<!-- Success Metrics -->
- <section class="py-5">
+<!-- Client Partners -->
+<section class="py-5">
+    <style>
+        .partner-card {
+            transition: transform .35s ease, box-shadow .35s ease;
+        }
+        .partner-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.16);
+        }
+        .partner-overlay {
+            transition: opacity .35s ease, transform .35s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+            z-index: 2;
+        }
+        .partner-card:hover .partner-overlay,
+        .partner-card:focus-within .partner-overlay {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        .partner-card:hover .partner-overlay p,
+        .partner-card:hover .partner-overlay a,
+        .partner-card:focus-within .partner-overlay p,
+        .partner-card:focus-within .partner-overlay a {
+            opacity: 1;
+        }
+    </style>
     <div class="container">
-        <div class="row mb-4">
-            <div class="col-12 text-center">
-                <h3>Trusted by Industry Leaders</h3>
-                <p class="text-muted">We're proud to work with innovative companies across various sectors</p>
-            </div>
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold mb-3">Our Partners</h2>
+            <p class="lead">We partner with industry leaders to deliver innovative AI and digital transformation solutions.</p>
         </div>
-        <div class="row align-items-center justify-content-center">
-            <div class="col-lg-2 col-md-3 col-4 mb-3">
-                <img src="{% static 'img/client.svg' %}" class="img-fluid grayscale-logo" alt="Client 1" loading="lazy">
-            </div>
-            <div class="col-lg-2 col-md-3 col-4 mb-3">
-                <img src="{% static 'img/client.svg' %}" class="img-fluid grayscale-logo" alt="Client 2" loading="lazy">
-            </div>
-            <div class="col-lg-2 col-md-3 col-4 mb-3">
-                <img src="{% static 'img/client.svg' %}" class="img-fluid grayscale-logo" alt="Client 3" loading="lazy">
-            </div>
-            <div class="col-lg-2 col-md-3 col-4 mb-3">
-                <img src="{% static 'img/client.svg' %}" class="img-fluid grayscale-logo" alt="Client 4" loading="lazy">
-            </div>
-            <div class="col-lg-2 col-md-3 col-4 mb-3">
-                <img src="{% static 'img/client.svg' %}" class="img-fluid grayscale-logo" alt="Client 5" loading="lazy">
-            </div>
+        <div class="row g-4 justify-content-center">
+            {% if clients %}
+                {% for client in clients %}
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="card border-0 shadow-sm partner-card h-100 overflow-hidden">
+                        <div class="card-body text-center position-relative p-4">
+                            {% if client.logo %}
+                            <img src="{{ client.logo.url }}" class="img-fluid mb-3" alt="{{ client.name }}" loading="lazy" style="max-height: 100px; object-fit: contain;">
+                            {% else %}
+                            <div class="rounded bg-light d-flex align-items-center justify-content-center mb-3" style="width: 120px; height: 100px; margin:0 auto;">
+                                <i class="bi bi-people fs-2 text-secondary"></i>
+                            </div>
+                            {% endif %}
+                            <h5 class="fw-bold mb-1">{{ client.name }}</h5>
+                            {% if client.location %}
+                            <h6 class="text-secondary small mb-3">{{ client.location }}</h6>
+                            {% endif %}
+                            <div class="partner-overlay position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-85 d-flex flex-column align-items-center justify-content-center text-white p-4">
+                                <p class="mb-3 small text-center">{{ client.description|default:'No description available.' }}</p>
+                                {% if client.website %}
+                                <a href="{{ client.website }}" target="_blank" rel="noopener" class="btn btn-outline-light btn-sm">Visit partner</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-lg-2 col-md-3 col-4 mb-3">
+                    <img src="{% static 'img/client.svg' %}" class="img-fluid grayscale-logo" alt="Client 1" loading="lazy">
+                </div>
+                <div class="col-lg-2 col-md-3 col-4 mb-3">
+                    <img src="{% static 'img/client.svg' %}" class="img-fluid grayscale-logo" alt="Client 2" loading="lazy">
+                </div>
+                <div class="col-lg-2 col-md-3 col-4 mb-3">
+                    <img src="{% static 'img/client.svg' %}" class="img-fluid grayscale-logo" alt="Client 3" loading="lazy">
+                </div>
+                <div class="col-lg-2 col-md-3 col-4 mb-3">
+                    <img src="{% static 'img/client.svg' %}" class="img-fluid grayscale-logo" alt="Client 4" loading="lazy">
+                </div>
+                <div class="col-lg-2 col-md-3 col-4 mb-3">
+                    <img src="{% static 'img/client.svg' %}" class="img-fluid grayscale-logo" alt="Client 5" loading="lazy">
+                </div>
+            {% endif %}
         </div>
     </div>
 </section>
@@ -265,20 +319,22 @@
     </div>
 </section>
 
-<!-- CTA Section -->
-<section class="py-5 bg-light">
-    <div class="container text-center">
-        <h2 class="display-5 fw-bold mb-3">Ready to Work With Us?</h2>
-        <p class="lead mb-4">Let's discuss how we can help transform your business with AI</p>
-        <div class="d-flex justify-content-center gap-3">
-            <a href="{% url 'core:contact' %}" class="btn btn-outline-dark btn-lg">Get In Touch</a>
-            <a href="{% url 'core:solutions' %}" class="btn btn-outline-dark btn-lg">View Solutions</a>
+<!-- Client CTA Section -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <h2 class="display-5 fw-bold mb-3">Are You a Client Looking to Collaborate?</h2>
+                <p class="lead mb-4">If you're an existing client or a new partner ready to explore how PyLoom can deliver tailored AI solutions, we’d love to connect. Share your goals with us and we will align our expertise to your business needs.</p>
+                <a href="{% url 'core:client_signup' %}" class="btn btn-primary btn-lg me-2">Register as a Client</a>
+                <a href="{% url 'core:client_login' %}" class="btn btn-outline-dark btn-lg">Client Login</a>
+            </div>
+            <div class="col-lg-5 text-center">
+                <img src="{% static 'img/client.svg' %}" class="img-fluid" alt="Client partnership" loading="lazy">
+            </div>
         </div>
     </div>
 </section>
-{% endblock %}
-
-{% block extra_css %}
 <style>
 .team-card {
     cursor: pointer;

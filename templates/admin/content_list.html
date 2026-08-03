@@ -254,6 +254,12 @@
             <th>Role</th>
             <th>Status</th>
             <th>Actions</th>
+            {% elif content_type == 'clients' %}
+            <th>Client</th>
+            <th>Logo</th>
+            <th>Website</th>
+            <th>Status</th>
+            <th>Actions</th>
             {% elif content_type == 'team' %}
             <th>Name</th>
             <th>Status</th>
@@ -342,6 +348,22 @@
             <td>{{ object.email }}</td>
             <td>
               <span class="badge bg-secondary">{{ object.get_role_display }}</span>
+            </td>
+            {% elif content_type == 'clients' %}
+            <td>{{ object.name }}</td>
+            <td>
+              {% if object.logo %}
+                <img src="{{ object.logo.url }}" alt="{{ object.name }}" class="img-thumbnail" width="60">
+              {% else %}
+                -
+              {% endif %}
+            </td>
+            <td>
+              {% if object.website %}
+                <a href="{{ object.website }}" target="_blank" rel="noopener">{{ object.website }}</a>
+              {% else %}
+                -
+              {% endif %}
             </td>
             <td>
               {% if object.is_active %}

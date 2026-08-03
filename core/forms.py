@@ -11,20 +11,49 @@ from django.forms import ModelForm, inlineformset_factory, modelformset_factory
 User = get_user_model()
 
 class ClientSignupForm(UserCreationForm):
-    email = forms.EmailField(required=True)
-    first_name = forms.CharField(required=True)
-    last_name = forms.CharField(required=True)
+    username = forms.CharField(widget=forms.HiddenInput(), required=False)
+    email = forms.EmailField(required=True, label='Company Email')
+    company_name = forms.CharField(required=True, label='Company Name')
+    company_logo = forms.ImageField(required=False, label='Company Logo')
 
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'email', 'password1', 'password2')
+        fields = ('username', 'email', 'company_name', 'company_logo', 'password1', 'password2')
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.username = self.cleaned_data['email']  # Set username same as email
+        user.username = self.cleaned_data['email']
         user.email = self.cleaned_data['email']
-        user.first_name = self.cleaned_data['first_name']
-        user.last_name = self.cleaned_data['last_name']
+        user.company_name = self.cleaned_data['company_name']
+        if self.cleaned_data.get('company_logo'):
+            user.company_logo = self.cleaned_data['company_logo']
+        user.role = 'client'
+        if commit:
+            user.save()
+        return user
+
+
+class ClientCreationForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+    company_name = forms.CharField(required=False)
+    company_logo = forms.ImageField(required=False)
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'company_name', 'company_logo', 'role', 'password1', 'password2')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['email'].required = True
+        self.fields['role'].initial = 'client'
+        self.fields['role'].widget.attrs['readonly'] = True
+        self.fields['role'].disabled = True
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.company_name = self.cleaned_data.get('company_name', '')
+        user.company_logo = self.cleaned_data.get('company_logo')
+        user.role = 'client'
         if commit:
             user.save()
         return user
@@ -85,6 +114,25 @@ class CustomUserCreationForm(UserCreationForm):
         self.fields['email'].required = True
         self.fields['first_name'].required = True
         self.fields['last_name'].required = True
+
+
+class ClientPartnerForm(forms.ModelForm):
+    class Meta:
+        model = ClientPartner
+        fields = ['name', 'location', 'description', 'logo', 'website', 'is_active', 'order']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Client Company Name'}),
+            'location': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Client Location (city, country)'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Describe the client or partnership.'}),
+            'website': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://'}),
+            'order': forms.NumberInput(attrs={'class': 'form-control', 'min': 0}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['name'].required = True
+        self.fields['description'].required = True
+        self.fields['location'].required = False
 
 # Feedback Form
 class FeedbackForm(forms.ModelForm):

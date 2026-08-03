@@ -40,6 +40,7 @@ from core.forms import (
     TrainingForm,
     GalleryItemForm,
     CustomUserCreationForm,
+    ClientPartnerForm,
     ArticleForm,
     TeamMemberForm,
 )
@@ -61,6 +62,7 @@ CONTENT_MODEL_MAPPING = {
     'projects': Project,
     'about': AboutUs,
     'site_settings': SiteSettings,
+    'clients': ClientPartner,
 }
 
 CONTENT_FORM_MAPPING = {
@@ -68,6 +70,7 @@ CONTENT_FORM_MAPPING = {
     'services': ServiceForm,
     'blog': BlogPostForm,
     'users': CustomUserCreationForm,
+    'clients': ClientPartnerForm,
     'events': EventForm,
     'trainings': TrainingForm,
     'career_vacancies': CareerVacancyForm,
@@ -91,6 +94,7 @@ DISPLAY_NAMES = {
     'trainings': 'Trainings',
     'career_vacancies': 'Career Vacancies',
     'users': 'Users',
+    'clients': 'Clients',
     'team': 'Team Members',
     'projects': 'Projects',
     'about': 'About Us',
@@ -110,6 +114,7 @@ SINGULAR_DISPLAY_NAMES = {
     'trainings': 'Training',
     'career_vacancies': 'Career Vacancy',
     'users': 'User',
+    'clients': 'Client',
     'team': 'Team Member',
     'projects': 'Project',
     'about': 'About Us',
@@ -285,6 +290,10 @@ def content_list(request, content_type):
             queryset = queryset.filter(
                 Q(username__icontains=search_query) | Q(email__icontains=search_query) | Q(first_name__icontains=search_query) | Q(last_name__icontains=search_query)
             )
+        elif content_type == 'clients':
+            queryset = queryset.filter(
+                Q(name__icontains=search_query) | Q(description__icontains=search_query) | Q(website__icontains=search_query)
+            )
         else:
             queryset = queryset.filter(name__icontains=search_query)
 
@@ -393,6 +402,7 @@ def content_form(request, content_type, object_id=None):
                 messages.error(request, "Please correct the errors below.")
         else:
             form = FormClass(instance=instance)
+
 
         context = {
             'content_type': content_type,
