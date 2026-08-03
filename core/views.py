@@ -117,7 +117,7 @@ def home(request):
         latest_articles = []
 
     try:
-        feedbacks = Feedback.objects.all()[:5]
+        feedbacks = Feedback.objects.filter(is_approved=True).order_by('-created_at')[:5]
     except Exception:
         feedbacks = []
     

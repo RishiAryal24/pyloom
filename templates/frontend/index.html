@@ -203,7 +203,11 @@ PyLoom - Weaving Innovation Beyond Expectations
         <div class="carousel-item {% if forloop.first %}active{% endif %}">
           <div class="card h-100">
             <div class="card-body">
-              <p class="card-text">"{{ feedback.rating }} "</p>
+              <p class="card-text mb-2">
+                {% for _ in "12345"|make_list %}
+                  <i class="bi bi-star-fill {% if forloop.counter <= feedback.rating %}text-warning{% else %}text-muted{% endif %}"></i>
+                {% endfor %}
+              </p>
               <h5 class="card-title">- {{ feedback.user.get_full_name|default:feedback.user.username }}</h5>
               <p class="text-muted">{{ feedback.comment|linebreaks }}</p>
             </div>

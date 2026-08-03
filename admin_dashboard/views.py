@@ -10,6 +10,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q, Count, Avg
 from django.apps import apps
 from django.contrib.auth.forms import PasswordChangeForm, PasswordResetForm, SetPasswordForm
+from django.forms import inlineformset_factory
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
