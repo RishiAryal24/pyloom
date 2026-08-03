@@ -291,13 +291,14 @@ class BlogPostForm(forms.ModelForm):
 class ArticleForm(forms.ModelForm):
     class Meta:
         model = Article
-        fields = ['title', 'content', 'excerpt', 'category', 'status', 'featured_image', 'author', 'is_featured', 'download_count']
+        fields = ['title', 'content', 'excerpt', 'category', 'status', 'canonical_url', 'featured_image', 'author', 'is_featured', 'download_count']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Article Title'}),
             'content': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Article Content'}),
             'excerpt': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Article Excerpt'}),
             'category': forms.Select(attrs={'class': 'form-select'}),
             'status': forms.Select(attrs={'class': 'form-select'}),
+            'canonical_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'Canonical URL'}),
             'featured_image': forms.ClearableFileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
             'download_count': forms.NumberInput(attrs={'class': 'form-control', 'min': 0}),
         }
@@ -311,6 +312,7 @@ class ArticleForm(forms.ModelForm):
             'excerpt',
             'category',
             'status',
+            'canonical_url',
             'featured_image',
             'download_count',
             'is_featured',
