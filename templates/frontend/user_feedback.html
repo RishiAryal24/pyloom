@@ -84,7 +84,11 @@
                                     <small class="text-muted">{{ feedback.created_at|date:"M j, Y" }}</small>
                                 </div>
                                 <p class="mb-1">{{ feedback.comment|linebreaks }}</p>
-                                <small class="text-muted">Rating: {{ feedback.rating }} / 5</small>
+                                <p class="mb-0">
+                                    {% for _ in "12345"|make_list %}
+                                      <i class="bi bi-star-fill {% if forloop.counter <= feedback.rating %}text-warning{% else %}text-muted{% endif %}"></i>
+                                    {% endfor %}
+                                </p>
                             </div>
                         </div>
                     {% endfor %}

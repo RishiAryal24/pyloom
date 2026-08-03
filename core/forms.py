@@ -426,12 +426,17 @@ class GalleryItemForm(forms.ModelForm):
     class Meta:
         model = GalleryItem
         fields = ['event', 'is_featured']
-        # now valid
         widgets = {
             'event': forms.Select(attrs={'class': 'form-select'}),
             'is_featured': forms.CheckboxInput(),
-            
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if 'event' in self.fields:
+            self.fields['event'].required = True
+            self.fields['event'].empty_label = 'Select an Event'
+            self.fields['event'].queryset = Event.objects.order_by('-date')
 
 class GalleryItemImageForm(forms.ModelForm):
     class Meta:
