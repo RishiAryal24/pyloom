@@ -548,6 +548,12 @@ def _chatbot_terms(query):
 def _chatbot_direct_answer(query):
     q = (query or '').lower()
 
+    if re.search(r'\b(who|which (?:person|team))\b.*\b(made|built|created|developed|designed)\b.*\b(website|site)\b', q):
+        return (
+            "This website was developed by our PyLoom team. "
+            "We do not have an individual website creator published in our website information."
+        )
+
     if re.search(r'\b(what does (this |the |your |our )?company do|what do you do|what is this company|about (this|the) company|company overview|who are you)\b', q):
         about = AboutUs.objects.first()
         if about and _chatbot_clean(about.company_background):
@@ -561,7 +567,7 @@ def _chatbot_direct_answer(query):
     if re.search(r'\b(ceo|chief executive officer)\b', q):
         ceo = TeamMember.objects.filter(role='ceo', is_active=True).first()
         if ceo:
-            return f"The CEO is {ceo.name}. {ceo.bio or 'This information is stored in the Team Members section of the website admin.'}"
+            return f"Our CEO is {ceo.name}. {ceo.bio or 'Their profile is available in our Team Members section.'}"
         return "Our CEO profile is not published yet. We can still help with other PyLoom information."
 
     if re.search(r'\b(cto|chief technology officer)\b', q):
