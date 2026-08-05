@@ -66,10 +66,16 @@ def load_json_kb(json_path):
             f"Use Cases: {', '.join(sol.get('use_cases', []))}"
         )
         if len(sol_content) > 100:
-            kb_docs.append(Document(
-                page_content=sol_content, 
-                metadata={"source": "json_kb", "section": "solutions", "category": sol.get('category', '')}
-            ))
+                kb_docs.append(Document(
+                    page_content=sol_content,
+                    metadata={
+                        "source": "json_kb",
+                        "section": "solutions",
+                        "category": sol.get('category', ''),
+                        "title": sol.get('name', ''),
+                        "training_id": sol.get('name', '')
+                    }
+                ))
 
     # Handle events as per-item docs
     events = data.get("events", [])
@@ -84,10 +90,15 @@ def load_json_kb(json_path):
             f"Key Takeaways: {', '.join(event.get('key_takeaways', []))}"
         )
         if len(event_content) > 100:
-            kb_docs.append(Document(
-                page_content=event_content, 
-                metadata={"source": "json_kb", "section": "events", "category": event.get('type', '')}
-            ))
+                kb_docs.append(Document(
+                    page_content=event_content,
+                    metadata={
+                        "source": "json_kb",
+                        "section": "events",
+                        "category": event.get('type', ''),
+                        "title": event.get('name', '')
+                    }
+                ))
 
     # Handle projects as per-item docs
     projects = data.get("projects", [])
@@ -98,10 +109,15 @@ def load_json_kb(json_path):
             f"Overview: {proj.get('overview', '')}"
         )
         if len(proj_content) > 100:
-            kb_docs.append(Document(
-                page_content=proj_content, 
-                metadata={"source": "json_kb", "section": "projects", "category": "project"}
-            ))
+                kb_docs.append(Document(
+                    page_content=proj_content,
+                    metadata={
+                        "source": "json_kb",
+                        "section": "projects",
+                        "category": "project",
+                        "title": proj.get('name', '')
+                    }
+                ))
 
     # Handle articles as per-item docs
     articles = data.get("articles", [])
@@ -112,10 +128,15 @@ def load_json_kb(json_path):
             f"Summary: {art.get('summary', '')}"
         )
         if len(art_content) > 100:
-            kb_docs.append(Document(
-                page_content=art_content, 
-                metadata={"source": "json_kb", "section": "articles", "category": "article"}
-            ))
+                kb_docs.append(Document(
+                    page_content=art_content,
+                    metadata={
+                        "source": "json_kb",
+                        "section": "articles",
+                        "category": "article",
+                        "title": art.get('title', '')
+                    }
+                ))
 
     # Handle feedback as a single doc
     feedback = data.get("feedback", "")
@@ -125,9 +146,26 @@ def load_json_kb(json_path):
             metadata={"source": "json_kb", "section": "feedback", "category": "user_feedback"}
         ))
 
-    # Skip faqs to avoid duplication with CSV
+    # Include faqs as short docs to improve precise QA (still avoid CSV duplication elsewhere)
+    faqs = data.get("faqs", [])
+    for i, faq in enumerate(faqs):
+        faq_content = (
+            f"FAQ {i+1}: {faq.get('question', '')}\n"
+            f"Category: {faq.get('category', '')}\n"
+            f"Answer: {faq.get('answer', '')}"
+        )
+        if len(faq_content) > 50:
+            kb_docs.append(Document(
+                page_content=faq_content,
+                metadata={
+                    "source": "json_kb",
+                    "section": "faqs",
+                    "category": faq.get('category', ''),
+                    "question": faq.get('question', '')
+                }
+            ))
 
-    print(f"✅ Loaded {len(kb_docs)} structured entries from JSON KB (skipped faqs)")
+    print(f"✅ Loaded {len(kb_docs)} structured entries from JSON KB (including faqs)")
     return kb_docs
 
 # ------------------------
@@ -135,8 +173,8 @@ def load_json_kb(json_path):
 # ------------------------
 def chunk_documents(documents):
     splitter = RecursiveCharacterTextSplitter(
-        chunk_size=500,
-        chunk_overlap=50,
+        chunk_size=300,
+        chunk_overlap=30,
         length_function=len,
         separators=["\n\n", "\n", " ", ""]
     )
