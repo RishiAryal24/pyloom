@@ -91,3 +91,20 @@ class ChatbotResponseTests(TestCase):
         self.assertIn("Cybersecurity Essentials: NPR 9,000", response)
         self.assertNotIn("A practical introduction", response)
         self.assertNotIn("A beginner-friendly course", response)
+
+    def test_training_follow_up_uses_session_context(self):
+        history = [
+            {'role': 'user', 'content': 'Tell me about our trainings'},
+            {'role': 'assistant', 'content': 'Training list shown.'},
+            {'role': 'user', 'content': 'Tell me the prices of these trainings'},
+            {'role': 'assistant', 'content': 'Price list shown.'},
+        ]
+
+        response = get_live_chatbot_response(
+            'Can you also give me the durations?',
+            chat_history=history,
+        )
+
+        self.assertIn('Machine Learning Fundamentals: 6 weeks', response)
+        self.assertIn('Cybersecurity Essentials: 4 weeks', response)
+        self.assertNotIn('Here are PyLoom insights', response)

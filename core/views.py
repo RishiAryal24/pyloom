@@ -962,7 +962,33 @@ def _chatbot_training_field_list_response(trainings, field, agent_name):
     return '\n'.join(lines)
 
 
-def get_live_chatbot_response(query, agent_name='Ritika'):
+def _chatbot_contextual_query(query, chat_history, docs):
+    """Resolve a follow-up against the last relevant topic in this chat session."""
+    if not chat_history:
+        return query
+
+    requested_training_field = _chatbot_requested_training_field(query)
+    if not requested_training_field:
+        return query
+
+    # A question such as "Can you also give me the durations?" inherits the
+    # most recent training subject. If it was a named course, keep that course;
+    # otherwise keep the plural training list context.
+    for message in reversed(chat_history):
+        if message.get('role') != 'user':
+            continue
+        previous_query = message.get('content', '')
+        if _chatbot_intent_kind(_chatbot_terms(previous_query)) != 'Training':
+            continue
+        selected_training = _chatbot_training_match(previous_query, docs)
+        subject = selected_training['title'] if selected_training else 'trainings'
+        return f"{query} for {subject}"
+
+    return query
+
+
+def get_live_chatbot_response(query, agent_name='Ritika', chat_history=None):
+    chat_history = chat_history or []
     terms = _chatbot_terms(query)
     casual = {'hello', 'hi', 'hey', 'thanks', 'thank', 'bye'}
     if terms and terms.issubset(casual):
@@ -973,16 +999,18 @@ def get_live_chatbot_response(query, agent_name='Ritika'):
         return direct_answer
 
     docs = _chatbot_live_documents()
+    effective_query = _chatbot_contextual_query(query, chat_history, docs)
+    terms = _chatbot_terms(effective_query)
     intent_kind = _chatbot_intent_kind(terms)
 
     # A named course is a focused request: answer from that one record only.
     # General ranking remains available for questions such as "What trainings
     # are available?"
-    selected_training = _chatbot_training_match(query, docs)
+    selected_training = _chatbot_training_match(effective_query, docs)
     if selected_training:
-        return _chatbot_training_response(selected_training, query, agent_name)
+        return _chatbot_training_response(selected_training, effective_query, agent_name)
 
-    requested_training_field = _chatbot_requested_training_field(query)
+    requested_training_field = _chatbot_requested_training_field(effective_query)
     if intent_kind == 'Training' and requested_training_field:
         trainings = [doc for doc in docs if doc['kind'] == 'Training']
         if trainings:
@@ -1070,8 +1098,19 @@ def chatbot_proxy(request):
             agent_name = request.POST.get("agent_name", "Ritika")
         if not query:
             return JsonResponse({"error": "No query provided"}, status=400)
+        chat_history = request.session.get('chatbot_history', [])
+        answer = get_live_chatbot_response(
+            query,
+            agent_name=agent_name,
+            chat_history=chat_history,
+        )
+        chat_history.extend([
+            {'role': 'user', 'content': query},
+            {'role': 'assistant', 'content': answer},
+        ])
+        request.session['chatbot_history'] = chat_history[-16:]
         return JsonResponse({
-            "response": get_live_chatbot_response(query, agent_name=agent_name),
+            "response": answer,
             "source": "live_database",
         })
     return JsonResponse({"error": "Invalid request"}, status=400)
@@ -1079,6 +1118,7 @@ def chatbot_proxy(request):
 @csrf_exempt
 def chatbot_reset(request):
     if request.method == "POST":
+        request.session.pop('chatbot_history', None)
         try:
             requests.post("http://127.0.0.1:8001/reset", timeout=3)
         except requests.RequestException:
