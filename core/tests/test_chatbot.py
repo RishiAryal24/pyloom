@@ -2,7 +2,7 @@ from unittest.mock import patch
 
 from django.test import TestCase
 
-from core.models import SiteSettings, Service, ClientPartner, Project, AboutUs, Training
+from core.models import AboutUs, Category, ClientPartner, Project, Service, SiteSettings, Solution, Training
 from core.views import get_live_chatbot_response
 
 
@@ -21,6 +21,13 @@ class ChatbotResponseTests(TestCase):
         )
         Service.objects.create(title="AI-Powered Learning Platform", description="Adaptive learning service.")
         Service.objects.create(title="Smart Investment Tracker", description="Finance intelligence service.")
+        solution_category = Category.objects.create(name="Technology", content_type="solution")
+        Solution.objects.create(
+            title="Workflow Automation Suite",
+            description="Automates repeatable business processes.",
+            category=solution_category,
+            icon="bi-cpu",
+        )
         Training.objects.create(
             title="Machine Learning Fundamentals",
             summary="A practical introduction to core machine learning concepts.",
@@ -46,6 +53,19 @@ class ChatbotResponseTests(TestCase):
 
         self.assertIn("AI-Powered Learning Platform", response)
         self.assertIn("Smart Investment Tracker", response)
+
+    def test_solution_queries_do_not_return_services(self):
+        response = get_live_chatbot_response("List our solutions")
+
+        self.assertIn("Workflow Automation Suite", response)
+        self.assertNotIn("AI-Powered Learning Platform", response)
+
+    def test_brief_training_question_returns_short_summaries(self):
+        response = get_live_chatbot_response("Briefly tell me about our trainings")
+
+        self.assertIn("brief overview", response)
+        self.assertIn("Machine Learning Fundamentals", response)
+        self.assertLess(len(response), 650)
 
     def test_company_overview_uses_only_about_us_content(self):
         response = get_live_chatbot_response("What does this company do?")
@@ -108,3 +128,18 @@ class ChatbotResponseTests(TestCase):
         self.assertIn('Machine Learning Fundamentals: 6 weeks', response)
         self.assertIn('Cybersecurity Essentials: 4 weeks', response)
         self.assertNotIn('Here are PyLoom insights', response)
+
+    def test_general_follow_up_keeps_the_previous_topic(self):
+        history = [
+            {'role': 'user', 'content': 'Tell me about our services'},
+            {'role': 'assistant', 'content': 'Service list shown.'},
+        ]
+
+        response = get_live_chatbot_response(
+            'Can you give me more details about them?',
+            chat_history=history,
+        )
+
+        self.assertIn('AI-Powered Learning Platform', response)
+        self.assertIn('Smart Investment Tracker', response)
+        self.assertNotIn('Workflow Automation Suite', response)
