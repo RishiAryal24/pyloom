@@ -548,6 +548,16 @@ def _chatbot_terms(query):
 def _chatbot_direct_answer(query):
     q = (query or '').lower()
 
+    if re.search(r'\b(what does (this |the |your |our )?company do|what do you do|what is this company|about (this|the) company|company overview|who are you)\b', q):
+        about = AboutUs.objects.first()
+        if about and _chatbot_clean(about.company_background):
+            return f"We are PyLoom. {_chatbot_clean(about.company_background)}"
+
+        settings_obj = SiteSettings.load()
+        if settings_obj and settings_obj.slogan:
+            return f"We are PyLoom. {settings_obj.slogan}"
+        return "We are PyLoom, and we build practical technology, AI, automation, and software solutions for organizations."
+
     if re.search(r'\b(ceo|chief executive officer)\b', q):
         ceo = TeamMember.objects.filter(role='ceo', is_active=True).first()
         if ceo:
