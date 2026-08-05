@@ -622,19 +622,19 @@ def _chatbot_direct_answer(query):
             "We do not have client-specific entries published yet."
         )
 
-    if re.search(r'\b(service|services|offer|offerings|solutions?)\b', q):
-        services = Service.objects.filter(is_active=True).order_by('order', 'title')[:4]
-        if services:
-            titles = ', '.join(service.title for service in services)
-            return f"Our active services include: {titles}."
-        return "No active services are listed on the website yet."
-
     if re.search(r'\b(solution|solutions?)\b', q):
         solutions = Solution.objects.filter(is_active=True).order_by('order', 'title')[:4]
         if solutions:
             titles = ', '.join(solution.title for solution in solutions)
             return f"Our active solutions include: {titles}."
         return "No active solutions are listed on the website yet."
+
+    if re.search(r'\b(service|services|offer|offers|offering|offerings)\b', q):
+        services = Service.objects.filter(is_active=True).order_by('order', 'title')[:4]
+        if services:
+            titles = ', '.join(service.title for service in services)
+            return f"Our active services include: {titles}."
+        return "No active services are listed on the website yet."
 
     return None
 
@@ -962,27 +962,56 @@ def _chatbot_training_field_list_response(trainings, field, agent_name):
     return '\n'.join(lines)
 
 
+def _chatbot_brief_training_list_response(trainings, agent_name):
+    """Keep a broad training overview genuinely brief."""
+    lines = [f"{agent_name} here — here is a brief overview of our trainings:"]
+    for training in trainings:
+        summary = training['body'] or 'Details are available on the training page.'
+        summary = summary.split('. ', 1)[0].strip()
+        if len(summary) > 160:
+            summary = summary[:157].rsplit(' ', 1)[0] + '...'
+        lines.append(f"- {training['title']}: {summary}")
+    lines.append("Tell us which training you would like to explore.")
+    return '\n'.join(lines)
+
+
 def _chatbot_contextual_query(query, chat_history, docs):
     """Resolve a follow-up against the last relevant topic in this chat session."""
     if not chat_history:
         return query
 
     requested_training_field = _chatbot_requested_training_field(query)
-    if not requested_training_field:
+    current_intent = _chatbot_intent_kind(_chatbot_terms(query))
+    is_follow_up = bool(re.search(
+        r'\b(also|what about|how about|and (?:the|their)|it|its|they|them|their|those|these|details|more)\b',
+        query,
+        re.IGNORECASE,
+    ))
+
+    # An explicit topic needs no inherited context, except a question such as
+    # "the duration" where the training type is implied rather than stated.
+    if current_intent and not requested_training_field:
+        return query
+    if not requested_training_field and not is_follow_up:
         return query
 
-    # A question such as "Can you also give me the durations?" inherits the
-    # most recent training subject. If it was a named course, keep that course;
-    # otherwise keep the plural training list context.
+    # A follow-up inherits the most recent recognised subject in this browser
+    # session. Named trainings remain precise; all other topics retain their
+    # content type so the matcher cannot drift to an unrelated section.
     for message in reversed(chat_history):
         if message.get('role') != 'user':
             continue
         previous_query = message.get('content', '')
-        if _chatbot_intent_kind(_chatbot_terms(previous_query)) != 'Training':
+        previous_intent = _chatbot_intent_kind(_chatbot_terms(previous_query))
+        if not previous_intent:
             continue
-        selected_training = _chatbot_training_match(previous_query, docs)
-        subject = selected_training['title'] if selected_training else 'trainings'
-        return f"{query} for {subject}"
+
+        if previous_intent == 'Training':
+            selected_training = _chatbot_training_match(previous_query, docs)
+            subject = selected_training['title'] if selected_training else 'trainings'
+            return f"{query} for {subject}"
+
+        return f"{query} about {previous_intent}"
 
     return query
 
@@ -1038,6 +1067,9 @@ def get_live_chatbot_response(query, agent_name='Ritika', chat_history=None):
             matches = []
     else:
         matches = [doc for doc, score in ranked if score > 0][:4]
+
+    if intent_kind == 'Training' and re.search(r'\b(brief|briefly|short|quick)\b', effective_query, re.IGNORECASE):
+        return _chatbot_brief_training_list_response(matches, agent_name)
 
     if not matches:
         if intent_kind:
