@@ -923,6 +923,39 @@ def _chatbot_training_response(training, query, agent_name):
     return f"{agent_name} here — {training['title']} is {summary}"
 
 
+def _chatbot_requested_training_field(query):
+    """Map natural ways of asking for a training detail to its stored label."""
+    text = (query or '').lower()
+    aliases = {
+        'price': ('price', 'prices', 'cost', 'costs', 'fee', 'fees', 'how much'),
+        'duration': ('duration', 'durations', 'long', 'length'),
+        'schedule': ('schedule', 'schedules', 'class time', 'class times'),
+        'start date': ('start date', 'start dates', 'when does', 'when do'),
+        'prerequisites': ('prerequisite', 'prerequisites', 'requirement', 'requirements'),
+    }
+    for field, phrases in aliases.items():
+        if any(phrase in text for phrase in phrases):
+            return field
+    return None
+
+
+def _chatbot_training_field_list_response(trainings, field, agent_name):
+    """List a single requested detail across trainings, without their summaries."""
+    pattern = {
+        'price': r'Price:\s*([^\.]+)',
+        'duration': r'Duration:\s*([^\.]+)',
+        'schedule': r'Schedule:\s*([^\.]+)',
+        'start date': r'Start date:\s*([^\.]+)',
+        'prerequisites': r'Prerequisites:\s*([^\.]+)',
+    }[field]
+    lines = [f"{agent_name} here — here are the {field}s currently listed for our trainings:"]
+    for training in trainings:
+        match = re.search(pattern, training['extra'], re.IGNORECASE)
+        value = match.group(1).strip() if match and match.group(1).strip() not in {'', 'None'} else 'Not listed yet'
+        lines.append(f"- {training['title']}: {value}")
+    return '\n'.join(lines)
+
+
 def get_live_chatbot_response(query, agent_name='Ritika'):
     terms = _chatbot_terms(query)
     casual = {'hello', 'hi', 'hey', 'thanks', 'thank', 'bye'}
@@ -942,6 +975,13 @@ def get_live_chatbot_response(query, agent_name='Ritika'):
     selected_training = _chatbot_training_match(query, docs)
     if selected_training:
         return _chatbot_training_response(selected_training, query, agent_name)
+
+    requested_training_field = _chatbot_requested_training_field(query)
+    if intent_kind == 'Training' and requested_training_field:
+        trainings = [doc for doc in docs if doc['kind'] == 'Training']
+        if trainings:
+            return _chatbot_training_field_list_response(trainings, requested_training_field, agent_name)
+
     ranked = sorted(
         (
             (

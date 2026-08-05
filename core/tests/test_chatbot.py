@@ -70,3 +70,11 @@ class ChatbotResponseTests(TestCase):
 
         self.assertIn("NPR 12,000", response)
         self.assertNotIn("Cybersecurity Essentials", response)
+
+    def test_training_price_list_does_not_include_training_summaries(self):
+        response = get_live_chatbot_response("Give me the prices for trainings")
+
+        self.assertIn("Machine Learning Fundamentals: NPR 12,000", response)
+        self.assertIn("Cybersecurity Essentials: NPR 9,000", response)
+        self.assertNotIn("A practical introduction", response)
+        self.assertNotIn("A beginner-friendly course", response)
