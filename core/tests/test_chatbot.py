@@ -75,6 +75,13 @@ class ChatbotResponseTests(TestCase):
         self.assertNotIn("Machine Learning Fundamentals", response)
         self.assertNotIn("Cybersecurity Essentials", response)
 
+    def test_website_creator_question_does_not_return_unrelated_content(self):
+        response = get_live_chatbot_response("Who made this website?")
+
+        self.assertIn("developed by our PyLoom team", response)
+        self.assertNotIn("Machine Learning Fundamentals", response)
+        self.assertNotIn("Workflow Automation Suite", response)
+
     def test_returns_client_fallback_for_client_queries(self):
         ClientPartner.objects.create(name="Acme Corp", description="Long-term client partner.")
         ClientPartner.objects.create(name="Beta LLC", description="Client partner focused on fintech.")
