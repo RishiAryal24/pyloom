@@ -552,40 +552,40 @@ def _chatbot_direct_answer(query):
         ceo = TeamMember.objects.filter(role='ceo', is_active=True).first()
         if ceo:
             return f"The CEO is {ceo.name}. {ceo.bio or 'This information is stored in the Team Members section of the website admin.'}"
-        return "The CEO profile is not yet published in the website team data. I can still help you with other site information."
+        return "Our CEO profile is not published yet. We can still help with other PyLoom information."
 
     if re.search(r'\b(cto|chief technology officer)\b', q):
         cto = TeamMember.objects.filter(role='cto', is_active=True).first()
         if cto:
             return f"The CTO is {cto.name}. {cto.bio or 'This information is stored in the Team Members section of the website admin.'}"
-        return "The CTO profile is not yet published in the website team data. I can still help you with other site information."
+        return "Our CTO profile is not published yet. We can still help with other PyLoom information."
 
     if re.search(r'\b(team|leadership|founder|founders|leadership team)\b', q):
         members = TeamMember.objects.filter(is_active=True).order_by('order', 'name')[:5]
         if members:
             names = ', '.join(member.name for member in members)
-            return f"Your website lists these active team members: {names}. This comes from the Team Members page content."
-        return "The leadership team is not yet documented in the website data. Add team members in admin to make this available."
+            return f"Our active team members are: {names}."
+        return "Our leadership team has not been published yet."
 
     if re.search(r'\b(data source|where does .*data|where do you get .*data|source of data|trained on)\b', q):
         return (
-            "This chatbot answers from your website content: Site Settings, About Us, Team Members, Services, Solutions, Projects, Events, Trainings, Articles, and Client Partners. "
-            "The database content you add to the website is the main source for answers, not generic external sources."
+            "We answer from our website content: Site Settings, About Us, Team Members, Services, Solutions, Projects, Events, Trainings, Articles, and Client Partners. "
+            "Our published database content is the main source for answers, not generic external sources."
         )
 
     if re.search(r'\b(contact|reach|email|phone|address|location)\b', q):
         settings_obj = SiteSettings.load()
         if settings_obj:
             return (
-                f"Contact details come from the website settings: phone {settings_obj.contact_phone or 'not set'}, "
+                f"You can reach us at phone {settings_obj.contact_phone or 'not set'}, "
                 f"email {settings_obj.contact_email or 'not set'}, address {settings_obj.address or 'not set'}."
             )
         return "Contact information is not yet configured in Site Settings."
 
     if re.search(r'\b(login|sign in|signin|sign up|signup|password|account|profile|access|dashboard|user access)\b', q):
         return (
-            "I can help with website content like services, solutions, projects, clients, and contact information. "
-            "I am not able to provide user login or account access details."
+            "We can help with our services, solutions, projects, clients, and contact information. "
+            "We cannot provide user login or account access details."
         )
 
     if re.search(r'\b(client|clients|client partner|client partners|customer|customers)\b', q):
@@ -594,7 +594,7 @@ def _chatbot_direct_answer(query):
             client_names = ', '.join(client.name for client in clients)
             return (
                 f"These are the client partnerships featured on the website: {client_names}. "
-                "You may explore related projects and case studies to learn more about our work for clients."
+                "You can explore related projects and case studies to learn more about our work."
             )
         about = AboutUs.objects.first()
         if about and about.clients_count:
@@ -606,28 +606,24 @@ def _chatbot_direct_answer(query):
         if projects:
             titles = ', '.join(project.title for project in projects)
             return (
-                f"I don't have published client partner profiles yet, but here are recent projects built for our clients: {titles}. "
-                "You can explore them on the website."
+                f"We do not have published client partner profiles yet, but here are recent projects built for our clients: {titles}."
             )
         return (
-            "I can't find client-specific entries in the website data yet. "
-            "If you add clients or projects in admin, I can use that database content to answer accurately."
+            "We do not have client-specific entries published yet."
         )
 
     if re.search(r'\b(service|services|offer|offerings|solutions?)\b', q):
         services = Service.objects.filter(is_active=True).order_by('order', 'title')[:4]
         if services:
             titles = ', '.join(service.title for service in services)
-            return f"Your website lists these active services: {titles}." \
-                   " These are drawn directly from the site content you maintain."
+            return f"Our active services include: {titles}."
         return "No active services are listed on the website yet."
 
     if re.search(r'\b(solution|solutions?)\b', q):
         solutions = Solution.objects.filter(is_active=True).order_by('order', 'title')[:4]
         if solutions:
             titles = ', '.join(solution.title for solution in solutions)
-            return f"Your website lists these active solutions: {titles}." \
-                   " These answers are based on your site content."
+            return f"Our active solutions include: {titles}."
         return "No active solutions are listed on the website yet."
 
     return None
@@ -829,7 +825,7 @@ def _chatbot_kind_label(kind):
 
 def _chatbot_response_heading(intent_kind):
     headings = {
-        'Site information': 'You can reach PyLoom through the following contact details:',
+        'Site information': 'You can reach us through the following contact details:',
         'About PyLoom': 'PyLoom is focused on practical technology, AI, and automation solutions that help organizations grow with confidence.',
         'Service': 'At PyLoom, our services are designed to solve real business problems with reliable technology and intelligent automation.',
         'Solution': 'At PyLoom, our solutions combine AI, automation, data, and modern software engineering to create measurable business value.',
@@ -841,7 +837,7 @@ def _chatbot_response_heading(intent_kind):
     }
     return headings.get(
         intent_kind,
-        'At PyLoom, I can help you with our services, solutions, trainings, events, projects, articles, careers, and contact details.',
+        'At PyLoom, we can help with our services, solutions, trainings, events, projects, articles, careers, and contact details.',
     )
 
 
@@ -960,7 +956,7 @@ def get_live_chatbot_response(query, agent_name='Ritika'):
     terms = _chatbot_terms(query)
     casual = {'hello', 'hi', 'hey', 'thanks', 'thank', 'bye'}
     if terms and terms.issubset(casual):
-        return f"Hi, this is {agent_name} from PyLoom. I can help you with our services, solutions, trainings, events, articles, projects, careers, and contact details."
+        return f"Hi, this is {agent_name} from PyLoom. We can help with our services, solutions, trainings, events, articles, projects, careers, and contact details."
 
     direct_answer = _chatbot_direct_answer(query)
     if direct_answer:
@@ -1008,12 +1004,12 @@ def get_live_chatbot_response(query, agent_name='Ritika'):
     if not matches:
         if intent_kind:
             return (
-                f"This is {agent_name} from PyLoom. I’m searching your website database, but I don't have matching data for {_chatbot_kind_label(intent_kind)} right now. "
-                "Ask me about services, solutions, trainings, articles, projects, careers, or contact details."
+                f"This is {agent_name} from PyLoom. We do not have matching {_chatbot_kind_label(intent_kind)} information published yet. "
+                "You can ask us about services, solutions, trainings, articles, projects, careers, or contact details."
             )
         return (
-            f"This is {agent_name} from PyLoom. I’m searching your website database, but I don't have matching data for that exact question. "
-            "You can ask about services, solutions, events, projects, articles, careers, or contact details."
+            f"This is {agent_name} from PyLoom. We do not have published information for that exact question yet. "
+            "You can ask us about services, solutions, events, projects, articles, careers, or contact details."
         )
 
     lines = [_chatbot_response_heading(intent_kind or matches[0]['kind'])]
