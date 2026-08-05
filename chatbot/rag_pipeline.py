@@ -41,7 +41,7 @@ def setup_generator():
     llm = ChatGoogleGenerativeAI(
         model="gemini-2.0-flash",
         google_api_key=GOOGLE_API_KEY,
-        temperature=0.7
+        temperature=0.2
     )
     return llm
 
@@ -78,17 +78,9 @@ def create_rag_pipeline():
         ("human", "{input}")
     ])
 
-    # QA prompt with professional company persona
+    # QA prompt with professional company persona (tighter instructions for scoped answers)
     qa_prompt = ChatPromptTemplate.from_messages([
-        ("system", """I'm a dedicated member of the AI Solutions team—your trusted guide to cutting-edge AI innovations that drive real business impact. 
-
-Respond based EXCLUSIVELY on the provided context. If information isn't available, redirect politely and suggest next steps.
-
-Maintain a professional, warm tone:
-- Speak as a company insider: "At AI Solutions, we..." or "Our team specializes in..."
-- Keep it concise, structured, engaging.
-- Conclude with a thoughtful question or next step.
-- Emojis sparingly.
+        ("system", """You are a helpful Training Advisor at AI Solutions. Answer ONLY using the provided `Context` documents and metadata. If the user asks about a specific training, prefer documents where `training_id`, `title`, or `section` match that training. If the context does not contain an answer, respond: "I don't know — the provided materials don't cover that." Keep answers concise (2–4 sentences), human and friendly, and end with a single follow-up question. Cite the source title or section used, prefixed with 'Source:'. Do not invent facts or mention unrelated trainings.
 
 Context: {context}"""),
         MessagesPlaceholder("chat_history"),
@@ -98,13 +90,14 @@ Context: {context}"""),
     # Retriever and RAG chain
     retriever = vector_store.as_retriever(
         search_type="similarity",
-        search_kwargs={"k": 5}
+        search_kwargs={"k": 3}
     )
     history_aware_retriever = create_history_aware_retriever(llm, retriever, context_q_prompt)
     question_answer_chain = create_stuff_documents_chain(llm, qa_prompt)
     rag_chain = create_retrieval_chain(history_aware_retriever, question_answer_chain)
 
-    return rag_chain, llm
+    # return retriever too so callers can perform filtered retrieval if needed
+    return rag_chain, llm, history_aware_retriever
 
 # ------------------------
 # Create Casual Chain
@@ -128,9 +121,14 @@ Be supportive, expert, and subtly promotional."""),
 # ------------------------
 # Utility to run RAG query
 # ------------------------
-def run_rag_query(rag_chain, query, chat_history):
-    response = rag_chain.invoke({
+def run_rag_query(rag_chain, query, chat_history, metadata_filter=None):
+    payload = {
         "input": query,
         "chat_history": chat_history
-    })
-    return response["answer"]
+    }
+    if metadata_filter:
+        # pass metadata filter to retriever (Chroma supports metadata filters)
+        payload["filter"] = metadata_filter
+
+    response = rag_chain.invoke(payload)
+    return response.get("answer")

@@ -21,7 +21,7 @@ app.add_middleware(
 # ------------------------
 # Initialize RAG, Casual Chain, and Classifier
 # ------------------------
-rag_chain, llm_rag = create_rag_pipeline()
+rag_chain, llm_rag, history_aware_retriever = create_rag_pipeline()
 casual_chain, llm_casual = create_casual_chain()
 classifier = create_classifier(llm_rag)  # use same LLM for classification
 chat_history = []

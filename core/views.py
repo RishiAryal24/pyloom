@@ -545,6 +545,94 @@ def _chatbot_terms(query):
     }
 
 
+def _chatbot_direct_answer(query):
+    q = (query or '').lower()
+
+    if re.search(r'\b(ceo|chief executive officer)\b', q):
+        ceo = TeamMember.objects.filter(role='ceo', is_active=True).first()
+        if ceo:
+            return f"The CEO is {ceo.name}. {ceo.bio or 'This information is stored in the Team Members section of the website admin.'}"
+        return "The CEO profile is not yet published in the website team data. I can still help you with other site information."
+
+    if re.search(r'\b(cto|chief technology officer)\b', q):
+        cto = TeamMember.objects.filter(role='cto', is_active=True).first()
+        if cto:
+            return f"The CTO is {cto.name}. {cto.bio or 'This information is stored in the Team Members section of the website admin.'}"
+        return "The CTO profile is not yet published in the website team data. I can still help you with other site information."
+
+    if re.search(r'\b(team|leadership|founder|founders|leadership team)\b', q):
+        members = TeamMember.objects.filter(is_active=True).order_by('order', 'name')[:5]
+        if members:
+            names = ', '.join(member.name for member in members)
+            return f"Your website lists these active team members: {names}. This comes from the Team Members page content."
+        return "The leadership team is not yet documented in the website data. Add team members in admin to make this available."
+
+    if re.search(r'\b(data source|where does .*data|where do you get .*data|source of data|trained on)\b', q):
+        return (
+            "This chatbot answers from your website content: Site Settings, About Us, Team Members, Services, Solutions, Projects, Events, Trainings, Articles, and Client Partners. "
+            "The database content you add to the website is the main source for answers, not generic external sources."
+        )
+
+    if re.search(r'\b(contact|reach|email|phone|address|location)\b', q):
+        settings_obj = SiteSettings.load()
+        if settings_obj:
+            return (
+                f"Contact details come from the website settings: phone {settings_obj.contact_phone or 'not set'}, "
+                f"email {settings_obj.contact_email or 'not set'}, address {settings_obj.address or 'not set'}."
+            )
+        return "Contact information is not yet configured in Site Settings."
+
+    if re.search(r'\b(login|sign in|signin|sign up|signup|password|account|profile|access|dashboard|user access)\b', q):
+        return (
+            "I can help with website content like services, solutions, projects, clients, and contact information. "
+            "I am not able to provide user login or account access details."
+        )
+
+    if re.search(r'\b(client|clients|client partner|client partners|customer|customers)\b', q):
+        clients = ClientPartner.objects.filter(is_active=True).order_by('order', 'name')[:4]
+        if clients:
+            client_names = ', '.join(client.name for client in clients)
+            return (
+                f"These are the client partnerships featured on the website: {client_names}. "
+                "You may explore related projects and case studies to learn more about our work for clients."
+            )
+        about = AboutUs.objects.first()
+        if about and about.clients_count:
+            return (
+                f"The website says PyLoom serves around {about.clients_count} clients. "
+                "Explore the Projects section for examples of client work."
+            )
+        projects = Project.objects.order_by('-completed_on')[:3]
+        if projects:
+            titles = ', '.join(project.title for project in projects)
+            return (
+                f"I don't have published client partner profiles yet, but here are recent projects built for our clients: {titles}. "
+                "You can explore them on the website."
+            )
+        return (
+            "I can't find client-specific entries in the website data yet. "
+            "If you add clients or projects in admin, I can use that database content to answer accurately."
+        )
+
+    if re.search(r'\b(service|services|offer|offerings|solutions?)\b', q):
+        services = Service.objects.filter(is_active=True).order_by('order', 'title')[:4]
+        if services:
+            titles = ', '.join(service.title for service in services)
+            return f"Your website lists these active services: {titles}." \
+                   " These are drawn directly from the site content you maintain."
+        return "No active services are listed on the website yet."
+
+    if re.search(r'\b(solution|solutions?)\b', q):
+        solutions = Solution.objects.filter(is_active=True).order_by('order', 'title')[:4]
+        if solutions:
+            titles = ', '.join(solution.title for solution in solutions)
+            return f"Your website lists these active solutions: {titles}." \
+                   " These answers are based on your site content."
+        return "No active solutions are listed on the website yet."
+
+    return None
+
+
 def _chatbot_doc(kind, title, body, extra=''):
     text = _chatbot_clean(' '.join([title or '', body or '', extra or '']))
     return {
@@ -640,6 +728,17 @@ def _chatbot_live_documents():
                 project.title,
                 project.summary,
                 f"Completed on: {project.completed_on}. Description: {project.description}",
+            ))
+    except Exception:
+        pass
+
+    try:
+        for client in ClientPartner.objects.filter(is_active=True).order_by('order', 'name')[:30]:
+            docs.append(_chatbot_doc(
+                'Client Partner',
+                client.name,
+                client.description,
+                f"Location: {client.location}. Website: {client.website}",
             ))
     except Exception:
         pass
@@ -761,14 +860,88 @@ def _chatbot_match_line(doc):
     return f"{title} — {body}" if body else f"{title} — this {label} is available through PyLoom."
 
 
+def _chatbot_training_match(query, docs):
+    """Return one clearly named training, without broadening to other courses."""
+    query_words = _chatbot_terms(query) - {'training', 'trainings', 'course', 'courses'}
+    normalized_query = ' '.join(re.findall(r'[a-z0-9]+', (query or '').lower()))
+    candidates = []
+
+    for doc in docs:
+        if doc['kind'] != 'Training' or not doc['title']:
+            continue
+
+        normalized_title = ' '.join(re.findall(r'[a-z0-9]+', doc['title'].lower()))
+        title_words = set(re.findall(r'[a-z0-9]+', doc['title'].lower()))
+        matched_words = query_words & title_words
+        exact_title = normalized_title and normalized_title in normalized_query
+
+        # Two title words (for example, "machine learning") are enough to
+        # identify a course. A one-word title needs an exact phrase match.
+        if exact_title or len(matched_words) >= 2:
+            score = (100 if exact_title else 0) + len(matched_words)
+            candidates.append((score, doc))
+
+    if not candidates:
+        return None
+
+    candidates.sort(key=lambda item: item[0], reverse=True)
+    if len(candidates) > 1 and candidates[0][0] == candidates[1][0]:
+        return None
+    return candidates[0][1]
+
+
+def _chatbot_training_response(training, query, agent_name):
+    """Give a short, natural answer using only the selected training record."""
+    text = (query or '').lower()
+    extra = training['extra']
+    fields = {
+        'price': r'Price:\s*([^\.]+)',
+        'duration': r'Duration:\s*([^\.]+)',
+        'schedule': r'Schedule:\s*([^\.]+)',
+        'level': r'Level:\s*([^\.]+)',
+        'location': r'Location:\s*([^\.]+)',
+        'start date': r'Start date:\s*([^\.]+)',
+        'time': r'Time:\s*([^\.]+)',
+        'prerequisites': r'Prerequisites:\s*([^\.]+)',
+        'certificate': r'Certificate:\s*([^\.]+)',
+        'who can attend': r'Who can attend:\s*([^\.]+)',
+    }
+    requested_field = next(
+        (name for name in fields if name in text or (name == 'schedule' and 'class' in text)),
+        None,
+    )
+    if requested_field:
+        match = re.search(fields[requested_field], extra, re.IGNORECASE)
+        if match and match.group(1).strip() not in {'', 'None'}:
+            return (
+                f"{agent_name} here — for {training['title']}, the "
+                f"{requested_field} is {match.group(1).strip()}."
+            )
+        return f"{agent_name} here — I found {training['title']}, but its {requested_field} has not been added yet."
+
+    summary = training['body'] or 'I found this training in the PyLoom course listings.'
+    return f"{agent_name} here — {training['title']} is {summary}"
+
+
 def get_live_chatbot_response(query, agent_name='Ritika'):
     terms = _chatbot_terms(query)
     casual = {'hello', 'hi', 'hey', 'thanks', 'thank', 'bye'}
     if terms and terms.issubset(casual):
         return f"Hi, this is {agent_name} from PyLoom. I can help you with our services, solutions, trainings, events, articles, projects, careers, and contact details."
 
+    direct_answer = _chatbot_direct_answer(query)
+    if direct_answer:
+        return direct_answer
+
     docs = _chatbot_live_documents()
     intent_kind = _chatbot_intent_kind(terms)
+
+    # A named course is a focused request: answer from that one record only.
+    # General ranking remains available for questions such as "What trainings
+    # are available?"
+    selected_training = _chatbot_training_match(query, docs)
+    if selected_training:
+        return _chatbot_training_response(selected_training, query, agent_name)
     ranked = sorted(
         (
             (
@@ -795,12 +968,12 @@ def get_live_chatbot_response(query, agent_name='Ritika'):
     if not matches:
         if intent_kind:
             return (
-                f"This is {agent_name} from PyLoom. We do not have any current {_chatbot_kind_label(intent_kind)} entries to share right now. "
-                "I can still help you with our services, solutions, trainings, articles, projects, careers, and contact details."
+                f"This is {agent_name} from PyLoom. I’m searching your website database, but I don't have matching data for {_chatbot_kind_label(intent_kind)} right now. "
+                "Ask me about services, solutions, trainings, articles, projects, careers, or contact details."
             )
         return (
-            f"This is {agent_name} from PyLoom. I can help with our services, solutions, trainings, events, projects, articles, careers, and contact details. "
-            "Please ask me the topic a little more specifically, for example: our AI services, upcoming trainings, recent events, contact details, or project work."
+            f"This is {agent_name} from PyLoom. I’m searching your website database, but I don't have matching data for that exact question. "
+            "You can ask about services, solutions, events, projects, articles, careers, or contact details."
         )
 
     lines = [_chatbot_response_heading(intent_kind or matches[0]['kind'])]
