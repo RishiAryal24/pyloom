@@ -14,6 +14,11 @@ class ChatbotResponseTests(TestCase):
             contact_email="panthipratistha@gmail.com",
             address="Butwal-Janakinagar",
         )
+        AboutUs.objects.create(
+            company_background="We create AI, automation, and custom software solutions for growing organizations.",
+            mission="Make technology practical.",
+            vision="Build a more capable digital future.",
+        )
         Service.objects.create(title="AI-Powered Learning Platform", description="Adaptive learning service.")
         Service.objects.create(title="Smart Investment Tracker", description="Finance intelligence service.")
         Training.objects.create(
@@ -41,6 +46,14 @@ class ChatbotResponseTests(TestCase):
 
         self.assertIn("AI-Powered Learning Platform", response)
         self.assertIn("Smart Investment Tracker", response)
+
+    def test_company_overview_uses_only_about_us_content(self):
+        response = get_live_chatbot_response("What does this company do?")
+
+        self.assertIn("We are PyLoom", response)
+        self.assertIn("AI, automation, and custom software", response)
+        self.assertNotIn("Machine Learning Fundamentals", response)
+        self.assertNotIn("Cybersecurity Essentials", response)
 
     def test_returns_client_fallback_for_client_queries(self):
         ClientPartner.objects.create(name="Acme Corp", description="Long-term client partner.")
