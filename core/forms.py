@@ -517,18 +517,21 @@ class ProjectForm(forms.ModelForm):
         }
 
 
-class ClientForm(forms.ModelForm):
+class ClientPartnerForm(forms.ModelForm):
     class Meta:
-        model = Client
-        fields = ['name', 'logo', 'description', 'website_url', 'is_active', 'order']
+        model = ClientPartner
+        fields = ['name', 'location', 'logo', 'description', 'website', 'is_active', 'order']
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Client Name'}),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Client / Partner Name'}),
+            'location': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Location (e.g. Kathmandu, Nepal)'}),
             'logo': forms.ClearableFileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
-            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Short client description'}),
-            'website_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://example.com'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Short description'}),
+            'website': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://example.com'}),
             'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'order': forms.NumberInput(attrs={'class': 'form-control', 'min': 0}),
         }
+
+ClientForm = ClientPartnerForm
 
 
 class AboutUsForm(forms.ModelForm):

@@ -7,7 +7,7 @@ from .models import (
     CustomUser, Feedback, GalleryItem, GalleryItemImage, SiteSettings, AboutUs, Solution, Service,
     ContactInquiry, BlogPost, Article, Event, EventRegistration,
     Training,
-    Project, Tag, Project_tags, Client, Newsletter, ActivityLog, TeamMember, Category
+    Project, Tag, Project_tags, ClientPartner, Newsletter, ActivityLog, TeamMember, Category
 )
 
 User = get_user_model()
@@ -232,11 +232,11 @@ class ProjectTagsAdmin(admin.ModelAdmin):
     list_display = ('project', 'tag')
 
 
-@admin.register(Client)
-class ClientAdmin(admin.ModelAdmin):
-    list_display = ('name', 'is_active', 'order', 'created_at')
+@admin.register(ClientPartner)
+class ClientPartnerAdmin(admin.ModelAdmin):
+    list_display = ('name', 'location', 'is_active', 'order', 'created_at')
     list_filter = ('is_active',)
-    search_fields = ('name', 'description')
+    search_fields = ('name', 'location', 'description')
     list_editable = ('is_active', 'order')
     ordering = ('order', 'name')
     readonly_fields = ('created_at', 'updated_at')

@@ -32,7 +32,6 @@ from core.forms import (
     AboutUsForm,
     CareerVacancyForm,
     GalleryItemImageForm,
-    ClientForm,
     ProjectForm,
     SiteSettingsForm,
     SolutionForm,
@@ -62,7 +61,6 @@ CONTENT_MODEL_MAPPING = {
     'users': CustomUser,
     'team': TeamMember,
     'projects': Project,
-    'clients': Client,
     'about': AboutUs,
     'site_settings': SiteSettings,
     'clients': ClientPartner,
@@ -81,7 +79,6 @@ CONTENT_FORM_MAPPING = {
     'articles': ArticleForm,
     'team': TeamMemberForm,
     'projects': ProjectForm,
-    'clients': ClientForm,
     'about': AboutUsForm,
     'site_settings': SiteSettingsForm,
 }
