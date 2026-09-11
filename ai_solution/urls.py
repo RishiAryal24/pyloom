@@ -14,6 +14,11 @@ from core.sitemaps import (
     StaticPageSitemap,
 )
 
+def sitemap_without_noindex(request, **kwargs):
+    response = sitemap(request, **kwargs)
+    response.headers.pop('X-Robots-Tag', None)
+    return response
+
 # Sitemap configuration
 sitemaps = {
     'articles': ArticleSitemap,
@@ -34,9 +39,9 @@ urlpatterns = [
     path('admin/password-reset/', views.password_reset_request, name='admin_password_reset'),
     path('tinymce/', include('tinymce.urls')),  # TinyMCE URLs for rich text editing
     
-    # Sitemap URLs
-    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
-    path('sitemap-<section>.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+    # Sitemap URLs (noindex removed)
+    path('sitemap.xml', sitemap_without_noindex, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+    path('sitemap-<section>.xml', sitemap_without_noindex, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     
     path('', include('core.urls')),  # Include core app URLs
     path('api/', include('core.api.urls')),
