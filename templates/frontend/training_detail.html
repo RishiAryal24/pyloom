@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}{{ training.title }} - {{ settings.site_name|default:"PyLoom" }}{% endblock %}
-{% block description %}{{ training.summary|truncatewords:30 }}{% endblock %}
+{% block description %}{{ training.summary|default:training.course_overview|striptags|truncatechars:155 }}{% endblock %}
 
 {% block content %}
 <section class="page-header-compact bg-light">

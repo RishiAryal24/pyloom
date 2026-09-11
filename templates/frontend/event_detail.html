@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block title %}{{ event.title }} | PyLoom Technologies{% endblock %}
-{% block description %}{{ event.meta_description|default:event.description|striptags|truncatewords:28 }}{% endblock %}
+{% block description %}{{ event.meta_description|default:event.description|striptags|truncatechars:155 }}{% endblock %}
 
 {% block content %}
 <!-- Event Header -->

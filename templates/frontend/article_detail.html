@@ -3,15 +3,15 @@
 
 {% block title %}{{ article.title }} | PyLoom Technologies{% endblock %}
 
-{% block description %}{{ article.excerpt|default:article.content|striptags|truncatewords:30 }}{% endblock %}
+{% block description %}{{ article.excerpt|default:article.content|striptags|truncatechars:155 }}{% endblock %}
 
 {% block og_type %}article{% endblock %}
 {% block og_title %}{{ article.title }} | PyLoom Technologies{% endblock %}
-{% block og_description %}{{ article.excerpt|default:article.content|striptags|truncatewords:28 }}{% endblock %}
+{% block og_description %}{{ article.excerpt|default:article.content|striptags|truncatechars:155 }}{% endblock %}
 {% block og_image %}{% if article.featured_image %}https://www.pyloomtech.com{{ article.featured_image.url }}{% else %}https://www.pyloomtech.com{{ settings.logo_url|default:'/static/img/logo.svg' }}{% endif %}{% endblock %}
 
 {% block twitter_title %}{{ article.title }} | PyLoom Technologies{% endblock %}
-{% block twitter_description %}{{ article.excerpt|default:article.content|striptags|truncatewords:28 }}{% endblock %}
+{% block twitter_description %}{{ article.excerpt|default:article.content|striptags|truncatechars:155 }}{% endblock %}
 {% block twitter_image %}{% if article.featured_image %}https://www.pyloomtech.com{{ article.featured_image.url }}{% else %}https://www.pyloomtech.com{{ settings.logo_url|default:'/static/img/logo.svg' }}{% endif %}{% endblock %}
 
 {% block extra_schema %}

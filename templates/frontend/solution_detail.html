@@ -2,14 +2,14 @@
 {% load static %}
 
 {% block title %}{{ solution.title }} | PyLoom Technologies{% endblock %}
-{% block description %}{{ solution.description|striptags|truncatewords:28 }}{% endblock %}
+{% block description %}{{ solution.description|striptags|truncatechars:155 }}{% endblock %}
 
 {% block og_title %}{{ solution.title }} | PyLoom Technologies{% endblock %}
-{% block og_description %}{{ solution.description|striptags|truncatewords:28 }}{% endblock %}
+{% block og_description %}{{ solution.description|striptags|truncatechars:155 }}{% endblock %}
 {% block og_image %}{% if solution.image %}https://www.pyloomtech.com{{ solution.image.url }}{% else %}https://www.pyloomtech.com{{ settings.logo_url|default:'/static/img/logo.svg' }}{% endif %}{% endblock %}
 
 {% block twitter_title %}{{ solution.title }} | PyLoom Technologies{% endblock %}
-{% block twitter_description %}{{ solution.description|striptags|truncatewords:28 }}{% endblock %}
+{% block twitter_description %}{{ solution.description|striptags|truncatechars:155 }}{% endblock %}
 {% block twitter_image %}{% if solution.image %}https://www.pyloomtech.com{{ solution.image.url }}{% else %}https://www.pyloomtech.com{{ settings.logo_url|default:'/static/img/logo.svg' }}{% endif %}{% endblock %}
 
 {% block content %}
