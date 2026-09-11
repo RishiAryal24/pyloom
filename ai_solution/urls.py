@@ -27,6 +27,7 @@ sitemaps = {
 urlpatterns = [
     path('health/', views.health_check, name='health_check'),
     path('favicon.ico', views.favicon, name='favicon'),
+    path('robots.txt', views.robots_txt, name='robots_txt'),
     path('django-admin/', admin.site.urls),  # Custom admin URL (if necessary)
     path('admin/', include('admin_dashboard.urls')),  # Custom admin URLs
     path('', views.home, name='home'),  # Home page URL for 'Back to site'

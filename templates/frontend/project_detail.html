@@ -2,8 +2,16 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}{{ project.title }} - AI-Solutions{% endblock %}
+{% block title %}{{ project.title }} | PyLoom Technologies{% endblock %}
 {% block description %}{{ project.summary }}{% endblock %}
+
+{% block og_title %}{{ project.title }} | PyLoom Technologies{% endblock %}
+{% block og_description %}{{ project.summary }}{% endblock %}
+{% block og_image %}{% if project.cover_image %}https://www.pyloomtech.com{{ project.cover_image.url }}{% else %}https://www.pyloomtech.com{{ settings.logo_url|default:'/static/img/logo.svg' }}{% endif %}{% endblock %}
+
+{% block twitter_title %}{{ project.title }} | PyLoom Technologies{% endblock %}
+{% block twitter_description %}{{ project.summary }}{% endblock %}
+{% block twitter_image %}{% if project.cover_image %}https://www.pyloomtech.com{{ project.cover_image.url }}{% else %}https://www.pyloomtech.com{{ settings.logo_url|default:'/static/img/logo.svg' }}{% endif %}{% endblock %}
 
 {% block content %}
 <!-- Project Header -->

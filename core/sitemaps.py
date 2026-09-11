@@ -9,10 +9,13 @@ class ArticleSitemap(Sitemap):
     protocol = 'https'
 
     def items(self):
-        return Article.objects.filter(is_published=True).order_by('-created_at')
+        return Article.objects.filter(status='published').order_by('-published_at')
 
     def lastmod(self, item):
         return item.updated_at
+
+    def location(self, item):
+        return f'/article/{item.slug}/'
 
 
 class SolutionSitemap(Sitemap):
@@ -22,7 +25,7 @@ class SolutionSitemap(Sitemap):
     protocol = 'https'
 
     def items(self):
-        return Solution.objects.filter(is_published=True).order_by('-created_at')
+        return Solution.objects.filter(is_active=True).order_by('-updated_at')
 
     def lastmod(self, item):
         return item.updated_at
@@ -38,7 +41,7 @@ class EventSitemap(Sitemap):
     protocol = 'https'
 
     def items(self):
-        return Event.objects.all().order_by('-date')
+        return Event.objects.exclude(status='cancelled').order_by('-date')
 
     def lastmod(self, item):
         return item.updated_at
@@ -54,10 +57,10 @@ class ProjectSitemap(Sitemap):
     protocol = 'https'
 
     def items(self):
-        return Project.objects.all().order_by('-created_at')
+        return Project.objects.all().order_by('-completed_on', '-id')
 
     def lastmod(self, item):
-        return item.updated_at
+        return item.completed_on
 
     def location(self, item):
         return f'/projects/{item.slug}/'
@@ -70,7 +73,7 @@ class TrainingSitemap(Sitemap):
     protocol = 'https'
 
     def items(self):
-        return Training.objects.filter(is_active=True).order_by('-created_at')
+        return Training.objects.exclude(status='cancelled').order_by('-created_at')
 
     def lastmod(self, item):
         return item.updated_at

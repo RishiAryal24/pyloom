@@ -428,7 +428,7 @@ class GalleryItemForm(forms.ModelForm):
         fields = ['event', 'is_featured']
         widgets = {
             'event': forms.Select(attrs={'class': 'form-select'}),
-            'is_featured': forms.CheckboxInput(),
+            'is_featured': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -442,6 +442,9 @@ class GalleryItemImageForm(forms.ModelForm):
     class Meta:
         model = GalleryItemImage
         fields = ['image']
+        widgets = {
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
+        }
 
 GalleryImageFormSet = inlineformset_factory(
     GalleryItem,
@@ -512,6 +515,22 @@ class ProjectForm(forms.ModelForm):
             'completed_on': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'slug': forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+
+class ClientForm(forms.ModelForm):
+    class Meta:
+        model = Client
+        fields = ['name', 'logo', 'description', 'website_url', 'is_active', 'order']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Client Name'}),
+            'logo': forms.ClearableFileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Short client description'}),
+            'website_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://example.com'}),
+            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'order': forms.NumberInput(attrs={'class': 'form-control', 'min': 0}),
+        }
+
+
 class AboutUsForm(forms.ModelForm):
     class Meta:
         model = AboutUs
