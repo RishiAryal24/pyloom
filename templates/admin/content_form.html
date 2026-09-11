@@ -68,10 +68,19 @@
                     {% if content_type == 'gallery' and formset %}
                         <h5 class="mt-4">Gallery Images</h5>
                         {{ formset.management_form }}
+                        {% if formset.non_form_errors %}
+                            <div class="alert alert-danger">{{ formset.non_form_errors }}</div>
+                        {% endif %}
                         <div id="gallery-images">
                             {% for image_form in formset %}
                                 <div class="mb-3 image-row">
+                                    {% for hidden in image_form.hidden_fields %}
+                                        {{ hidden }}
+                                    {% endfor %}
                                     {{ image_form.image.label_tag }} {{ image_form.image }}
+                                    {% if image_form.image.errors %}
+                                        <div class="text-danger mt-1">{{ image_form.image.errors }}</div>
+                                    {% endif %}
                                     {% if image_form.instance.pk %}
                                         <img src="{{ image_form.instance.image.url }}" class="img-thumbnail mt-1" width="100">
                                     {% endif %}
@@ -104,25 +113,34 @@
 document.addEventListener('DOMContentLoaded', function () {
     const addBtn = document.getElementById('add-image-btn');
     const formsetDiv = document.getElementById('gallery-images');
-    const totalForms = document.querySelector('#id_galleryitemimage_set-TOTAL_FORMS');
+    const totalForms = document.querySelector('#id_{{ formset.prefix }}-TOTAL_FORMS');
+
+    if (!addBtn || !formsetDiv || !totalForms) {
+        return;
+    }
 
     addBtn.addEventListener('click', function () {
         const currentCount = parseInt(totalForms.value);
         const emptyForm = formsetDiv.querySelector('.image-row').cloneNode(true);
 
         emptyForm.querySelectorAll('input, select, textarea').forEach(el => {
-            if (el.type !== 'hidden') el.value = '';
-            el.name = el.name.replace(/\d+/, currentCount);
-            el.id = el.id.replace(/\d+/, currentCount);
+            if (el.type === 'checkbox') {
+                el.checked = false;
+            } else {
+                el.value = '';
+            }
+            el.name = el.name.replace(/-\d+-/, `-${currentCount}-`);
+            el.id = el.id.replace(/-\d+-/, `-${currentCount}-`);
         });
 
-        // Remove any cloned image preview
+        emptyForm.querySelectorAll('label').forEach(label => {
+            if (label.htmlFor) {
+                label.htmlFor = label.htmlFor.replace(/-\d+-/, `-${currentCount}-`);
+            }
+        });
+
         const imgTag = emptyForm.querySelector('img');
         if (imgTag) imgTag.remove();
-
-        // Uncheck DELETE checkbox
-        const deleteCheckbox = emptyForm.querySelector('input[type="checkbox"]');
-        if (deleteCheckbox) deleteCheckbox.checked = false;
 
         formsetDiv.appendChild(emptyForm);
         totalForms.value = currentCount + 1;

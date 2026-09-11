@@ -247,6 +247,11 @@
             <th>Status</th>
             <th>Date</th>
             <th>Actions</th>
+            {% elif content_type == 'clients' %}
+            <th>Name</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Actions</th>
             {% elif content_type == 'users' %}
             <th>Username</th>
             <th>Name</th>
@@ -385,8 +390,29 @@
               </div>
             </td>
 
+            {% elif content_type == 'gallery' %}
+            <td>{% firstof object.event.title object|stringformat:"s" %}</td>
+            <td>
+              {% if object.is_featured %}
+              <span class="badge bg-warning text-dark">Featured</span>
+              {% else %}
+              <span class="badge bg-secondary">Standard</span>
+              {% endif %}
+            </td>
+            <td>{{ object.created_at|date:"M d, Y" }}</td>
+            <td>
+              <div class="btn-group btn-group-sm">
+                <a href="{% url 'content_edit' content_type object.id %}" class="btn btn-outline-warning btn-sm">
+                  <i class="bi bi-pencil"></i>
+                </a>
+                <a href="{% url 'content_delete' content_type object.id %}" class="btn btn-outline-danger btn-sm">
+                  <i class="bi bi-trash"></i>
+                </a>
+              </div>
+            </td>
+
             {% else %}
-            <td>{% firstof object.title object.name object.email %}</td>
+            <td>{% firstof object.title object.name object.email object|stringformat:"s" %}</td>
             <td>
               {% if object.is_active %}
               <span class="badge bg-success">Active</span>

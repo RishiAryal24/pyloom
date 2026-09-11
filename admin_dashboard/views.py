@@ -32,6 +32,7 @@ from core.forms import (
     AboutUsForm,
     CareerVacancyForm,
     GalleryItemImageForm,
+    ClientForm,
     ProjectForm,
     SiteSettingsForm,
     SolutionForm,
@@ -61,6 +62,7 @@ CONTENT_MODEL_MAPPING = {
     'users': CustomUser,
     'team': TeamMember,
     'projects': Project,
+    'clients': Client,
     'about': AboutUs,
     'site_settings': SiteSettings,
     'clients': ClientPartner,
@@ -79,6 +81,7 @@ CONTENT_FORM_MAPPING = {
     'articles': ArticleForm,
     'team': TeamMemberForm,
     'projects': ProjectForm,
+    'clients': ClientForm,
     'about': AboutUsForm,
     'site_settings': SiteSettingsForm,
 }
@@ -98,6 +101,7 @@ DISPLAY_NAMES = {
     'clients': 'Clients',
     'team': 'Team Members',
     'projects': 'Projects',
+    'clients': 'Clients',
     'about': 'About Us',
     'site_settings': 'Site Settings',
     'newsletter': 'Newsletter Subscribers',
@@ -118,6 +122,7 @@ SINGULAR_DISPLAY_NAMES = {
     'clients': 'Client',
     'team': 'Team Member',
     'projects': 'Project',
+    'clients': 'Client',
     'about': 'About Us',
     'site_settings': 'Site Setting',
     'newsletter': 'Newsletter Subscriber',
@@ -275,6 +280,10 @@ def content_list(request, content_type):
             queryset = queryset.filter(
                 Q(title__icontains=search_query) | Q(description__icontains=search_query)
             )
+        elif content_type == 'clients':
+            queryset = queryset.filter(
+                Q(name__icontains=search_query) | Q(description__icontains=search_query)
+            )
         elif content_type == 'events':
             queryset = queryset.filter(
                 Q(title__icontains=search_query) | Q(description__icontains=search_query)
@@ -375,6 +384,8 @@ def content_form(request, content_type, object_id=None):
 
         context = {
             'content_type': content_type,
+            'display_name': DISPLAY_NAMES.get(content_type, content_type.title()),
+            'display_name_singular': SINGULAR_DISPLAY_NAMES.get(content_type, content_type[:-1].title()),
             'form': form,
             'formset': formset,
             'is_edit': bool(instance),

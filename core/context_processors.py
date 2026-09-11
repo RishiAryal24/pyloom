@@ -46,7 +46,8 @@ def navigation_items(request):
 
 def admin_notifications(request):
     """Add admin notifications to templates"""
-    if request.user.is_authenticated and hasattr(request.user, 'has_admin_access') and request.user.has_admin_access():
+    user = getattr(request, 'user', None)
+    if user and user.is_authenticated and hasattr(user, 'has_admin_access') and user.has_admin_access():
         try:
             return {
                 'stats': {
@@ -70,12 +71,13 @@ def schema_org_data(request):
     
     if settings_obj:
         logo_url = settings_obj.logo_url
-        address_parts = settings_obj.address.replace('<p>', '').replace('</p>', '').split(',') if settings_obj.address else []
+        if logo_url and not logo_url.startswith(('http://', 'https://')):
+            logo_url = f"https://www.pyloomtech.com{logo_url if logo_url.startswith('/') else '/' + logo_url}"
         
         schema_data = {
             "@context": "https://schema.org",
             "@type": "Organization",
-            "name": settings_obj.site_name or "PyLoom",
+            "name": settings_obj.site_name or "PyLoom Technologies",
             "url": "https://www.pyloomtech.com",
             "logo": logo_url,
             "description": "Advanced AI-powered technology solutions for modern businesses",
@@ -95,14 +97,17 @@ def schema_org_data(request):
         
         # Add phone if available
         if settings_obj.contact_phone:
-            schema_data["contactPoint"]["telephone"] = settings_obj.contact_phone
+            cleaned_phone = settings_obj.contact_phone.lstrip('=').strip()
+            schema_data["contactPoint"]["telephone"] = cleaned_phone
         
         # Add address if available
         if settings_obj.address:
+            clean_address = settings_obj.address.replace('<p>', '').replace('</p>', '').strip()
+            country = "NP" if "nepal" in clean_address.lower() else "NP"
             schema_data["address"] = {
                 "@type": "PostalAddress",
-                "streetAddress": settings_obj.address.replace('<p>', '').replace('</p>', '').strip(),
-                "addressCountry": "US"
+                "streetAddress": clean_address,
+                "addressCountry": country
             }
         
         return {'schema_org_json': json.dumps(schema_data, ensure_ascii=False)}

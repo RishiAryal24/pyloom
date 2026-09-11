@@ -39,6 +39,17 @@ def favicon(request):
     return HttpResponse(status=204)
 
 
+def robots_txt(request):
+    """Serve robots.txt directly for search engines."""
+    robots_path = settings.BASE_DIR / 'robots.txt'
+    if robots_path.exists():
+        with open(robots_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+    else:
+        content = "User-agent: *\nAllow: /\nDisallow: /admin/\nDisallow: /api/\nSitemap: https://www.pyloomtech.com/sitemap.xml\n"
+    return HttpResponse(content, content_type='text/plain')
+
+
 
 def client_login(request):
     if request.method == "POST":
@@ -112,6 +123,11 @@ def home(request):
         latest_projects = []
 
     try:
+        latest_clients = Client.objects.filter(is_active=True).order_by('order', 'name')[:6]
+    except Exception:
+        latest_clients = []
+
+    try:
         latest_articles = Article.objects.filter(status='published').order_by('-published_at')[:3]
     except Exception:
         latest_articles = []
@@ -126,6 +142,7 @@ def home(request):
         'settings': site_settings,
         'about_us': about_us,
         'latest_projects': latest_projects,
+        'latest_clients': latest_clients,
         'latest_articles': latest_articles,
         'latest_solutions': latest_solutions,
         'featured_feedbacks': feedbacks,

@@ -276,6 +276,23 @@ class Project_tags(models.Model):  # keep the original name
     def __str__(self):
         return f"{self.project.title} - {self.tag.name}"
 
+
+class Client(models.Model):
+    name = models.CharField(max_length=200)
+    logo = models.ImageField(upload_to='clients/')
+    description = models.TextField()
+    website_url = models.URLField(blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    order = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['order', 'name']
+
+    def __str__(self):
+        return self.name
+
 # About Us model
 class AboutUs(models.Model):
     title = models.CharField(max_length=200, default="About PyLoom")
@@ -598,6 +615,11 @@ class GalleryItem(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     uploaded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        if self.event_id:
+            return self.event.title
+        return f"Gallery Item #{self.pk or 'new'}"
 
 class GalleryItemImage(models.Model):
     gallery_item = models.ForeignKey(GalleryItem, related_name='images', on_delete=models.CASCADE)

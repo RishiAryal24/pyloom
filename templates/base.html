@@ -12,21 +12,21 @@
     <meta name="robots" content="index, follow">
     
     <!-- Canonical URL -->
-    <link rel="canonical" href="{% block canonical %}https://www.pyloomtech.com{% endblock %}">
+    <link rel="canonical" href="{% block canonical %}{{ request.build_absolute_uri }}{% endblock %}">
     
     <!-- Open Graph Tags (Social Media) -->
     <meta property="og:type" content="{% block og_type %}website{% endblock %}">
     <meta property="og:title" content="{% block og_title %}{{ settings.site_name|default:'PyLoom' }} - {{ settings.slogan|default:'Weaving Innovation Beyond Expectations' }}{% endblock %}">
-    <meta property="og:description" content="{% block og_description %}Advanced AI-powered technology solutions for modern businesses{% endblock %}">
-    <meta property="og:image" content="{% block og_image %}{{ settings.logo_url|default:'/static/img/logo.svg' }}{% endblock %}">
-    <meta property="og:url" content="{% block og_url %}https://www.pyloomtech.com{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}At PyLoom, we provide advanced technology solutions powered by Artificial Intelligence, automation, and modern digital tools.{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}https://www.pyloomtech.com{{ settings.logo_url|default:'/static/img/logo.svg' }}{% endblock %}">
+    <meta property="og:url" content="{% block og_url %}{{ request.build_absolute_uri }}{% endblock %}">
     <meta property="og:site_name" content="{{ settings.site_name|default:'PyLoom' }}">
     
     <!-- Twitter Card Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{% block twitter_title %}{{ settings.site_name|default:'PyLoom' }}{% endblock %}">
-    <meta name="twitter:description" content="{% block twitter_description %}Advanced AI-powered technology solutions{% endblock %}">
-    <meta name="twitter:image" content="{% block twitter_image %}{{ settings.logo_url|default:'/static/img/logo.svg' }}{% endblock %}">
+    <meta name="twitter:title" content="{% block twitter_title %}{{ settings.site_name|default:'PyLoom' }} - {{ settings.slogan|default:'Weaving Innovation Beyond Expectations' }}{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}At PyLoom, we provide advanced technology solutions powered by Artificial Intelligence, automation, and modern digital tools.{% endblock %}">
+    <meta name="twitter:image" content="{% block twitter_image %}https://www.pyloomtech.com{{ settings.logo_url|default:'/static/img/logo.svg' }}{% endblock %}">
     <link rel="icon" href="{{ settings.favicon_url|default:'/static/img/logo.svg' }}">
     
     <!-- Security Headers -->
@@ -59,7 +59,7 @@
       "@type": "Organization",
       "name": "{{ settings.site_name|default:'PyLoom Technologies' }}",
       "url": "https://www.pyloomtech.com",
-      "logo": "{{ settings.logo_url|default:'/static/img/logo.svg' }}",
+      "logo": "https://www.pyloomtech.com{{ settings.logo_url|default:'/static/img/logo.svg' }}",
       "description": "Advanced AI-powered technology solutions for modern businesses",
       "sameAs": [
         "{{ settings.linkedin_url|default:'https://www.linkedin.com/company/pyloom' }}",
@@ -70,15 +70,16 @@
         "@type": "ContactPoint",
         "contactType": "Customer Service",
         "email": "{{ settings.contact_email|default:'contact@pyloomtech.com' }}",
-        "telephone": "{{ settings.contact_phone|default:'' }}"
+        "telephone": "{{ settings.contact_phone|default:''|cut:'=' }}"
       },
       "address": {
         "@type": "PostalAddress",
-        "streetAddress": "{{ settings.address|striptags|default:'PyLoom Technologies' }}",
-        "addressCountry": "US"
+        "streetAddress": "{{ settings.address|striptags|default:'Butwal-12, Rupandehi, Nepal' }}",
+        "addressCountry": "NP"
       }
     }
     </script>
+    {% block extra_schema %}{% endblock %}
     <style>
   /* PyLoom TECHNOLOGIES custom colors */
   .pyloom-p { color: #D4AF37; } /* Gold for P */

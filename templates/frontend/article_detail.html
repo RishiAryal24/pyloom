@@ -1,10 +1,47 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}{{ article.title }} - AI-Solutions{% endblock %}
+{% block title %}{{ article.title }} | PyLoom Technologies{% endblock %}
 
-{% block description %}
-{{ article.excerpt|default:article.content|striptags|truncatewords:30 }}
+{% block description %}{{ article.excerpt|default:article.content|striptags|truncatewords:30 }}{% endblock %}
+
+{% block og_type %}article{% endblock %}
+{% block og_title %}{{ article.title }} | PyLoom Technologies{% endblock %}
+{% block og_description %}{{ article.excerpt|default:article.content|striptags|truncatewords:28 }}{% endblock %}
+{% block og_image %}{% if article.featured_image %}https://www.pyloomtech.com{{ article.featured_image.url }}{% else %}https://www.pyloomtech.com{{ settings.logo_url|default:'/static/img/logo.svg' }}{% endif %}{% endblock %}
+
+{% block twitter_title %}{{ article.title }} | PyLoom Technologies{% endblock %}
+{% block twitter_description %}{{ article.excerpt|default:article.content|striptags|truncatewords:28 }}{% endblock %}
+{% block twitter_image %}{% if article.featured_image %}https://www.pyloomtech.com{{ article.featured_image.url }}{% else %}https://www.pyloomtech.com{{ settings.logo_url|default:'/static/img/logo.svg' }}{% endif %}{% endblock %}
+
+{% block extra_schema %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "{{ article.title|escapejs }}",
+  "description": "{{ article.excerpt|default:article.content|striptags|truncatewords:28|escapejs }}",
+  {% if article.featured_image %}"image": "https://www.pyloomtech.com{{ article.featured_image.url }}",{% endif %}
+  "datePublished": "{{ article.published_at|date:'c' }}",
+  "dateModified": "{{ article.updated_at|date:'c' }}",
+  "author": {
+    "@type": "Person",
+    "name": "{{ article.author|default:'PyLoom Team'|escapejs }}"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "PyLoom Technologies",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.pyloomtech.com{{ settings.logo_url|default:'/static/img/logo.svg' }}"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ request.build_absolute_uri }}"
+  }
+}
+</script>
 {% endblock %}
 
 {% block content %}
