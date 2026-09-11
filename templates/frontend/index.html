@@ -163,8 +163,8 @@ PyLoom - Weaving Innovation Beyond Expectations
             </div>
             <h5 class="card-title">{{ client.name }}</h5>
             <p class="card-text text-muted">{{ client.description|truncatewords:24 }}</p>
-            {% if client.website or client.website_url %}
-            <a href="{{ client.website|default:client.website_url }}" class="btn btn-sm btn-outline-primary" target="_blank" rel="noopener">
+            {% if client.website %}
+            <a href="{{ client.website }}" class="btn btn-sm btn-outline-primary" target="_blank" rel="noopener">
               Visit Website
             </a>
             {% endif %}
