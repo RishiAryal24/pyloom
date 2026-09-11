@@ -33,6 +33,9 @@ def health_check(request):
 
 def favicon(request):
     """Serve the bundled favicon without rendering templates or querying models."""
+    ico_path = settings.BASE_DIR / 'core' / 'static' / 'img' / 'favicon.ico'
+    if ico_path.exists():
+        return FileResponse(ico_path.open('rb'), content_type='image/x-icon')
     favicon_path = settings.BASE_DIR / 'core' / 'static' / 'img' / 'logo.svg'
     if favicon_path.exists():
         return FileResponse(favicon_path.open('rb'), content_type='image/svg+xml')

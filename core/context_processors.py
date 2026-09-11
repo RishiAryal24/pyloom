@@ -11,7 +11,7 @@ def default_site_settings():
         'logo': None,
         'favicon': None,
         'logo_url': '/static/img/logo.svg',
-        'favicon_url': '/static/img/logo.svg',
+        'favicon_url': '/static/img/favicon.ico',
     }
 
 
