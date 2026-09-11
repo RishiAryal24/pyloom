@@ -99,7 +99,7 @@ class SiteSettings(models.Model):
                 return self.favicon.url
         except ValueError:
             pass
-        return static('img/logo.svg')
+        return static('img/favicon.ico')
 
     def save(self, *args, **kwargs):
         if not self.pk and SiteSettings.objects.exists():

@@ -27,7 +27,11 @@
     <meta name="twitter:title" content="{% block twitter_title %}{{ settings.site_name|default:'PyLoom' }} - {{ settings.slogan|default:'Weaving Innovation Beyond Expectations' }}{% endblock %}">
     <meta name="twitter:description" content="{% block twitter_description %}PyLoom delivers advanced AI solutions, smart automation, and digital tools that streamline business operations and boost enterprise productivity.{% endblock %}">
     <meta name="twitter:image" content="{% block twitter_image %}https://www.pyloomtech.com{{ settings.logo_url|default:'/static/img/logo.svg' }}{% endblock %}">
-    <link rel="icon" href="{{ settings.favicon_url|default:'/static/img/logo.svg' }}">
+    <!-- Favicon & Touch Icons -->
+    <link rel="icon" type="image/x-icon" href="{{ settings.favicon_url|default:'/static/img/favicon.ico' }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicon-16x16.png' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/apple-touch-icon.png' %}">
     
     <!-- Security Headers -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
