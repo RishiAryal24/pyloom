@@ -277,22 +277,6 @@ class Project_tags(models.Model):  # keep the original name
         return f"{self.project.title} - {self.tag.name}"
 
 
-class Client(models.Model):
-    name = models.CharField(max_length=200)
-    logo = models.ImageField(upload_to='clients/')
-    description = models.TextField()
-    website_url = models.URLField(blank=True, null=True)
-    is_active = models.BooleanField(default=True)
-    order = models.PositiveIntegerField(default=0)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        ordering = ['order', 'name']
-
-    def __str__(self):
-        return self.name
-
 # About Us model
 class AboutUs(models.Model):
     title = models.CharField(max_length=200, default="About PyLoom")

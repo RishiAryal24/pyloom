@@ -123,7 +123,7 @@ def home(request):
         latest_projects = []
 
     try:
-        latest_clients = Client.objects.filter(is_active=True).order_by('order', 'name')[:6]
+        latest_clients = ClientPartner.objects.filter(is_active=True).order_by('order', 'name')[:6]
     except Exception:
         latest_clients = []
 

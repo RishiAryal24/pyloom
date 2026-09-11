@@ -156,13 +156,15 @@ PyLoom - Weaving Innovation Beyond Expectations
         <div class="card h-100 card-hover">
           <div class="card-body text-center">
             <div class="d-flex align-items-center justify-content-center mb-3" style="height: 96px;">
+              {% if client.logo %}
               <img src="{{ client.logo.url }}" alt="{{ client.name }} logo" class="img-fluid"
                 style="max-height: 80px; max-width: 180px; object-fit: contain;" loading="lazy" decoding="async" />
+              {% endif %}
             </div>
             <h5 class="card-title">{{ client.name }}</h5>
             <p class="card-text text-muted">{{ client.description|truncatewords:24 }}</p>
-            {% if client.website_url %}
-            <a href="{{ client.website_url }}" class="btn btn-sm btn-outline-primary" target="_blank" rel="noopener">
+            {% if client.website or client.website_url %}
+            <a href="{{ client.website|default:client.website_url }}" class="btn btn-sm btn-outline-primary" target="_blank" rel="noopener">
               Visit Website
             </a>
             {% endif %}
