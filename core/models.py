@@ -799,4 +799,8 @@ class ClientPartner(models.Model):
     def __str__(self):
         return self.name
 
+    @property
+    def website_url(self):
+        return self.website or ''
+
 
