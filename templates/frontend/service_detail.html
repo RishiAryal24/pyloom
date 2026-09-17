@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ service.title }} in Nepal & Globally | PyLoom Technologies{% endblock %}
+{% block description %}{{ service.description|striptags|truncatechars:155 }}{% endblock %}
+{% block keywords %}{{ service.title }}, data engineering services in Nepal, data engineering company Butwal, PySpark consultants Nepal, dbt Snowflake analytics engineering Nepal, PyLoom Technologies{% endblock %}
+
+{% block og_title %}{{ service.title }} in Nepal & Globally | PyLoom Technologies{% endblock %}
+{% block og_description %}{{ service.description|striptags|truncatechars:155 }}{% endblock %}
+{% block og_image %}{% if service.image %}https://www.pyloomtech.com{{ service.image.url }}{% else %}https://www.pyloomtech.com{{ settings.logo_url|default:'/static/img/logo.svg' }}{% endif %}{% endblock %}
+
+{% block twitter_title %}{{ service.title }} in Nepal & Globally | PyLoom Technologies{% endblock %}
+{% block twitter_description %}{{ service.description|striptags|truncatechars:155 }}{% endblock %}
+{% block twitter_image %}{% if service.image %}https://www.pyloomtech.com{{ service.image.url }}{% else %}https://www.pyloomtech.com{{ settings.logo_url|default:'/static/img/logo.svg' }}{% endif %}{% endblock %}
+
+{% block extra_schema %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "{{ service.title }}",
+  "serviceType": "{{ service.title }}",
+  "provider": {
+    "@type": "LocalBusiness",
+    "name": "PyLoom Technologies Pvt. Ltd.",
+    "url": "https://pyloomtech.com",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Butwal-12",
+      "addressLocality": "Butwal",
+      "addressRegion": "Lumbini",
+      "addressCountry": "NP"
+    },
+    "telephone": "+977 970-1024222"
+  },
+  "areaServed": [
+    {
+      "@type": "AdministrativeArea",
+      "name": "Nepal"
+    },
+    {
+      "@type": "City",
+      "name": "Butwal"
+    },
+    {
+      "@type": "Country",
+      "name": "Worldwide"
+    }
+  ],
+  "description": "{{ service.description|striptags|truncatechars:200 }}"
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="bg-light py-2 border-bottom">
+    <div class="container">
+        <ol class="breadcrumb mb-0 small">
+            <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'core:services' %}">Services</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ service.title }}</li>
+        </ol>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="page-header-compact bg-primary text-white py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center mb-3">
+                    {% if service.icon %}
+                    <div class="bg-white bg-opacity-20 rounded p-3 me-3">
+                        <i class="bi bi-{{ service.icon }} fs-2"></i>
+                    </div>
+                    {% endif %}
+                    <div>
+                        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill">Enterprise Service</span>
+                        <h1 class="display-5 fw-bold mt-2 mb-0">{{ service.title }}</h1>
+                    </div>
+                </div>
+                <p class="lead mb-4">{{ service.description }}</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{% url 'core:contact' %}" class="btn btn-warning btn-lg text-dark fw-bold">
+                        <i class="bi bi-chat-dots me-2"></i>Request Consultation
+                    </a>
+                    <a href="#service-details" class="btn btn-outline-light btn-lg">
+                        <i class="bi bi-arrow-down me-2"></i>Service Scope
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 mt-4 mt-lg-0">
+                {% if service.image %}
+                <img src="{{ service.image.url }}" class="img-fluid rounded shadow-lg" alt="{{ service.title }}">
+                {% else %}
+                <div class="card border-0 bg-white text-dark shadow p-4 text-center">
+                    <i class="bi bi-database-gear text-primary display-3 mb-3"></i>
+                    <h5 class="fw-bold">Enterprise Delivery</h5>
+                    <p class="text-muted small mb-0">Onsite in Nepal & Dedicated Remote Pods for US, EU & Global Clients.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Service Details Section -->
+<section class="py-5" id="service-details">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Left Column: Detailed Service Content -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-4 p-md-5">
+                        <h2 class="h3 fw-bold mb-4 pb-2 border-bottom text-primary">Service Overview & Capabilities</h2>
+                        {% if service.detailed_content %}
+                        <div class="service-rich-content">
+                            {{ service.detailed_content|safe }}
+                        </div>
+                        {% else %}
+                        <p class="lead text-muted">{{ service.description }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Call to Action Banner -->
+                <div class="card bg-light border-0 shadow-sm p-4 text-center mt-4">
+                    <div class="card-body">
+                        <h3 class="fw-bold mb-2">Ready to accelerate your data projects?</h3>
+                        <p class="text-muted mb-4">Talk to our senior engineering leads in Butwal or schedule a technical discovery call.</p>
+                        <a href="{% url 'core:contact' %}" class="btn btn-primary btn-lg px-4">
+                            <i class="bi bi-envelope-fill me-2"></i>Contact PyLoom Technologies
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Sidebar & Quick Info -->
+            <div class="col-lg-4">
+                <!-- Location & Trust Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-3"><i class="bi bi-geo-alt-fill text-danger me-2"></i>Service Delivery Hub</h5>
+                        <ul class="list-unstyled mb-4 small text-muted">
+                            <li class="mb-2"><strong>Location:</strong> Butwal-12, Rupandehi, Nepal</li>
+                            <li class="mb-2"><strong>Coverage:</strong> Nepal, Asia-Pacific, US & Europe (Remote)</li>
+                            <li class="mb-2"><strong>Availability:</strong> Dedicated Remote Teams & Hourly Consulting</li>
+                            <li class="mb-2"><strong>Compliance:</strong> Enterprise Security, NDA & Governed Access</li>
+                        </ul>
+                        <a href="{% url 'core:contact' %}" class="btn btn-outline-primary w-100">
+                            <i class="bi bi-telephone-outbound me-2"></i>Inquire Now
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Related Services -->
+                {% if related_services %}
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-3"><i class="bi bi-grid-fill text-primary me-2"></i>Other Services</h5>
+                        <div class="list-group list-group-flush">
+                            {% for rel in related_services %}
+                            <a href="{% url 'core:service_detail' rel.slug %}" class="list-group-item list-group-item-action px-0 py-2 border-0">
+                                <i class="bi bi-chevron-right text-muted me-2 small"></i>
+                                <span class="fw-semibold">{{ rel.title }}</span>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

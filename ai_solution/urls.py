@@ -12,6 +12,7 @@ from core.sitemaps import (
     ProjectSitemap,
     TrainingSitemap,
     StaticPageSitemap,
+    ServiceSitemap,
 )
 
 def sitemap_without_noindex(request, **kwargs):
@@ -23,6 +24,7 @@ def sitemap_without_noindex(request, **kwargs):
 sitemaps = {
     'articles': ArticleSitemap,
     'solutions': SolutionSitemap,
+    'services': ServiceSitemap,
     'events': EventSitemap,
     'projects': ProjectSitemap,
     'trainings': TrainingSitemap,

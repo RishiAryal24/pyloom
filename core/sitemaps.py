@@ -1,5 +1,5 @@
 from django.contrib.sitemaps import Sitemap
-from core.models import Article, Solution, Event, Project, Training, SiteSettings
+from core.models import Article, Solution, Event, Project, Training, SiteSettings, Service
 
 
 class ArticleSitemap(Sitemap):
@@ -80,6 +80,22 @@ class TrainingSitemap(Sitemap):
 
     def location(self, item):
         return f'/trainings/{item.slug}/'
+
+
+class ServiceSitemap(Sitemap):
+    """Sitemap for individual services"""
+    changefreq = 'monthly'
+    priority = 0.8
+    protocol = 'https'
+
+    def items(self):
+        return Service.objects.filter(is_active=True).order_by('-updated_at')
+
+    def lastmod(self, item):
+        return item.updated_at
+
+    def location(self, item):
+        return f'/services/{item.slug}/'
 
 
 class StaticPageSitemap(Sitemap):

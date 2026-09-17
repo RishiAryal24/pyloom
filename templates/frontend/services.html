@@ -1,17 +1,18 @@
 {% extends 'base.html' %}
 
-{% block title %}Our Services | PyLoom Technologies{% endblock %}
-{% block description %}Discover PyLoom's expert data engineering, AI development, and digital transformation services tailored for modern enterprises.{% endblock %}
-{% block og_title %}Our Services | PyLoom Technologies{% endblock %}
-{% block og_description %}Discover PyLoom's expert data engineering, AI development, and digital transformation services tailored for modern enterprises.{% endblock %}
+{% block title %}Enterprise Services & Data Engineering in Nepal | PyLoom Technologies{% endblock %}
+{% block description %}Explore PyLoom's enterprise services: Data Engineering & Analytics Engineering (dbt, Snowflake, PySpark), AI Development, and Cloud Solutions in Nepal and globally.{% endblock %}
+{% block keywords %}Data Engineering Nepal, Data Engineering Butwal, Analytics Engineering, dbt Snowflake consultant Nepal, AI Solutions, PyLoom Technologies{% endblock %}
+{% block og_title %}Enterprise Services & Data Engineering in Nepal | PyLoom Technologies{% endblock %}
+{% block og_description %}Explore PyLoom's enterprise services: Data Engineering & Analytics Engineering (dbt, Snowflake, PySpark), AI Development, and Cloud Solutions in Nepal and globally.{% endblock %}
 
 {% block content %}
 <section class="page-header-compact bg-primary text-white">
     <div class="container">
         <div class="row">
             <div class="col-lg-8 mx-auto text-center">
-                <h1 class="display-4 fw-bold mb-3">Services</h1>
-                <p class="lead">AI, automation, and software services built around practical business outcomes.</p>
+                <h1 class="display-4 fw-bold mb-3">Enterprise Services</h1>
+                <p class="lead">Data Engineering, AI, and cloud software services built around practical enterprise outcomes.</p>
             </div>
         </div>
     </div>
@@ -50,7 +51,11 @@
                             {% endif %}
                         </div>
 
-                        <h4 class="card-title fw-bold">{{ service.title }}</h4>
+                        <h4 class="card-title fw-bold">
+                            <a href="{% url 'core:service_detail' service.slug %}" class="text-decoration-none text-dark">
+                                {{ service.title }}
+                            </a>
+                        </h4>
                         <p class="card-text text-muted flex-grow-1">{{ service.description }}</p>
 
                         {% if service.detailed_content %}
@@ -61,13 +66,11 @@
                         </div>
                         {% endif %}
 
-                        <div class="d-flex gap-2 mt-auto align-items-center">
-                            {% if service.detailed_content %}
-                            <button class="btn btn-sm btn-outline-primary toggle-details-btn" type="button" data-bs-toggle="collapse" data-bs-target="#serviceDetails{{ service.id }}" aria-expanded="false" aria-controls="serviceDetails{{ service.id }}">
-                                View Details
-                            </button>
-                            {% endif %}
-                            <a href="{% url 'core:contact' %}" class="btn btn-sm btn-primary">Contact Us</a>
+                        <div class="d-flex flex-wrap gap-2 mt-auto align-items-center pt-3">
+                            <a href="{% url 'core:service_detail' service.slug %}" class="btn btn-sm btn-primary">
+                                Learn More
+                            </a>
+                            <a href="{% url 'core:contact' %}" class="btn btn-sm btn-outline-secondary">Contact Us</a>
                         </div>
 
                         {% if service.image %}

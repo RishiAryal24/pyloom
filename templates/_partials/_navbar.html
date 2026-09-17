@@ -31,8 +31,10 @@
                     <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
                         {% if nav_services %}
                             {% for service in nav_services %}
-                                <li><a class="dropdown-item" href="{% url 'core:services' %}#{{ service.slug }}">{{ service.title }}</a></li>
+                                <li><a class="dropdown-item" href="{% url 'core:service_detail' service.slug %}">{{ service.title }}</a></li>
                             {% endfor %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-primary fw-semibold" href="{% url 'core:services' %}">All Services &rarr;</a></li>
                         {% else %}
                             <li><a class="dropdown-item" href="{% url 'core:services' %}">View Services</a></li>
                         {% endif %}

@@ -226,6 +226,19 @@ def services(request):
     return render(request, 'frontend/services.html', context)
 
 
+def service_detail(request, slug):
+    """Dedicated service landing page with rich SEO"""
+    service = get_object_or_404(Service, slug=slug, is_active=True)
+    related_services = Service.objects.filter(is_active=True).exclude(id=service.id)[:4]
+
+    context = {
+        'settings': SiteSettings.load(),
+        'service': service,
+        'related_services': related_services,
+    }
+    return render(request, 'frontend/service_detail.html', context)
+
+
 def trainings(request):
     """Trainings page"""
     context = {
