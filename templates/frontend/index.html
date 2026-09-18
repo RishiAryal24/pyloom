@@ -1,22 +1,70 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}PyLoom Technologies | AI Solutions & Enterprise Data Engineering in Nepal{% endblock %}
-{% block description %}PyLoom Technologies (Butwal, Nepal) provides modern enterprise Data Engineering, cloud lakehouse pipelines, and AI automation for global and local enterprises.{% endblock %}
-{% block keywords %}Data Engineering services in Nepal, Data Engineering company Butwal, PySpark consultants Nepal, dbt Snowflake analytics engineering Nepal, AI solutions, PyLoom Technologies{% endblock %}
-{% block og_title %}PyLoom Technologies | AI Solutions & Enterprise Data Engineering in Nepal{% endblock %}
-{% block og_description %}PyLoom Technologies (Butwal, Nepal) provides modern enterprise Data Engineering, cloud lakehouse pipelines, and AI automation for global and local enterprises.{% endblock %}
+{% block title %}PyLoom Technologies | Data Science, Data Engineering, AI & ML Company | Training Institute in Butwal, Nepal{% endblock %}
+{% block description %}PyLoom Technologies is the leading Data Science, Data Engineering, AI & Machine Learning Company and premier Training Institute in Butwal, Nepal. Enterprise cloud solutions & career-ready IT training.{% endblock %}
+{% block keywords %}Data Engineering in Butwal, Data Science in Butwal, Data Engineering company Butwal, AI and ML company Nepal, Data Engineering training institute Butwal, Data Science institute Nepal, IT training in Butwal, PyLoom Technologies, PyLoom Academy{% endblock %}
+{% block og_title %}PyLoom Technologies | Data Science, Data Engineering, AI & ML Company | Training Institute in Butwal, Nepal{% endblock %}
+{% block og_description %}PyLoom Technologies is the leading Data Science, Data Engineering, AI & Machine Learning Company and premier Training Institute in Butwal, Nepal.{% endblock %}
 
 {% block extra_schema %}
 <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Service",
-  "serviceType": "Data Engineering Services",
-  "provider": {
-    "@type": "LocalBusiness",
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
     "name": "PyLoom Technologies Pvt. Ltd.",
     "url": "https://pyloomtech.com",
+    "logo": "https://www.pyloomtech.com/media/settings/PyLoom_Logo_Final.png",
+    "description": "Leading Data Science, Data Engineering, AI and Machine Learning Company in Butwal, Nepal providing enterprise cloud lakehouse solutions, PySpark, dbt, Snowflake, and predictive analytics.",
+    "telephone": "+977 970-1024222",
+    "priceRange": "$$",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Butwal-12",
+      "addressLocality": "Butwal",
+      "addressRegion": "Lumbini",
+      "addressCountry": "NP"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 27.7006,
+      "longitude": 83.4484
+    },
+    "areaServed": [
+      { "@type": "City", "name": "Butwal" },
+      { "@type": "AdministrativeArea", "name": "Nepal" },
+      { "@type": "Country", "name": "Worldwide" }
+    ],
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Enterprise Data & AI Services",
+      "itemListElement": [
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Data Engineering in Butwal & Global Support",
+            "description": "Enterprise cloud lakehouse pipelines, PySpark, dbt modeling, and Snowflake architecture."
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Data Science & Machine Learning Solutions",
+            "description": "Predictive modeling, deep learning, NLP, and AI-driven business intelligence."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    "name": "PyLoom Academy - Training Institute",
+    "url": "https://pyloomtech.com/trainings/",
+    "description": "Leading IT and Data training institute in Butwal, Nepal providing industry-accredited courses in Data Science, Data Engineering, AI, Machine Learning, and Python.",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "Butwal-12",
@@ -25,23 +73,8 @@
       "addressCountry": "NP"
     },
     "telephone": "+977 970-1024222"
-  },
-  "areaServed": [
-    {
-      "@type": "AdministrativeArea",
-      "name": "Nepal"
-    },
-    {
-      "@type": "City",
-      "name": "Butwal"
-    },
-    {
-      "@type": "Country",
-      "name": "Worldwide"
-    }
-  ],
-  "description": "Enterprise Data Engineering, cloud lakehouse architecture, PySpark, dbt, Snowflake, Databricks, and healthcare data pipelines in Nepal and worldwide."
-}
+  }
+]
 </script>
 {% endblock %}
 
@@ -53,15 +86,23 @@
   <div class="container">
     <div class="row align-items-center">
       <div class="col-lg-6">
-        <h1 class="display-4 fw-bold mb-4">
-          {{ settings.slogan|default:"Weaving Innovation Beyond Expectations" }}
+        <div class="mb-2">
+          <span class="badge bg-primary text-white px-3 py-2 rounded-pill fw-semibold">
+            Data Science, Data Engineering, AI & ML Company • Training Institute
+          </span>
+        </div>
+        <h1 class="display-4 fw-bold mb-3">
+          Data Science, Data Engineering, AI & ML Company in Butwal, Nepal
         </h1>
         <p class="lead text-muted mb-4">
-          At PyLoom, we are committed to providing advanced technology solutions powered by Artificial Intelligence, automation, and modern digital tools that help businesses streamline operations, increase productivity, and achieve their goals efficiently.
+          PyLoom Technologies is Butwal's premier technology enterprise and professional training institute specializing in Data Engineering, Data Science, Machine Learning, and Cloud Lakehouse solutions for local and global clients.
         </p>
-        <div class="d-flex gap-3">
+        <div class="d-flex flex-wrap gap-3">
           <a href="{% url 'core:solutions' %}" class="btn btn-brand btn-lg">
             <i class="bi bi-lightbulb me-2"></i>Explore Solutions
+          </a>
+          <a href="{% url 'core:trainings' %}" class="btn btn-outline-primary btn-lg">
+            <i class="bi bi-mortarboard me-2"></i>Training Institute
           </a>
           <a href="{% url 'core:contact' %}" class="btn btn-outline-dark btn-lg">
             <i class="bi bi-chat-dots me-2"></i>Get Started
