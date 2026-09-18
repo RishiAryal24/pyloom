@@ -53,11 +53,47 @@
                 {% endfor %}
             </div>
         </div>
+<section class="py-5 bg-white border-bottom">
+    <div class="container">
+        <div class="row text-center mb-4">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="display-6 fw-bold">Professional Training Tracks in Butwal</h2>
+                <p class="text-muted">Job-oriented curriculum designed for students, university graduates, and enterprise professionals.</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100 border-0 bg-light p-4 shadow-sm">
+                    <h4 class="fw-bold text-primary mb-3"><i class="bi bi-graph-up me-2"></i>Data Science Training</h4>
+                    <p class="text-muted small mb-3">Comprehensive curriculum in Python, statistical modeling, machine learning, Pandas, NumPy, Scikit-learn, and predictive analytics.</p>
+                    <div><span class="badge bg-primary">Beginner to Advanced</span></div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100 border-0 bg-light p-4 shadow-sm">
+                    <h4 class="fw-bold text-success mb-3"><i class="bi bi-database-gear me-2"></i>Data Engineering Training</h4>
+                    <p class="text-muted small mb-3">Enterprise big data pipelines: Apache Spark (PySpark), Delta Lake, dbt-core, Apache Airflow, and MinIO/S3 lakehouse architecture.</p>
+                    <div><span class="badge bg-success">Production Grade</span></div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-12">
+                <div class="card h-100 border-0 bg-light p-4 shadow-sm">
+                    <h4 class="fw-bold text-dark mb-3"><i class="bi bi-bar-chart-steps text-warning me-2"></i>Data Analysis Training</h4>
+                    <p class="text-muted small mb-3">Advanced SQL for business intelligence, Power BI dashboards, Tableau visualization, and data-driven executive reporting.</p>
+                    <div><span class="badge bg-warning text-dark">Career Ready</span></div>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
 <section class="py-5" id="training-programs">
     <div class="container">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h3 class="fw-bold">Upcoming & Featured Cohorts</h3>
+            </div>
+        </div>
         {% if upcoming_trainings %}
         <div class="row g-4">
             {% for training in upcoming_trainings %}

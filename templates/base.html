@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>{% block title %}PyLoom - Weaving Innovation Beyond Expectations{% endblock %}</title>
     <meta name="description" content="{% block description %}PyLoom delivers advanced AI solutions, smart automation, and digital tools that streamline business operations and boost enterprise productivity.{% endblock %}">
-    <meta name="keywords" content="{% block keywords %}AI solutions, automation, digital transformation, technology consulting, PyLoom{% endblock %}">
+    <meta name="keywords" content="{% block keywords %}Data Science company, Data Engineering company, Data Analysis company, AI ML company, Data Engineering Services, Data Science Training, Data Analysis Training, Data Engineering Training, Data Engineering Support for Offshore companies from Nepal, Data Engineering Support, Data Engineering Support for US Companies, Data Engineering Support for Australian companies, PyLoom Technologies, Butwal Nepal{% endblock %}">
     <meta name="author" content="PyLoom Technologies">
     <meta name="robots" content="index, follow">
     
@@ -16,16 +16,16 @@
     
     <!-- Open Graph Tags (Social Media) -->
     <meta property="og:type" content="{% block og_type %}website{% endblock %}">
-    <meta property="og:title" content="{% block og_title %}{{ settings.site_name|default:'PyLoom' }} - {{ settings.slogan|default:'Weaving Innovation Beyond Expectations' }}{% endblock %}">
-    <meta property="og:description" content="{% block og_description %}PyLoom delivers advanced AI solutions, smart automation, and digital tools that streamline business operations and boost enterprise productivity.{% endblock %}">
+    <meta property="og:title" content="{% block og_title %}{{ settings.site_name|default:'PyLoom' }} - {{ settings.slogan|default:'Data Science, Data Engineering, AI & ML Company | Training Institute in Butwal, Nepal' }}{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}PyLoom Technologies is a leading Data Science, Data Engineering, AI & Machine Learning Company and professional Training Institute based in Butwal, Nepal with offshore data support for US, Australian, and global clients.{% endblock %}">
     <meta property="og:image" content="{% block og_image %}https://www.pyloomtech.com{{ settings.logo_url|default:'/static/img/logo.svg' }}{% endblock %}">
     <meta property="og:url" content="{% block og_url %}{{ request.build_absolute_uri }}{% endblock %}">
-    <meta property="og:site_name" content="{{ settings.site_name|default:'PyLoom' }}">
+    <meta property="og:site_name" content="{{ settings.site_name|default:'PyLoom Technologies' }}">
     
     <!-- Twitter Card Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{% block twitter_title %}{{ settings.site_name|default:'PyLoom' }} - {{ settings.slogan|default:'Weaving Innovation Beyond Expectations' }}{% endblock %}">
-    <meta name="twitter:description" content="{% block twitter_description %}PyLoom delivers advanced AI solutions, smart automation, and digital tools that streamline business operations and boost enterprise productivity.{% endblock %}">
+    <meta name="twitter:title" content="{% block twitter_title %}{{ settings.site_name|default:'PyLoom' }} - Data Science, Data Engineering, AI & ML Company | Training Institute{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}PyLoom Technologies provides enterprise Data Engineering, Data Science, AI automation, and career-grade training in Butwal, Nepal with offshore delivery to the US and Australia.{% endblock %}">
     <meta name="twitter:image" content="{% block twitter_image %}https://www.pyloomtech.com{{ settings.logo_url|default:'/static/img/logo.svg' }}{% endblock %}">
     <!-- Favicon & Touch Icons -->
     <link rel="icon" type="image/x-icon" href="{{ settings.favicon_url|default:'/static/img/favicon.ico' }}">
@@ -60,25 +60,56 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "Organization",
+      "@type": "Corporation",
       "name": "{{ settings.site_name|default:'PyLoom Technologies' }}",
-      "url": "https://www.pyloomtech.com",
+      "alternateName": ["PyLoom", "PyLoom Academy", "PyLoom Technologies Pvt. Ltd."],
+      "url": "https://pyloomtech.com",
       "logo": "https://www.pyloomtech.com{{ settings.logo_url|default:'/static/img/logo.svg' }}",
-      "description": "Advanced AI-powered technology solutions for modern businesses",
+      "description": "Leading Data Science, Data Engineering, AI & Machine Learning Company and professional Training Institute in Butwal, Nepal. Providing offshore data engineering support to US, Australian, and global enterprises.",
+      "knowsAbout": [
+        "Data Engineering",
+        "Data Science",
+        "Data Analysis",
+        "Machine Learning",
+        "Artificial Intelligence",
+        "Analytics Engineering",
+        "Cloud Lakehouse Architecture",
+        "dbt Core",
+        "Snowflake",
+        "Apache Spark",
+        "PySpark",
+        "Databricks",
+        "Apache Airflow",
+        "Data Science Training",
+        "Data Engineering Training",
+        "Data Analysis Training"
+      ],
+      "areaServed": [
+        { "@type": "Country", "name": "Nepal" },
+        { "@type": "City", "name": "Butwal" },
+        { "@type": "Country", "name": "United States" },
+        { "@type": "Country", "name": "Australia" },
+        { "@type": "Country", "name": "United Kingdom" },
+        { "@type": "Country", "name": "Worldwide" }
+      ],
       "sameAs": [
-        "{{ settings.linkedin_url|default:'https://www.linkedin.com/company/pyloom' }}",
-        "{{ settings.twitter_url|default:'https://twitter.com/pyloomtech' }}",
-        "{{ settings.facebook_url|default:'https://facebook.com/pyloomtech' }}"
+        "{{ settings.linkedin_url|default:'https://www.linkedin.com/company/pyloom-techlonogies' }}",
+        "https://github.com/PyLoomTech",
+        "{{ settings.facebook_url|default:'https://facebook.com/PyLoomTechnologies' }}"
       ],
       "contactPoint": {
         "@type": "ContactPoint",
-        "contactType": "Customer Service",
-        "email": "{{ settings.contact_email|default:'contact@pyloomtech.com' }}",
-        "telephone": "{{ settings.contact_phone|default:''|cut:'=' }}"
+        "contactType": "Technical & Sales Inquiries",
+        "email": "{{ settings.contact_email|default:'info@pyloomtech.com' }}",
+        "telephone": "+977 970-1024222",
+        "availableLanguage": ["English", "Nepali"]
       },
       "address": {
         "@type": "PostalAddress",
         "streetAddress": "{{ settings.address|striptags|default:'Butwal-12, Rupandehi, Nepal' }}",
+        "addressLocality": "Butwal",
+        "addressRegion": "Lumbini",
+        "postalCode": "32907",
         "addressCountry": "NP"
       }
     }
