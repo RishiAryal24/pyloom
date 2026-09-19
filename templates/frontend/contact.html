@@ -145,12 +145,9 @@
         <i class="bi bi-geo-alt text-brand me-3 mt-1"></i>
         <div>
           <strong>Address</strong><br>
-          <!-- If address has a URL, make it clickable; otherwise, just display text -->
-          {% if settings.address_url %}
-            <a href="{{ settings.address_url }}" class="text-decoration-none" target="_blank">{{ settings.address|safe }}</a>
-          {% else %}
-            {{ settings.address|safe }}
-          {% endif %}
+          <a href="https://maps.google.com/?cid=17532483861448481343" class="text-decoration-none" target="_blank" rel="noopener">
+            {{ settings.address|default:'Butwal-12, Rupandehi, Nepal'|safe }} <span class="badge bg-primary ms-1 small">Google Maps</span>
+          </a>
         </div>
       </div>
     </div>
@@ -213,6 +210,21 @@
     .bindPopup("<strong>PyLoom Technologies</strong><br>{{ settings.address|striptags|escapejs }}")
     .openPopup();
 </script>
+
+<div class="card mt-3 border-warning shadow-sm">
+  <div class="card-body text-center py-3">
+    <h6 class="fw-bold mb-1"><i class="bi bi-geo-alt-fill text-danger me-1"></i> PyLoom on Google Maps</h6>
+    <p class="small text-muted mb-3">Visit our office or share your experience with PyLoom Technologies in Butwal.</p>
+    <div class="d-flex justify-content-center gap-2">
+      <a href="https://maps.google.com/?cid=17532483861448481343" target="_blank" rel="noopener" class="btn btn-sm btn-outline-dark">
+        <i class="bi bi-map me-1"></i>Open in Maps
+      </a>
+      <a href="https://g.page/r/CT_a508u5U_zEAE/review" target="_blank" rel="noopener" class="btn btn-sm btn-warning fw-semibold">
+        <i class="bi bi-star-fill me-1"></i>Review on Google
+      </a>
+    </div>
+  </div>
+</div>
 
     </div>
   </div>
