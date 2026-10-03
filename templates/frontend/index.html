@@ -122,45 +122,102 @@
 
 
 <!-- Hero Section -->
-<section class="hero-section bg-light py-5">
+<section class="hero-section">
+  <div id="particles-js"></div>
   <div class="container">
-    <div class="row align-items-center">
-      <div class="col-lg-6">
-        <div class="mb-2">
-          <span class="badge bg-primary text-white px-3 py-2 rounded-pill fw-semibold">
-            Pioneer Data Science, Data Engineering & AI/ML Company • Training Institute
-          </span>
-        </div>
-        <h1 class="display-4 fw-bold mb-3">
+    <!-- Top Pioneer Banner -->
+    <div class="row position-relative z-1 mb-4" data-aos="fade-down">
+      <div class="col-12 text-center text-lg-start">
+        <span class="badge bg-primary px-3 py-2 fw-semibold shadow-sm" style="font-size: 0.85rem;">
+          Pioneer Data Science, Data Engineering & AI/ML Company • Training Institute
+        </span>
+      </div>
+    </div>
+    
+    <div class="row align-items-center position-relative z-1 gx-lg-5">
+      <div class="col-lg-6" data-aos="fade-right">
+        <h1 class="display-4 mb-4 mt-2">
           Pioneer Data Science, Data Engineering, AI & ML Company in Butwal, Nepal
         </h1>
-        <p class="lead text-muted mb-4">
-          PyLoom Technologies is the pioneer Data Science, Data Engineering, and AI/ML company and premier training institute in Butwal, Nepal. We build modern Cloud Lakehouse architectures (PySpark, dbt, Snowflake) and provide high-impact offshore data engineering support for US and Australian enterprises alongside career-defining IT education.
+        <p class="lead mb-5">
+          PyLoom Technologies is the pioneer Data Science, Data Engineering, and AI/ML company and premier training institute in Butwal, Nepal. We build modern architectures using <span id="typed-tech" class="text-primary fw-bold"></span> and provide high-impact offshore data engineering support for US and Australian enterprises alongside career-defining IT education.
         </p>
-        <div class="d-flex flex-wrap gap-3">
-          <a href="{% url 'core:solutions' %}" class="btn btn-brand btn-lg">
+        <div class="d-flex flex-wrap gap-3 mt-4">
+          <a href="{% url 'core:solutions' %}" class="btn btn-brand btn-lg shadow-sm px-4 glow-border">
             <i class="bi bi-lightbulb me-2"></i>Explore Solutions
           </a>
-          <a href="{% url 'core:trainings' %}" class="btn btn-outline-primary btn-lg">
+          <a href="{% url 'core:trainings' %}" class="btn btn-outline-primary btn-lg bg-white px-4" style="--pyloom-surface: #fff;">
             <i class="bi bi-mortarboard me-2"></i>Training Institute
-          </a>
-          <a href="{% url 'core:contact' %}" class="btn btn-outline-dark btn-lg">
-            <i class="bi bi-chat-dots me-2"></i>Get Started
           </a>
         </div>
       </div>
-      <div class="col-lg-6">
-        <img src="{% static 'img/ai.svg' %}" alt="AI-powered software development" class="img-fluid rounded shadow"
-          style="width: 100%; height: auto; object-fit: cover" decoding="async" />
+      <div class="col-lg-5 offset-lg-1" data-aos="fade-left" data-aos-delay="200">
+        <div class="position-relative mt-5 mt-lg-0 text-end">
+          <!-- Glass Badges -->
+          <div class="position-absolute top-0 start-0 glass-badge float-delay-1 mt-4 ms-n4 d-none d-md-block">
+            ⚙️ Data Engineering Experts
+          </div>
+          <div class="position-absolute bottom-0 end-0 glass-badge float-delay-2 mb-5 me-n4 d-none d-md-block">
+            🚀 50+ Global Clients
+          </div>
+          
+          <img src="{% static 'img/ai.svg' %}" alt="Data Engineering Architecture" class="img-fluid"
+            style="max-width: 100%; height: auto; filter: drop-shadow(0 20px 40px rgba(10,37,64,0.15));" decoding="async" />
+        </div>
       </div>
     </div>
   </div>
 </section>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    if(typeof particlesJS !== 'undefined') {
+      particlesJS('particles-js', {
+        "particles": {
+          "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
+          "color": { "value": ["#00D4FF", "#D4AF37", "#0A2540"] },
+          "shape": { 
+            "type": ["circle", "polygon"], 
+            "polygon": { "nb_sides": 6 }
+          },
+          "opacity": { "value": 0.6, "random": true, "anim": { "enable": true, "speed": 1, "opacity_min": 0.1, "sync": false } },
+          "size": { "value": 4, "random": true, "anim": { "enable": true, "speed": 2, "size_min": 0.5, "sync": false } },
+          "line_linked": { "enable": true, "distance": 150, "color": "#00D4FF", "opacity": 0.3, "width": 1.5 },
+          "move": { "enable": true, "speed": 2.5, "direction": "none", "random": true, "straight": false, "out_mode": "bounce", "bounce": true }
+        },
+        "interactivity": {
+          "detect_on": "canvas",
+          "events": { 
+            "onhover": { "enable": true, "mode": "grab" }, 
+            "onclick": { "enable": true, "mode": "push" }, 
+            "resize": true 
+          },
+          "modes": { 
+            "grab": { "distance": 200, "line_linked": { "opacity": 0.8 } }, 
+            "push": { "particles_nb": 4 } 
+          }
+        },
+        "retina_detect": true
+      });
+    }
+
+    if (document.getElementById('typed-tech') && typeof Typed !== 'undefined') {
+      new Typed('#typed-tech', {
+        strings: ['PySpark', 'dbt', 'Snowflake', 'AI Models'],
+        typeSpeed: 60,
+        backSpeed: 40,
+        backDelay: 1500,
+        loop: true,
+        cursorChar: '|'
+      });
+    }
+  });
+</script>
+
 <!-- Global Offshore Data Engineering Support Section -->
 <section class="py-5 bg-white border-bottom">
   <div class="container">
-    <div class="row mb-5 text-center">
+    <div class="row mb-5 text-center" data-aos="fade-up">
       <div class="col-lg-10 mx-auto">
         <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-semibold mb-2">Global Delivery Capabilities</span>
         <h2 class="display-5 fw-bold mb-3">Data Engineering Support for Offshore Companies from Nepal</h2>
@@ -172,7 +229,7 @@
 
     <div class="row g-4">
       <!-- US Companies -->
-      <div class="col-lg-4 col-md-6">
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
         <div class="card h-100 border-0 shadow-sm p-4 text-center card-hover">
           <div class="mb-3">
             <span class="badge bg-primary bg-opacity-10 text-primary p-3 rounded-circle fs-3">
@@ -188,7 +245,7 @@
       </div>
 
       <!-- Australian Companies -->
-      <div class="col-lg-4 col-md-6">
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
         <div class="card h-100 border-0 shadow-sm p-4 text-center card-hover">
           <div class="mb-3">
             <span class="badge bg-success bg-opacity-10 text-success p-3 rounded-circle fs-3">
@@ -204,7 +261,7 @@
       </div>
 
       <!-- Dedicated Pods from Nepal -->
-      <div class="col-lg-4 col-md-12">
+      <div class="col-lg-4 col-md-12" data-aos="fade-up" data-aos-delay="300">
         <div class="card h-100 border-0 shadow-sm p-4 text-center card-hover">
           <div class="mb-3">
             <span class="badge bg-warning bg-opacity-10 text-warning p-3 rounded-circle fs-3">
@@ -291,41 +348,33 @@
       </div>
     </div>
 
-    <div id="solutionsCarousel" class="carousel slide" data-bs-ride="carousel">
-      <div class="carousel-inner">
+    <div class="swiper solutions-swiper">
+      <div class="swiper-wrapper">
         {% for solution in latest_solutions %}
-        <div class="carousel-item {% if forloop.first %}active{% endif %}">
-          <div class="card h-100 card-hover">
+        <div class="swiper-slide">
+          <div class="card h-100 card-hover" data-tilt data-tilt-glare data-tilt-max-glare="0.2" data-tilt-max="3">
             {% if solution.image %}
-            <img src="{{ solution.image.url }}" class="card-img-top" height="500px" width="100%"
+            <img src="{{ solution.image.url }}" class="card-img-top"
               alt="{{ solution.title }} cover" loading="lazy" decoding="async" />
             {% else %}
             <img src="{% static 'core/img/placeholder-16x9.svg' %}" class="card-img-top"
               alt="{{ solution.title }} cover" loading="lazy" />
             {% endif %}
             <div class="card-body">
-              <h5 class="card-title">{{ solution.title }}</h5>
-              {% if solution.description %}
-              <p class="card-text text-muted">{{ solution.description|truncatewords:20 }}</p>
-              {% endif %}
+               <h5 class="card-title">{{ solution.title }}</h5>
+               {% if solution.description %}
+               <p class="card-text text-muted">{{ solution.description|truncatewords:20 }}</p>
+               {% endif %}
             </div>
           </div>
         </div>
         {% empty %}
-        <div class="carousel-item active">
-          <p class="text-muted">No solutions available yet.</p>
+        <div class="swiper-slide">
+          <p class="text-muted text-center py-5">No solutions available yet.</p>
         </div>
         {% endfor %}
       </div>
-
-      <button class="carousel-control-prev" type="button" data-bs-target="#solutionsCarousel" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-      </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#solutionsCarousel" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-      </button>
+      <div class="swiper-pagination"></div>
     </div>
 
     {% if latest_solutions %}
@@ -349,7 +398,7 @@
     <div class="row">
       {% for project in latest_projects %}
       <div class="col-lg-4 mb-4">
-        <div class="card h-100 card-hover">
+        <div class="card h-100 card-hover" data-tilt data-tilt-glare data-tilt-max-glare="0.2" data-tilt-max="3">
           {% if project.cover_image %}
           <img src="{{ project.cover_image.url }}" class="card-img-top" alt="{{ project.title }} cover"
             loading="lazy" decoding="async" />
@@ -398,7 +447,7 @@
     <div class="row g-4">
       {% for client in latest_clients %}
       <div class="col-md-6 col-lg-4">
-        <div class="card h-100 card-hover">
+        <div class="card h-100 card-hover" data-tilt data-tilt-glare data-tilt-max-glare="0.2" data-tilt-max="3">
           <div class="card-body text-center">
             <div class="d-flex align-items-center justify-content-center mb-3" style="height: 96px;">
               {% if client.logo %}
@@ -438,7 +487,7 @@
     <div class="row">
       {% for article in latest_articles %}
       <div class="col-lg-4 mb-4">
-        <div class="card h-100 card-hover">
+        <div class="card h-100 card-hover" data-tilt data-tilt-glare data-tilt-max-glare="0.2" data-tilt-max="3">
           {% if article.featured_image %}
           <img src="{{ article.featured_image.url }}" class="card-img-top" alt="{{ article.title }} cover"
             loading="lazy" decoding="async">
@@ -482,10 +531,10 @@
       </div>
     </div>
 
-    <div id="feedbackCarousel" class="carousel slide" data-bs-ride="carousel">
-      <div class="carousel-inner">
+    <div class="swiper feedback-swiper">
+      <div class="swiper-wrapper">
         {% for feedback in featured_feedbacks %}
-        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+        <div class="swiper-slide">
           <div class="card h-100">
             <div class="card-body">
               <p class="card-text mb-2">
@@ -499,20 +548,12 @@
           </div>
         </div>
         {% empty %}
-        <div class="carousel-item active">
-          <p class="text-muted">No customer feedback available yet.</p>
+        <div class="swiper-slide">
+          <p class="text-muted text-center py-5">No customer feedback available yet.</p>
         </div>
         {% endfor %}
       </div>
-
-      <button class="carousel-control-prev" type="button" data-bs-target="#feedbackCarousel" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-      </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#feedbackCarousel" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-      </button>
+      <div class="swiper-pagination"></div>
     </div>
   </div>
 </section>
