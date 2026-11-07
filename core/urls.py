@@ -12,6 +12,13 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('about/', views.about, name='about'),
     path('careers/', views.careers, name='careers'),
+    # Legal & Compliance (Meta / Google / GDPR)
+    path('privacy-policy/', views.privacy_policy, name='privacy_policy'),
+    path('privacy-policy', views.privacy_policy),
+    path('terms-of-service/', views.terms_of_service, name='terms_of_service'),
+    path('terms-of-service', views.terms_of_service),
+    path('data-deletion/', views.data_deletion, name='data_deletion'),
+    path('data-deletion', views.data_deletion),
     path('partnerships/', views.partnerships, name='partnerships'),
     path('solutions/', views.solutions, name='solutions'),
     path('solutions/<slug:solution_slug>/', views.solution_detail, name='solution_detail'),

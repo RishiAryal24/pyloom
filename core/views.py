@@ -176,6 +176,27 @@ def careers(request):
     })
 
 
+def privacy_policy(request):
+    """Privacy Policy page for Meta App and GDPR compliance"""
+    return render(request, 'frontend/privacy_policy.html', {
+        'settings': SiteSettings.load(),
+    })
+
+
+def terms_of_service(request):
+    """Terms of Service page for Meta App and legal compliance"""
+    return render(request, 'frontend/terms_of_service.html', {
+        'settings': SiteSettings.load(),
+    })
+
+
+def data_deletion(request):
+    """User Data Deletion instructions page for Meta App compliance"""
+    return render(request, 'frontend/data_deletion.html', {
+        'settings': SiteSettings.load(),
+    })
+
+
 def partnerships(request):
     """Partnerships page"""
     return render(request, 'frontend/partnerships.html', {

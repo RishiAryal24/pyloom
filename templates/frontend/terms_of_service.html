@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Terms of Service | PyLoom Technologies{% endblock %}
+{% block description %}Read the Terms of Service for PyLoom Technologies Pvt. Ltd. Understand the terms, conditions, and acceptable use policies governing our website, engineering services, and training academy.{% endblock %}
+{% block og_title %}Terms of Service | PyLoom Technologies{% endblock %}
+{% block og_description %}Review the terms, conditions, and legal guidelines governing use of PyLoom Technologies' website, offshore data pods, and educational programs.{% endblock %}
+{% block canonical %}https://www.pyloomtech.com/terms-of-service{% endblock %}
+
+{% block content %}
+<!-- Header Section -->
+<section class="page-header-compact bg-light text-dark py-5 border-bottom">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10 mx-auto text-center">
+        <span class="badge bg-primary text-white px-3 py-2 rounded-pill fw-semibold mb-2 shadow-sm">
+          Legal Agreement
+        </span>
+        <h1 class="display-5 fw-bold mb-3">Terms of Service</h1>
+        <p class="lead text-muted mb-2">
+          Terms and conditions governing the use of PyLoom Technologies services, website, and platforms.
+        </p>
+        <p class="small text-secondary mb-0">
+          <strong>Effective Date:</strong> January 1, 2026 &bull; <strong>Last Updated:</strong> October 2026
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Content Section -->
+<section class="py-5 bg-white">
+  <div class="container">
+    <div class="row g-4 g-lg-5">
+      <!-- Table of Contents Sidebar -->
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm sticky-top p-3" style="top: 90px; border-radius: 12px;">
+          <div class="card-body p-2">
+            <h6 class="fw-bold text-uppercase text-primary mb-3">
+              <i class="bi bi-list-nested me-2"></i>Table of Contents
+            </h6>
+            <nav class="nav flex-column small gap-1">
+              <a class="nav-link text-secondary px-2 py-1 rounded" href="#agreement">1. Acceptance of Terms</a>
+              <a class="nav-link text-secondary px-2 py-1 rounded" href="#services">2. Scope of Services</a>
+              <a class="nav-link text-secondary px-2 py-1 rounded" href="#acceptable-use">3. Acceptable Use Policy</a>
+              <a class="nav-link text-secondary px-2 py-1 rounded" href="#accounts">4. Accounts & Security</a>
+              <a class="nav-link text-secondary px-2 py-1 rounded" href="#intellectual-property">5. Intellectual Property</a>
+              <a class="nav-link text-secondary px-2 py-1 rounded" href="#third-parties">6. Third-Party Integrations</a>
+              <a class="nav-link text-secondary px-2 py-1 rounded" href="#training-terms">7. Training & Academy Terms</a>
+              <a class="nav-link text-secondary px-2 py-1 rounded" href="#liability">8. Limitation of Liability</a>
+              <a class="nav-link text-secondary px-2 py-1 rounded" href="#indemnity">9. Indemnification</a>
+              <a class="nav-link text-secondary px-2 py-1 rounded" href="#governing-law">10. Governing Law</a>
+              <a class="nav-link text-secondary px-2 py-1 rounded" href="#modifications">11. Modifications to Terms</a>
+              <a class="nav-link text-secondary px-2 py-1 rounded" href="#contact">12. Contact Information</a>
+            </nav>
+            <hr class="my-3">
+            <div class="p-2 bg-light rounded text-center small">
+              <span class="text-muted d-block mb-1">Questions regarding our policies?</span>
+              <a href="{% url 'core:contact' %}" class="btn btn-outline-primary btn-sm w-100 fw-semibold">
+                <i class="bi bi-envelope me-1"></i> Contact Legal Team
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Legal Content -->
+      <div class="col-lg-8">
+        <div class="pe-lg-3">
+
+          <!-- 1. Acceptance of Terms -->
+          <div id="agreement" class="mb-5">
+            <h3 class="fw-bold text-dark mb-3">1. Acceptance of Terms</h3>
+            <p class="text-secondary leading-relaxed">
+              These Terms of Service ("Terms") constitute a legally binding agreement between you ("User", "you", or "your") and <strong>PyLoom Technologies Pvt. Ltd.</strong> ("PyLoom", "we", "our", or "us"). By accessing or using our website located at <a href="https://pyloomtech.com" class="text-decoration-none">https://pyloomtech.com</a>, engaging our engineering services, enrolling in training courses, or interacting with our integrated web and Meta applications, you agree to comply with and be bound by these Terms and our <a href="{% url 'core:privacy_policy' %}">Privacy Policy</a>.
+            </p>
+            <p class="text-secondary leading-relaxed">
+              If you do not agree with any part of these Terms, you must immediately discontinue use of our website, software, and services.
+            </p>
+          </div>
+
+          <!-- 2. Scope of Services -->
+          <div id="services" class="mb-5">
+            <h3 class="fw-bold text-dark mb-3">2. Scope of Services</h3>
+            <p class="text-secondary leading-relaxed">
+              PyLoom Technologies provides enterprise-grade technology and educational services, including:
+            </p>
+            <ul class="text-secondary leading-relaxed mb-3">
+              <li class="mb-2">
+                <strong>Enterprise Data Engineering:</strong> Building production lakehouse architectures, ETL/ELT pipelines, real-time data streaming, and cloud data migrations across Snowflake, Databricks, BigQuery, AWS, and Azure.
+              </li>
+              <li class="mb-2">
+                <strong>Dedicated Offshore Pods:</strong> Providing dedicated data engineering, AI, and analytics pods to international enterprises (including US, Australian, and European organizations).
+              </li>
+              <li class="mb-2">
+                <strong>Data Science & AI Solutions:</strong> Machine learning model development, predictive modeling, NLP applications, and custom enterprise AI integrations.
+              </li>
+              <li class="mb-2">
+                <strong>PyLoom Academy:</strong> Industry-standard professional training certifications in Data Science, Data Engineering, PySpark, Python, and SQL delivered in Butwal, Nepal and online.
+              </li>
+            </ul>
+          </div>
+
+          <!-- 3. Acceptable Use Policy -->
+          <div id="acceptable-use" class="mb-5">
+            <h3 class="fw-bold text-dark mb-3">3. Acceptable Use Policy</h3>
+            <p class="text-secondary leading-relaxed">
+              You agree to use our website and platforms only for lawful purposes. You agree not to:
+            </p>
+            <ul class="text-secondary leading-relaxed mb-3">
+              <li class="mb-2">Violate any applicable national or international laws or regulations.</li>
+              <li class="mb-2">Attempt to probe, scan, or test the vulnerability of our systems or breach security or authentication measures without express written permission.</li>
+              <li class="mb-2">Engage in unauthorized data extraction, automated scraping, or reverse engineering of any portion of the site or applications.</li>
+              <li class="mb-2">Upload or transmit viruses, worms, malware, or any code designed to disrupt, damage, or limit the functionality of any software or hardware.</li>
+              <li class="mb-2">Impersonate any person or entity or misrepresent your affiliation with PyLoom Technologies.</li>
+            </ul>
+          </div>
+
+          <!-- 4. Accounts & Security -->
+          <div id="accounts" class="mb-5">
+            <h3 class="fw-bold text-dark mb-3">4. Accounts & Security</h3>
+            <p class="text-secondary leading-relaxed">
+              When creating an account or registering for courses/services on PyLoom, you must provide accurate, current, and complete information. You are solely responsible for maintaining the confidentiality of your login credentials and for all activities that occur under your account. You agree to notify PyLoom immediately at <a href="mailto:info@pyloomtech.com">info@pyloomtech.com</a> of any unauthorized use or security breach.
+            </p>
+          </div>
+
+          <!-- 5. Intellectual Property Rights -->
+          <div id="intellectual-property" class="mb-5">
+            <h3 class="fw-bold text-dark mb-3">5. Intellectual Property Rights</h3>
+            <p class="text-secondary leading-relaxed">
+              All proprietary materials, including source code, website design, graphics, text, training curricula, logos, and trademarks displayed on this site are the exclusive property of PyLoom Technologies Pvt. Ltd. or its licensors.
+            </p>
+            <p class="text-secondary leading-relaxed">
+              For enterprise clients, intellectual property ownership of custom software deliverables and data models is governed by individual Master Service Agreements (MSAs) and Statements of Work (SOWs) executed between PyLoom and the respective client.
+            </p>
+          </div>
+
+          <!-- 6. Third-Party Integrations -->
+          <div id="third-parties" class="mb-5">
+            <h3 class="fw-bold text-dark mb-3">6. Third-Party Integrations & Meta Platform</h3>
+            <p class="text-secondary leading-relaxed">
+              Our website and applications may integrate with third-party platforms, such as Meta (Facebook / Instagram), Google, and cloud hosting providers. Your use of third-party features is subject to the respective third party's terms and privacy policies. We do not endorse or assume liability for third-party products, content, or services.
+            </p>
+            <p class="text-secondary leading-relaxed">
+              For data collected via Meta integrations, please consult our <a href="{% url 'core:privacy_policy' %}">Privacy Policy</a> and <a href="{% url 'core:data_deletion' %}">Data Deletion Instructions</a>.
+            </p>
+          </div>
+
+          <!-- 7. Training & Academy Terms -->
+          <div id="training-terms" class="mb-5">
+            <h3 class="fw-bold text-dark mb-3">7. Training & Academy Terms</h3>
+            <p class="text-secondary leading-relaxed">
+              Enrollment in PyLoom Academy training programs is subject to course availability, prerequisite fulfillment, and payment of specified fees. All training materials, lab exercises, and lectures are for personal educational use only and may not be redistributed, published, or sold without prior written consent.
+            </p>
+          </div>
+
+          <!-- 8. Limitation of Liability -->
+          <div id="liability" class="mb-5">
+            <h3 class="fw-bold text-dark mb-3">8. Limitation of Liability</h3>
+            <p class="text-secondary leading-relaxed">
+              To the maximum extent permitted by applicable law, in no event shall PyLoom Technologies Pvt. Ltd., its directors, employees, or partners be liable for any indirect, punitive, incidental, special, consequential, or exemplary damages, including loss of profits, goodwill, data, or other intangible losses arising from your use of, or inability to use, our website or services.
+            </p>
+          </div>
+
+          <!-- 9. Indemnification -->
+          <div id="indemnity" class="mb-5">
+            <h3 class="fw-bold text-dark mb-3">9. Indemnification</h3>
+            <p class="text-secondary leading-relaxed">
+              You agree to defend, indemnify, and hold harmless PyLoom Technologies Pvt. Ltd. and its affiliates from and against any claims, liabilities, damages, judgments, awards, losses, costs, expenses, or fees (including reasonable legal fees) resulting from your violation of these Terms or your use of the website or platforms.
+            </p>
+          </div>
+
+          <!-- 10. Governing Law -->
+          <div id="governing-law" class="mb-5">
+            <h3 class="fw-bold text-dark mb-3">10. Governing Law & Dispute Resolution</h3>
+            <p class="text-secondary leading-relaxed">
+              These Terms shall be governed by and construed in accordance with the laws of Nepal, without regard to conflict of law principles. Any legal suit, action, or proceeding arising out of or related to these Terms shall be instituted exclusively in the competent courts located in Rupandehi District or Kathmandu, Nepal.
+            </p>
+          </div>
+
+          <!-- 11. Modifications to Terms -->
+          <div id="modifications" class="mb-5">
+            <h3 class="fw-bold text-dark mb-3">11. Modifications to Terms</h3>
+            <p class="text-secondary leading-relaxed">
+              We reserve the right to revise and update these Terms at our discretion. Any modifications become effective immediately upon posting to this page with an updated "Last Updated" date. Your continued use of the website following the posting of revised Terms means that you accept and agree to the changes.
+            </p>
+          </div>
+
+          <!-- 12. Contact Information -->
+          <div id="contact" class="mb-4">
+            <h3 class="fw-bold text-dark mb-3">12. Contact Information</h3>
+            <p class="text-secondary leading-relaxed">
+              For any questions regarding these Terms of Service, please reach out to:
+            </p>
+            <div class="card border-0 bg-light p-3">
+              <div class="card-body">
+                <h5 class="fw-bold text-dark mb-2">PyLoom Technologies Pvt. Ltd.</h5>
+                <p class="mb-1 text-secondary"><i class="bi bi-geo-alt-fill text-danger me-2"></i>Butwal-12, Rupandehi, Lumbini Province, Nepal</p>
+                <p class="mb-1 text-secondary"><i class="bi bi-envelope-fill text-primary me-2"></i><a href="mailto:info@pyloomtech.com">info@pyloomtech.com</a></p>
+                <p class="mb-1 text-secondary"><i class="bi bi-telephone-fill text-success me-2"></i>+977 970-1024222</p>
+                <p class="mb-0 text-secondary"><i class="bi bi-globe me-2"></i><a href="https://pyloomtech.com" target="_blank">https://pyloomtech.com</a></p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
